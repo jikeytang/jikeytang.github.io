@@ -1,37 +1,52 @@
-;(function(win){ // 弹出层
-    Jing.namespace('Jing.pop');
+(function(win,$){
+    $.pop = function(options){
+        var defaults = this.defaults = {
+            width : 200,
+            height : 300,
+            container : document.body
+        }
+        $.extend(defaults, options);
 
-    Jing.apply(Jing.pop, {
-        init : function(options){
-            var that = this,
-                config = this.config = {
-                    name : 'tang'
-                };
-
-            Jing.apply(config, options);
-
-            this.handler = {
-                sideBar : Jing.id(config.sideBar),
-                iframe : Jing.id(config.iframe)
-            }
-
-            that.initMain();
-            that.siderHref();
-        },
-        initMain : function(){
-            var that = this,
-                config = this.config,
-                handler = that.handler
-            winWidth = Jing.viewSize.width,
-                winHeight = Jing.viewSize.height;
-
-            handler.iframe.style.width = winWidth - 210 + 'px';
-            handler.iframe.style.height = handler.sideBar.style.height = winHeight + 'px';
-        },
-        siderHref : function(){
-
+        this.handler = {
+            container : $(defaults.container),
+            wrap : null,
+            title : null,
+            content : null,
+            bottom : null
         }
 
-    });
+        this.init(defaults);
+    }
+    $.pop.prototype = {
+        init : function(options){
+            this.create();
+        },
+        create : function(){
+            var defaults = this.defaults,
+                handler = this.handler,
+                container = handler.container,
+                wrap = null;
 
-}(window));
+            var a = $('<div/>');
+            console.log(a);
+            /*
+            wrap = handler.wrap = $.html('section', { class : 'pop-wrap' });
+            handler.title = $.html({ class : 'pop-title'});
+            handler.title.innerHTML = '我是一个兵';
+            handler.content = $.html({ class : 'pop-body' });
+            wrap.appendChild(handler.title);
+            wrap.appendChild(handler.content);
+            container.appendChild(handler.wrap);
+            */
+
+            this.position();
+        },
+        position : function(){
+            var defaults = this.defaults,
+                handler = this.handler;
+
+//            $.css(handler.wrap, { position : 'absolute',width: '100px'});
+//            console.log($.css(handler.wrap, 'width'));
+        }
+    }
+}(window, Jing));

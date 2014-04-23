@@ -5,7 +5,3 @@
  * @info:
  */
 
-Jing.ui.init({
-    sideBar : 'sideBar',
-    iframe : 'mainIframe'
-});

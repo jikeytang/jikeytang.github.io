@@ -13,9 +13,10 @@ require.config({
     }
 });
 
-require(['jquery', 'common', 'home'], function($){
-    Jing.ui.init({
-        sideBar : 'sideBar',
-        iframe : 'mainIframe'
-    });
-});
+//require(['jquery', 'common', 'home'], function($){
+//    Jing.ui.init({
+//        sideBar : 'sideBar',
+//        iframe : 'mainIframe'
+//    });
+//});
+

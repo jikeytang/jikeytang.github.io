@@ -9,7 +9,6 @@
     <link rel="stylesheet" type="text/css" href="css/common.css"/>
     <link rel="stylesheet" type="text/css" href="css/home.css"/>
     <link rel="shortcut icon" href="images/favicon.ico"/>
-    <script type="text/javascript" src="js/libs/modernizr.min.js"></script>
     <script type="text/javascript">
         if (top.location !== self.location) {
             top.location=self.location;
@@ -27,7 +26,7 @@
                 <li>
                     <a href="#"><i class="icon-font">&#xe003;</i>常用效果</a>
                     <ul class="sub-menu">
-                        <li><a target="iframe" href="pop.html"><i class="icon-font">&#xe008;</i>弹出层</a></li>
+                        <li><a target="iframe" href="common/pop.html"><i class="icon-font">&#xe008;</i>弹出层</a></li>
                         <li><a target="iframe" href=""><i class="icon-font">&#xe008;</i>模拟select</a></li>
                         <li><a target="iframe" href=""><i class="icon-font">&#xe008;</i>图片轮换</a></li>
                         <li><a target="iframe" href=""><i class="icon-font">&#xe008;</i>日历</a></li>
@@ -50,11 +49,12 @@
     </div>
     <!--/siderbar-->
     <div class="main">
-        <iframe id="mainIframe" name="iframe" src="main.html" frameborder="0"></iframe>
+        <iframe id="mainIframe" name="iframe" scroll="no" src="main.html" frameborder="0"></iframe>
     </div>
     <!--/main-->
 </div>
 <!--/container-->
+<script type="text/javascript" src="js/libs/require.js"></script>
 <script type="text/javascript" src="js/init/home.init.js"></script>
 </body>
 </html>
