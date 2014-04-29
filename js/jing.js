@@ -6,7 +6,7 @@
  */
 ;(function(win, undefined){
     var doc = document,
-        isIE6 = !XMLHttpRequest;
+        isIE6 = !win.XMLHttpRequest && !win.opera;
 
     win.$ = win.Jing = $ = function(selector, context){
         return new $.fn.init(selector, context);
@@ -29,7 +29,11 @@
             // HTML strings
             if(typeof selector === 'string'){
                 if(selector.charAt(0) === '<' && selector.charAt(selector.length - 1) === '>' && selector.length >= 3){
-                    return this.setArray([context.createElement(selector.slice(1, -2))]);
+                    // 不能处理多标签的情况，如<p><span></span></p>
+//                    return this.setArray([context.createElement(selector.slice(1, -2))]);
+                    var div = document.createElement('div');
+                    div.innerHTML = selector;
+                    return this.setArray(this.makeArray(div.childNodes));
                 }
             } else if(selector.nodeType || selector == win){ // $(window,document,document.body,tag)
                 this.context = this[0] = selector;
@@ -118,6 +122,8 @@
     }
 
     var toString = Object.prototype.toString;
+    
+    // 常用工具函数
     $.extend({
         isFunction : function(obj){
             return toString.call(obj) === '[object Function]';
@@ -127,6 +133,12 @@
         },
         trim : function(text){
             return text.replace(/^\s+|\s+$/g, '');
+        }
+    });
+    
+    $.extend({
+        append : function(){
+            
         }
     });
 
