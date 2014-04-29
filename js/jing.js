@@ -5,8 +5,39 @@
  * @info:
  */
 ;(function(win, undefined){
-    var doc = document,
-        isIE6 = !win.XMLHttpRequest && !win.opera;
+    var doc = win.document,
+        loc = win.location,
+        docEle = doc.documentElement,
+        arr = [],
+        slice = arr.slice,
+        class2type = {},
+        toString = class2type.toString,
+        hasOwn = class2type.hasOwnProperty,
+        isIE6 = !win.XMLHttpRequest && !win.opera,
+        _ = { // 所有私有方法集合
+            isArraylike : function(obj){
+                var length = obj.length,
+                    type = $.type(obj);
+
+                if(type == 'function' && $.isWindow(obj)){
+                    return false;
+                }
+
+                if(obj.nodeType === 1 && length){
+                    return true;
+                }
+                // http://bbs.csdn.net/topics/390413500
+                // 若type==='array'直接返回true
+                // 若type!=='array'的话，如果type!=='function'为true的话开始判断括号里的内容，否则整体返回false
+                // 括号里的内容如果length===0为true若括号里整体为true，整体返回true
+                // 若length===0为false，判断typeof length==='number'，如果为flase，整体返回false
+                // 如果typeof length==='number'，如果为true,判断length>0，如果为false，整体返回false
+                // 如果length>0为true，判断( length - 1 ) in obj，这话的意思就是如果是类数组的对象，
+                // 其结构肯定是{0:'aaa',1:'bbb',length:2}这样的key值为数字的，所以如果是类数组对象，判断在obj里是否能找到length-1这样的key，如果找到，整体返回true，否则整体返回false
+                // in就是判断一个key是否在一个obj里。比如var obj = {a:'111'}，'a' in obj为true，'b' in obj为false
+                return type === 'array' || length === 0 || typeof length === 'number' && length > 0 && (length - 1) in obj;
+            }
+        };
 
     win.$ = win.Jing = $ = function(selector, context){
         return new $.fn.init(selector, context);
@@ -15,7 +46,7 @@
     $.fn = $.prototype = {
         version : 1,
         constructor : $,
-        splice : [].splice,
+        splice : arr.splice,
         init : function(selector, context){
             var obj = null,
                 context = context || doc,
@@ -94,6 +125,9 @@
                 }
                 return res;
             }
+        },
+        each : function(callback){
+            return $.each(this, callback);
         }
     }
 
@@ -121,27 +155,60 @@
         return target;
     }
 
-    var toString = Object.prototype.toString;
-    
+
     // 常用工具函数
     $.extend({
         isFunction : function(obj){
-            return toString.call(obj) === '[object Function]';
+            return $.type(obj) === 'function';
         },
-        isArray : function(obj){
-            return toString.call(obj) === '[object Array]';
+        isArray : Array.isArray || function(obj){
+            return $.type(obj) === 'array';
+        },
+        // 是否为窗口
+        isWindow : function(obj){
+            return obj != null && obj == obj.window;
         },
         trim : function(text){
             return text.replace(/^\s+|\s+$/g, '');
+        },
+        type : function(obj){
+            return typeof obj === 'object' || typeof obj === 'function' ? class2type[toString.call(obj)] || 'object' : typeof obj;
+        },
+        noop : function(){},
+        each : function(obj, callback){
+            var value,
+                i = 0,
+                length = obj.length,
+                isArray = _.isArraylike(obj);
+
+            if(isArray){ // 如果是数组
+                for( ; i < length; i++){
+                    value = callback.call(obj[i], i, obj[i]);
+                    if(value === false){
+                        break;
+                    }
+                }
+            } else { // 如果不是数组
+                for(i in obj){
+                    value = callback.call(obj[i], i, obj[i]);
+                    if(value === false){
+                        break;
+                    }
+                }
+            }
+
+            return obj;
         }
     });
     
     $.extend({
         append : function(){
-            
+            return true;
         }
     });
 
-
+    $.each('Boolean Number String Function Array Date RegExp Object Error'.split(' '), function(i, name){
+        class2type['[object ' + name + ']'] = name.toLowerCase();
+    });
 
 }(window));
