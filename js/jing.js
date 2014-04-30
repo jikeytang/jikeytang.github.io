@@ -10,6 +10,7 @@
         docEle = doc.documentElement,
         arr = [],
         slice = arr.slice,
+        concat = arr.concat,
         class2type = {},
         toString = class2type.toString,
         hasOwn = class2type.hasOwnProperty,
@@ -47,6 +48,7 @@
         version : 1,
         constructor : $,
         splice : arr.splice,
+        context : null,
         init : function(selector, context){
             var obj = null,
                 context = context || doc,
@@ -78,11 +80,16 @@
                 obj = context.getElementById(selector.slice(1));
             } else if(selector.indexOf('.') == 0){ // $(".className")
                 obj = this.getElementsByClassName(context, selector.slice(1));
+
             } else { // $("tagName")
                 obj = context.getElementsByTagName(selector);
             }
+            this.context = doc;
 
             return this.setArray(this.makeArray(obj));
+        },
+        toArray : function(){
+            return slice.call(this);
         },
         setArray : function(obj){
             this.length = 0;
@@ -126,6 +133,7 @@
                 return res;
             }
         },
+
         each : function(callback){
             return $.each(this, callback);
         }
@@ -156,8 +164,10 @@
     }
 
 
-    // 常用工具函数
+    // 常用工具方法
     $.extend({
+        // 空函数快捷方式
+        noop : function(){},
         isFunction : function(obj){
             return $.type(obj) === 'function';
         },
@@ -174,7 +184,6 @@
         type : function(obj){
             return typeof obj === 'object' || typeof obj === 'function' ? class2type[toString.call(obj)] || 'object' : typeof obj;
         },
-        noop : function(){},
         each : function(obj, callback){
             var value,
                 i = 0,
@@ -198,17 +207,62 @@
             }
 
             return obj;
+        },
+        /**
+         * 合并两个参数
+         * @param first
+         * @param end
+         */
+        merge : function(first, second){
+            var len = second.length,
+                i = first.length,
+                j = 0;
+
+            while(j < len){
+                first[i++] = second[j++];
+            }
+            first.length = i;
+            return first;
+        },
+        map : function(elems, callback, arg){
+            var i = 0,
+                value,
+                ret = [],
+                length = elems.length,
+                isArray = _.isArraylike(elems);
+
+            if(isArray){
+                for( ; i < length; i++){
+                    value = callback(elems[i], i, arg);
+                    if(value != null){
+                        ret.push(value);
+                    }
+                }
+            } else {
+                for(i in elems){
+                    value = callback(elems[i], i, arg);
+                    if(value != null){
+                        ret.push(value);
+                    }
+                }
+            }
+            return concat.apply([], ret);
         }
     });
-    
+
+    // DOM常规操作
     $.extend({
         append : function(){
             return true;
         }
     });
 
-    $.each('Boolean Number String Function Array Date RegExp Object Error'.split(' '), function(i, name){
+    // 'Boolean Number String Function Array Date RegExp Object Error'.split(' ')
+    $.each(['Boolean', 'Number', 'String', 'Function', 'Array', 'Date', 'RegExp', 'Object', 'Error'], function(i, name){
         class2type['[object ' + name + ']'] = name.toLowerCase();
     });
 
 }(window));
+
+// 2014-04-21 : 准备开发第一版
+// 2014-04-30 : 完成$.type, $.each等方法
