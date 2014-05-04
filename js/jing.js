@@ -11,6 +11,7 @@
         arr = [],
         slice = arr.slice,
         concat = arr.concat,
+        push = arr.push,
         class2type = {},
         toString = class2type.toString,
         hasOwn = class2type.hasOwnProperty,
@@ -28,14 +29,6 @@
                     return true;
                 }
                 // http://bbs.csdn.net/topics/390413500
-                // 若type==='array'直接返回true
-                // 若type!=='array'的话，如果type!=='function'为true的话开始判断括号里的内容，否则整体返回false
-                // 括号里的内容如果length===0为true若括号里整体为true，整体返回true
-                // 若length===0为false，判断typeof length==='number'，如果为flase，整体返回false
-                // 如果typeof length==='number'，如果为true,判断length>0，如果为false，整体返回false
-                // 如果length>0为true，判断( length - 1 ) in obj，这话的意思就是如果是类数组的对象，
-                // 其结构肯定是{0:'aaa',1:'bbb',length:2}这样的key值为数字的，所以如果是类数组对象，判断在obj里是否能找到length-1这样的key，如果找到，整体返回true，否则整体返回false
-                // in就是判断一个key是否在一个obj里。比如var obj = {a:'111'}，'a' in obj为true，'b' in obj为false
                 return type === 'array' || length === 0 || typeof length === 'number' && length > 0 && (length - 1) in obj;
             }
         };
@@ -45,8 +38,10 @@
     }
     
     $.fn = $.prototype = {
-        version : 1,
+        jing : 1,
         constructor : $,
+        sort : arr.sort,
+        push : push,
         splice : arr.splice,
         context : null,
         init : function(selector, context){
@@ -254,6 +249,22 @@
     $.extend({
         append : function(){
             return true;
+        },
+        /**
+         * 将args转换为dom元素，并放在一个文档碎片中，
+         * 执行callback，实现真正的回调插入操作
+         * @param args
+         * @param table
+         * @param callback
+         */
+        domMainp : function(args, table, callback){
+            
+        },
+        buildFragment : function(elems, context, scripts, selection){
+
+        },
+        cleanData : function(elems, acceptData){
+
         }
     });
 
