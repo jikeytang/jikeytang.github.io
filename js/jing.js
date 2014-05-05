@@ -346,6 +346,13 @@
         }
     });
 
+    $.each({
+        appendTo : 'append', prependTo : 'prepend',
+        insertBefore : 'before', insertAfter : 'after', replaceAll : 'replaceWith'
+    }, function(name, original){
+
+    });
+
     // 'Boolean Number String Function Array Date RegExp Object Error'.split(' ')
     $.each(['Boolean', 'Number', 'String', 'Function', 'Array', 'Date', 'RegExp', 'Object', 'Error'], function(i, name){
         class2type['[object ' + name + ']'] = name.toLowerCase();
@@ -371,7 +378,7 @@
                 for( ; i < len; i++){
                     elem = this[i];
 
-                    cur = elem.nodeType === 1 && (elem.className ? ' ' + elem.className + ' ' : '');
+                    cur = elem.nodeType === 1 && (elem.className ? ' ' + elem.className + ' ' : ' ');
                     if(cur){
                         j = 0;
 
@@ -407,7 +414,7 @@
                 for( ; i < len; i++){
                     elem = this[i];
 
-                    cur = elem.nodeType === 1 && (elem.className ? ' ' + elem.className + ' ' : '');
+                    cur = elem.nodeType === 1 && (elem.className ? ' ' + elem.className + ' ' : ' ');
                     if(cur){
                         j = 0;
 
@@ -429,6 +436,19 @@
         },
         toggleClass : function(){
 
+        },
+        hasClass : function(selector){
+            var i = 0,
+                className = ' ' + selector + ' ',
+                l = this.length;
+
+            for( ; i < l; i++){
+                if(this[i].nodeType === 1 && (' ' + this[i].className + ' ').indexOf(className) >= 0){
+                    return true;
+                }
+            }
+
+            return false;
         }
     });
 
