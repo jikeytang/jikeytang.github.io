@@ -357,12 +357,13 @@
     $.fn.extend({
         addClass : function(value){
             var i = 0,
-                j = 0,
+                j,
                 cur = '',
                 elem = null,
                 classes = [],
                 clazz = '',
                 len = this.length,
+                finalValue = '',
                 proceed = typeof value === 'string' && value;
 
             if(proceed){
@@ -370,12 +371,64 @@
                 for( ; i < len; i++){
                     elem = this[i];
 
-                    cur = elem.nodeType === 1 && elem.className ? ' ' + elem.className + ' ' : '';
+                    cur = elem.nodeType === 1 && (elem.className ? ' ' + elem.className + ' ' : '');
                     if(cur){
+                        j = 0;
 
+                        while((clazz = classes[j++])){
+                            if(cur.indexOf(' ' + clazz + ' ') < 0){
+                                cur += clazz + ' ';
+                            }
+                        }
+
+                        finalValue = $.trim(cur);
+                        if(elem.className !== finalValue){ // 为了防止重绘
+                            elem.className = finalValue;
+                        }
                     }
                 }
             }
+
+            return this;
+        },
+        removeClass : function(value){
+            var i = 0,
+                j,
+                cur = '',
+                elem = null,
+                classes = [],
+                clazz = '',
+                len = this.length,
+                finalValue = '',
+                proceed = arguments.length === 0 || typeof value === 'string' && value;
+
+            if(proceed){
+                classes = value.match(rnotwhite);
+                for( ; i < len; i++){
+                    elem = this[i];
+
+                    cur = elem.nodeType === 1 && (elem.className ? ' ' + elem.className + ' ' : '');
+                    if(cur){
+                        j = 0;
+
+                        while((clazz = classes[j++])){
+                            while(cur.indexOf(' ' + clazz + ' ') >= 0){
+                                cur = cur.replace(' ' + clazz + ' ', ' ');
+                            }
+                        }
+
+                        finalValue = value ? $.trim(cur) : '';
+                        if(elem.className !== finalValue){ // 为了防止重绘
+                            elem.className = finalValue;
+                        }
+                    }
+                }
+            }
+
+            return this;
+        },
+        toggleClass : function(){
+
         }
     });
 
@@ -384,4 +437,4 @@
 // 2014-04-21 : 准备开发第一版
 // 2014-04-30 : 完成$.type, $.each等方法
 // 2014-05-04 : 增加$.get方法
-// 2014-05-05 : 以精减的方式添加：append,prepend,before,after方法，但存在tbody问题未处理；添加addClass
+// 2014-05-05 : 以精减的方式添加：append,prepend,before,after方法，但存在tbody问题未处理；添加addClass,removeClass

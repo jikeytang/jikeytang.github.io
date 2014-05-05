@@ -12,15 +12,15 @@
     <p>这是测试p1</p>
     <p>这是测试p2</p>
 </div>
-<div class="a">111</div>
-<div class="a">222</div>
-<div class="a">333</div>
+<div class="a b">111</div>
+<div class="a b c">222</div>
+<div class="a c b">333</div>
 
 <script type="text/javascript" src="../js/jing.js"></script>
 <script type="text/javascript" src="../js/pop.js"></script>
 <!--<script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.js"></script>-->
 <script type="text/javascript">
-//    var a = $.merge([1,2,3], ['a','b','c']);
+    var a = $.merge([1,2,3], ['a','b','c']);
 //    console.log(a);
     /*
     var a = $.map([1,2,3], function(n){
@@ -30,6 +30,8 @@
     */
 //    var b = $('.a').after('<div>我是一个兵</div>');
 //    console.log(b);
+    $('.a').removeClass('b');
+
 
     new $.pop();
 </script>
