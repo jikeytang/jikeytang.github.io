@@ -27,7 +27,7 @@
                 container = handler.container,
                 wrap = null;
 
-            var a = $('<div/>');
+            var a = $('body').append('<div class="pop" />');
             console.log(a);
             /*
             wrap = handler.wrap = $.html('section', { class : 'pop-wrap' });

@@ -1,17 +1,18 @@
 /**
- * @author: zyh
- * @see: <a href="mailto:jikeytang@gmail.com">zyh</a>
+ * @author: 豪情
+ * @see: <a href="mailto:jikeytang@gmail.com">豪情</a>
  * @time: 2014-4-19 下午5:45
  * @info:
  */
 ;(function(win, undefined){
-    var doc = win.document,
+    var document = win.document,
         loc = win.location,
-        docEle = doc.documentElement,
+        docEle = document.documentElement,
         arr = [],
         slice = arr.slice,
         concat = arr.concat,
         push = arr.push,
+        indexOf = arr.indexOf,// js 1.6新增加的方法
         class2type = {},
         toString = class2type.toString,
         hasOwn = class2type.hasOwnProperty,
@@ -38,7 +39,7 @@
     }
     
     $.fn = $.prototype = {
-        jing : 1,
+        jing : '1.0',
         constructor : $,
         sort : arr.sort,
         push : push,
@@ -46,7 +47,7 @@
         context : null,
         init : function(selector, context){
             var obj = null,
-                context = context || doc,
+                context = context || document,
                 select = '';
 
             // $(''), $(null), $(undefined), $(false)
@@ -79,12 +80,19 @@
             } else { // $("tagName")
                 obj = context.getElementsByTagName(selector);
             }
-            this.context = doc;
+            this.context = document;
 
             return this.setArray(this.makeArray(obj));
         },
         toArray : function(){
             return slice.call(this);
+        },
+        /**
+         * 如果num为负则返回this.length+num值；如果num为空，直接返回一个数组元素
+         * @param num
+         */
+        get : function(num){
+            return num != null ? (num < 0 ? this[num + this.length] : this[num]) : slice.call(this);
         },
         setArray : function(obj){
             this.length = 0;
@@ -110,8 +118,8 @@
             return ret;
         },
         getElementsByClassName : function(context, name){
-            if(!doc.getElementsByClassName){
-                return doc.getElementsByClassName(name);
+            if(document.getElementsByClassName){
+                return document.getElementsByClassName(name);
             } else {
                 var regex = new RegExp('(^|\\s)' + name + '(\\s|$)'),
                     len = context.all.length,
@@ -131,6 +139,31 @@
 
         each : function(callback){
             return $.each(this, callback);
+        },
+        /**
+         * 确定elem在数组中的位置，从0开始计数(如果没有找到则返回 -1 )。
+         * @param elem
+         * @param arr
+         * @param i 开始位置
+         */
+        inArray : function(elem, arr, i){
+            var len;
+
+            if(arr){
+                if(indexOf){
+                    return indexOf.call(elem, arr, i);
+                }
+
+                len = arr.length;
+                i = i ? i < 0 ? Math.max(0, len + i) : i : 0;
+                for( ; i < len; i++){
+                    if(i in arr && arr[i] == elem){
+                        return i;
+                    }
+                }
+            }
+
+            return -1;
         }
     }
 
@@ -150,7 +183,9 @@
         for( ; i < length; i++){
             if((options = arguments[i]) != null){
                 for(name in options){
-                    target[name] = options[name];
+                    if(options[name] != undefined){
+                        target[name] = options[name];
+                    }
                 }
             }
         }
@@ -246,19 +281,62 @@
     });
 
     // DOM常规操作
-    $.extend({
+    $.fn.extend({
         append : function(){
-            return true;
+            return this.domMainp(arguments, function(elem){
+                if(this.nodeType == 1 || this.nodeType == 11 || this.nodeType == 9){
+                    this.appendChild(elem);
+                }
+            });
+        },
+        prepend : function(){
+            return this.domMainp(arguments, function(elem){
+                if(this.nodeType == 1 || this.nodeType == 11 || this.nodeType == 9){
+                    this.insertBefore(elem, this.firstChild);
+                }
+            });
+        },
+        before : function(){
+            return this.domMainp(arguments, function(elem){
+                if(this.parentNode){
+                    this.parentNode.insertBefore(elem, this);
+                }
+            });
+        },
+        after : function(){
+            return this.domMainp(arguments, function(elem){
+                if(this.parentNode){
+                    this.parentNode.insertBefore(elem, this.nextSibling);
+                }
+            });
         },
         /**
-         * 将args转换为dom元素，并放在一个文档碎片中，
+         * dom处理，将args转换为dom元素，并放在一个文档碎片中，
          * 执行callback，实现真正的回调插入操作
          * @param args
-         * @param table
          * @param callback
          */
-        domMainp : function(args, table, callback){
-            
+        domMainp : function(args, callback){
+            args = concat.apply([], args);
+
+            var i = 0,
+                l = this.length,
+                fragment,
+                node;
+
+            if(l){
+//                fragment = this.buildFragment(args, this[0].ownerDocument, false, this);
+                var div = document.createElement('div');
+                div.innerHTML = args;
+                node = div.childNodes[0];
+                div = null;
+
+                for( ; i < l; i++){
+                    callback.call(this[i], node, i);
+                }
+            }
+
+            return this;
         },
         buildFragment : function(elems, context, scripts, selection){
 
@@ -273,7 +351,37 @@
         class2type['[object ' + name + ']'] = name.toLowerCase();
     });
 
+
+    // className 相关操作
+    var rnotwhite = (/\S+/g);
+    $.fn.extend({
+        addClass : function(value){
+            var i = 0,
+                j = 0,
+                cur = '',
+                elem = null,
+                classes = [],
+                clazz = '',
+                len = this.length,
+                proceed = typeof value === 'string' && value;
+
+            if(proceed){
+                classes = value.match(rnotwhite);
+                for( ; i < len; i++){
+                    elem = this[i];
+
+                    cur = elem.nodeType === 1 && elem.className ? ' ' + elem.className + ' ' : '';
+                    if(cur){
+
+                    }
+                }
+            }
+        }
+    });
+
 }(window));
 
 // 2014-04-21 : 准备开发第一版
 // 2014-04-30 : 完成$.type, $.each等方法
+// 2014-05-04 : 增加$.get方法
+// 2014-05-05 : 以精减的方式添加：append,prepend,before,after方法，但存在tbody问题未处理；添加addClass
