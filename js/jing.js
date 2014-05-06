@@ -298,17 +298,33 @@
             }
             return concat.apply([], ret);
         },
-        buildFragment : function(elems, context, scripts, selection){
-
-        },
-        cleanData : function(elems, acceptData){
-
-        },
         clone : function(elem, dataAndEvents){
             var clone;
             clone = elem.cloneNode(true);
 
             return clone;
+        },
+        buildFragment : function(elems, context, scripts, selection){
+            var i = 0,
+                nodes = [],
+                elem = null,
+                l = elems.length,
+                safe = context.createDocumentFragment();
+
+            for( ; i < l; i++){
+                elem = elem[i];
+                $.merge(nodes, elem);
+            }
+
+            i = 0;
+            while((elem = nodes[i++])){
+                safe.appendChild(elem);
+            }
+
+            return safe;
+        },
+        cleanData : function(elems, acceptData){
+
         }
     });
 
