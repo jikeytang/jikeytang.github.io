@@ -17,7 +17,8 @@
         toString = class2type.toString,
         hasOwn = class2type.hasOwnProperty,
         isIE6 = !win.XMLHttpRequest && !win.opera,
-        _ = { // 所有私有方法集合
+        support = {},
+        _ = { // 私有方法集合
             isArraylike : function(obj){
                 var length = obj.length,
                     type = $.type(obj);
@@ -34,7 +35,7 @@
             }
         };
 
-    win.$ = win.Jing = $ = function(selector, context){
+    win.$ = win.Jing = $ = function(selector, context){ // 力量的源泉源
         return new $.fn.init(selector, context);
     }
     
@@ -45,6 +46,8 @@
         push : push,
         splice : arr.splice,
         context : null,
+        selector : '',
+        length : 0,
         init : function(selector, context){
             var obj = null,
                 context = context || document,
@@ -66,6 +69,7 @@
                 }
             } else if(selector.nodeType || selector == win){ // $(window,document,document.body,tag)
                 this.context = this[0] = selector;
+                this.selector = selector;
                 this.length = 1;
                 return this;
             }
@@ -81,6 +85,7 @@
                 obj = context.getElementsByTagName(selector);
             }
             this.context = document;
+            this.selector = selector;
 
             return this.setArray(this.makeArray(obj));
         },
@@ -93,6 +98,14 @@
          */
         get : function(num){
             return num != null ? (num < 0 ? this[num + this.length] : this[num]) : slice.call(this);
+        },
+        pushStack : function(elems){
+            var ret = $.merge(this.constructor(), elems);
+
+            ret.prevObject = this;
+            ret.context = this.context;
+
+            return ret;
         },
         setArray : function(obj){
             this.length = 0;
@@ -118,17 +131,18 @@
             return ret;
         },
         getElementsByClassName : function(context, name){
-            if(document.getElementsByClassName){
-                return document.getElementsByClassName(name);
+            if(context.getElementsByClassName){
+                return context.getElementsByClassName(name);
             } else {
-                var regex = new RegExp('(^|\\s)' + name + '(\\s|$)'),
-                    len = context.all.length,
-                    child = null,
+                var i = 0,
                     res = [],
-                    i = 0;
+                    child = null,
+                    len = all.length,
+                    all = context.all,
+                    regex = new RegExp('(^|\\s)' + name + '(\\s|$)');
 
-                for(i = 0; i < len; i++){
-                    child = context.all[i];
+                for( ; i < len; i++){
+                    child = all[i];
                     if(regex.test(child.className)){
                         res.push(child);
                     }
@@ -139,6 +153,11 @@
 
         each : function(callback){
             return $.each(this, callback);
+        },
+        map : function(callback){
+            return this.pushStack($.map(this, function(elem, i){
+                return callback.call(elem, i, elem);
+            }));
         },
         /**
          * 确定elem在数组中的位置，从0开始计数(如果没有找到则返回 -1 )。
@@ -164,7 +183,8 @@
             }
 
             return -1;
-        }
+        },
+        support : support
     }
 
     $.fn.init.prototype = $.fn;
@@ -277,6 +297,18 @@
                 }
             }
             return concat.apply([], ret);
+        },
+        buildFragment : function(elems, context, scripts, selection){
+
+        },
+        cleanData : function(elems, acceptData){
+
+        },
+        clone : function(elem, dataAndEvents){
+            var clone;
+            clone = elem.cloneNode(true);
+
+            return clone;
         }
     });
 
@@ -327,7 +359,7 @@
             if(l){
 //                fragment = this.buildFragment(args, this[0].ownerDocument, false, this);
                 var div = document.createElement('div');
-                div.innerHTML = args;
+                div.innerHTML = (args.length === 1 ? args.get() : args);
                 node = div.childNodes[0];
                 div = null;
 
@@ -338,11 +370,10 @@
 
             return this;
         },
-        buildFragment : function(elems, context, scripts, selection){
-
-        },
-        cleanData : function(elems, acceptData){
-
+        clone : function(){
+            return this.map(function(){
+                return $.clone(this);
+            });
         }
     });
 
@@ -452,9 +483,40 @@
         }
     });
 
+    // 浏览器探测基本方法
+    _.uaMatch = function(ua){
+        ua = ua.toLowerCase();
+
+        var match = /(chrome)[\/]([\w.]+)/.exec(ua) ||
+            /(webkit)[ \/]([\w.]+)/.exec( ua ) ||
+            /(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
+            /(msie) ([\w.]+)/.exec( ua ) ||
+            ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec( ua ) || [];
+
+        return {
+            browser : match[1] || '',
+            version : match[2] || '0'
+        }
+    }
+    var browser = {},
+        matched = _.uaMatch(navigator.userAgent);
+
+    if(matched.browser){
+        browser[matched.browser] = true;
+        browser.version = matched.version
+    }
+
+    if(browser.chrome){
+        browser.webkit = true;
+    } else if(browser.webkit){
+        browser.safari = true;
+    }
+    $.browser = browser;
+
 }(window));
 
 // 2014-04-21 : 准备开发第一版
 // 2014-04-30 : 完成$.type, $.each等方法
 // 2014-05-04 : 增加$.get方法
 // 2014-05-05 : 以精减的方式添加：append,prepend,before,after方法，但存在tbody问题未处理；添加addClass,removeClass
+// 2014-05-06 : 添加$.browser方法
