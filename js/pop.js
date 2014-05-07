@@ -25,10 +25,10 @@
             var defaults = this.defaults,
                 handler = this.handler,
                 container = handler.container,
+                pop = null,
                 wrap = null;
 
-            $('body').append('<div class="pop" />');
-            var pop = $('.pop');
+            pop = $('<div class="pop" />').appendTo('body');
             console.log(pop);
             /*
             wrap = handler.wrap = $.html('section', { class : 'pop-wrap' });

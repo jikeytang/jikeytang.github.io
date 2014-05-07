@@ -15,7 +15,9 @@
 <div class="a b">111</div>
 <div class="a b c">222</div>
 <div class="a c b">333</div>
-
+<div id="test2">
+    <p>这里是p2的内容</p>
+</div>
 <script type="text/javascript" src="../js/jing.js"></script>
 <script type="text/javascript" src="../js/pop.js"></script>
 <!--<script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.js"></script>-->
@@ -33,11 +35,13 @@
 //    $('.a').removeClass('b');
 //    console.log($.browser);
 
-//    new $.pop();
+    var p = new $.pop();
+    console.log(p);
 
-    var test = $('#test').clone();
-    console.log(test);
-    $('body').append(test);
+//    var test = $('#test').clone();
+//    $('#test2').append(test);
+//    var d = $('#test').appendTo('#test2');
+//    console.log(d);
 //    console.log(test);
 
 </script>

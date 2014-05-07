@@ -304,15 +304,23 @@
 
             return clone;
         },
+        /**
+         * 加强版文档碎片处理
+         * @param elems 要添加的元素
+         * @param context 文档上下文
+         * @param scripts 是否有script
+         * @param selection
+         * @returns {*|DocumentFragment}
+         */
         buildFragment : function(elems, context, scripts, selection){
             var i = 0,
                 nodes = [],
                 elem = null,
                 l = elems.length,
-                safe = context.createDocumentFragment();
+                safe = document.createDocumentFragment();
 
             for( ; i < l; i++){
-                elem = elem[i];
+                elem = elems[i];
                 $.merge(nodes, elem);
             }
 
@@ -328,31 +336,46 @@
         }
     });
 
+    /**
+     * 多功能处理函数，setter,getter混合处理
+     * @param elems
+     * @param fn
+     * @param key
+     * @param value
+     * @param chainable
+     * @param emptyGet
+     * @param raw
+     * @returns {*}
+     */
+    _.access = function(elems, fn, key, value, chainable, emptyGet, raw){
+
+        return elems;
+    }
     // DOM常规操作
     $.fn.extend({
         append : function(){
-            return this.domMainp(arguments, function(elem){
+            return this.domManip(arguments, function(elem){
                 if(this.nodeType == 1 || this.nodeType == 11 || this.nodeType == 9){
                     this.appendChild(elem);
                 }
             });
         },
         prepend : function(){
-            return this.domMainp(arguments, function(elem){
+            return this.domManip(arguments, function(elem){
                 if(this.nodeType == 1 || this.nodeType == 11 || this.nodeType == 9){
                     this.insertBefore(elem, this.firstChild);
                 }
             });
         },
         before : function(){
-            return this.domMainp(arguments, function(elem){
+            return this.domManip(arguments, function(elem){
                 if(this.parentNode){
                     this.parentNode.insertBefore(elem, this);
                 }
             });
         },
         after : function(){
-            return this.domMainp(arguments, function(elem){
+            return this.domManip(arguments, function(elem){
                 if(this.parentNode){
                     this.parentNode.insertBefore(elem, this.nextSibling);
                 }
@@ -364,23 +387,25 @@
          * @param args
          * @param callback
          */
-        domMainp : function(args, callback){
+        domManip : function(args, callback){
             args = concat.apply([], args);
 
             var i = 0,
                 l = this.length,
                 fragment,
+                first,
                 node;
 
             if(l){
-//                fragment = this.buildFragment(args, this[0].ownerDocument, false, this);
-                var div = document.createElement('div');
+                fragment = $.buildFragment(args, this[0].ownerDocument, false, this);
+                first = fragment.firstChild;
+                /*var div = document.createElement('div');
                 div.innerHTML = (args.length === 1 ? args.get() : args);
                 node = div.childNodes[0];
-                div = null;
+                div = null;*/
 
                 for( ; i < l; i++){
-                    callback.call(this[i], node, i);
+                    callback.call(this[i], first, i);
                 }
             }
 
@@ -390,14 +415,47 @@
             return this.map(function(){
                 return $.clone(this);
             });
+        },
+        empty : function(){
+            var i = 0,
+                elem;
+
+            for( ; (elem = this[i]) != null; i++){
+                while(elem.firstChild){
+                    elem.removeChild(elem.firstChild);
+                }
+            }
+
+            return this;
+        },
+        html : function(value){
+            return _.access(this, function(value){
+
+            }, null, value, arguments.length);
         }
     });
 
+    // dom反向操作
     $.each({
         appendTo : 'append', prependTo : 'prepend',
         insertBefore : 'before', insertAfter : 'after', replaceAll : 'replaceWith'
     }, function(name, original){
+        $.fn[name] = function(selector){
+            var i = 0,
+                ret = [],
+                elem = null,
+                insert = $(selector),
+                last = insert.length - 1;
 
+            for( ; i <= last; i++){
+                elem = i === last ? this : this.clone();
+                $(insert[i])[original](elem);
+
+                push.apply(ret, elem.get());
+            }
+
+            return this.pushStack(ret);
+        }
     });
 
     // 'Boolean Number String Function Array Date RegExp Object Error'.split(' ')
@@ -535,4 +593,5 @@
 // 2014-04-30 : 完成$.type, $.each等方法
 // 2014-05-04 : 增加$.get方法
 // 2014-05-05 : 以精减的方式添加：append,prepend,before,after方法，但存在tbody问题未处理；添加addClass,removeClass
-// 2014-05-06 : 添加$.browser方法
+// 2014-05-06 : 增加$.browser方法
+// 2014-05-07 : 增加$().appendTo,$().prependTo等方法
