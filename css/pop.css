@@ -1,0 +1,15 @@
+.ui-pop{position:fixed;min-width:150px;border:10px solid #4b4b4b;background:#fff;overflow:hidden;z-index:99999;}
+.ui-pop h1{*margin-top:-3px;position:relative; text-indent:1em;padding:10px 0;font-size:14px;font-weight:normal;background:#efefef;border-bottom:1px solid #ccc;-moz-user-select:none;/* FF禁止选择文字 */-webkit-user-select:none;/* Chrome禁止选择文字 */}
+.ui-pop h1 .ui-closeWin{position:absolute;right:10px;cursor:pointer;text-indent:0;}
+.ui-pop h1 .ui-maxwin{position:absolute;right:50px;cursor:pointer;}
+.ui-win-body{padding:10px;line-height:23px;}
+.ui-win-footer{background:#f6f6f6;border-top:1px solid #dadee5;padding:5px;text-align:right;white-space:nowrap;}
+.ui-win-footer button{border:1px solid #999;color:#333;cursor:pointer;margin-left:15px;padding:5px 8px;text-align:center;display:inline-block;}
+.ui-mask{position:absolute;left:0;top:0;z-index:77777;background:#fff;filter:alpha(opacity=50);opacity:0.5;cursor:pointer;}
+.in{margin:50px auto;width:90px;}
+.tab{border-collapse:collapse;border:1px solid #ccc;}
+.tab td{border:1px solid #ccc;padding:2px;}
+.ctr{height:800px;}
+/* 模拟IE6 position:fix的效果 From: http://www.blueidea.com/tech/web/2010/7665.asp */
+*html{background:url(*) fixed;}
+*html body{margin:0;height:100%;}

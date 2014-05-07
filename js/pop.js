@@ -20,6 +20,7 @@
     $.pop.prototype = {
         init : function(options){
             this.create();
+            this.mask();
         },
         create : function(){
             var defaults = this.defaults,
@@ -28,7 +29,7 @@
                 pop = null,
                 wrap = null;
 
-            pop = $('<div class="pop" />').appendTo('body').html('<p>春来江水鸭先知</p>');
+            pop = $('<div class="ui-pop"><h1 class="ui-win-title">消息<a class="ui-closeWin" href="javascript:void(0)">关闭</a></h1><p>春来江水鸭先知1</p></div>').appendTo('body');
             console.log(pop);
             /*
             wrap = handler.wrap = $.html('section', { class : 'pop-wrap' });
@@ -48,6 +49,13 @@
 
 //            $.css(handler.wrap, { position : 'absolute',width: '100px'});
 //            console.log($.css(handler.wrap, 'width'));
+        },
+        mask : function(){
+            var m = null,
+                defaults = this.defaults,
+                handler = this.handler;
+
+            m = $('<div class="ui-mask"></div>').appendTo('body');
         }
     }
 }(window, Jing));

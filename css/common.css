@@ -84,7 +84,7 @@ textarea{border-radius:3px;}
 /* pop */
 .pop-wrap{position:fixed;top:30px;left:30px;width:700px;height:400px;background:#fff;box-shadow:0 22px 50px -35px #000;z-index:2000;}
 .pop-close{position:absolute;top:6px;right:18px;font-family:'Microsoft YaHei';font-size:25px;color:#000;text-shadow:0 1px 0 #fff;filter:alpha(opacity=20);opacity:0.2;cursor:pointer;}
-.pop-close:hover{text-decoration:none;filter:alpha(opacity=40);opacity:1;color:0;color:#000;}
+.pop-close:hover{text-decoration:none;filter:alpha(opacity=40);opacity:1;color:#000;}
 .ui-mask{position:absolute;left:0;top:0;z-index:777;background:#000;filter:alpha(opacity=50);opacity:0.5;zoom:1;}
 .pop-title{width:100%;height:60px;cursor:move;}
 .pop-main{padding:20px;text-align:center;}

@@ -348,8 +348,30 @@
      * @returns {*}
      */
     _.access = function(elems, fn, key, value, chainable, emptyGet, raw){
+        var i = 0,
+            length = elems.length,
+            bulk = key = null;
 
-        return elems;
+        if($.type(key) === 'object'){ // 传递参数如{ name : 'jikey', age : 30 }
+            chainable = true;
+            for(i in key){
+                _.access(elems, fn, i, key[i], true, emptyGet, raw);
+            }
+        } else if(value !== undefined){
+            chainable = true;
+
+            if(!$.isFunction(value)){
+                raw = true;
+            }
+
+            if(fn){
+                for(; i < length; i++){
+                    fn(elems[i], key, raw ? value : value.call(elems[i], i, fn(elems[i], key)));
+                }
+            }
+        }
+
+        return chainable ? elems : bulk ? fn.call(elems) : length ? fn(elems[0], key) : emptyGet;
     }
     // DOM常规操作
     $.fn.extend({
@@ -601,7 +623,7 @@
     }
     $.browser = browser;
 
-    // css相关静态方法
+    // css静态方法
     $.extend({
         cssHooks : function(){
 
@@ -616,6 +638,26 @@
             
         },
         css : function(){
+            
+        }
+    });
+
+    _.isHidden = function(elem, el){
+        elem = el || elem;
+        return $.css(elem, 'display') === 'none';
+    }
+    // css原型方法
+    $.fn.extend({
+        css : function(name, value){
+
+        },
+        show : function(){
+            
+        },
+        hide : function(){
+            
+        },
+        toggle : function(){
             
         }
     });
