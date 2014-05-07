@@ -12,33 +12,7 @@
 <div class="a">aa</div>
 <div class="a">bbb</div>
 <script type="text/javascript">
-    var test2 = $('#test');
-//    var test = Jing('.a');
-//    var test = $(document.body);
-//    var test = $('<p><span>test</span></p>');
-//    var test = $('<p>test</p>');
-//    var test = $(document);
-//    console.log(test);
-    $.each([1,2,3], function(i, n){
-        console.log(i + ' : ' + n);
-    });
-
-    /*
-    Jing.extend({
-        say : function(){
-            console.log('say method');
-        },
-        hello : function(){
-            console.log('hello');
-        }
-    });
-//    Jing.say()
-//    console.log();
-
-    var obj = {name : 'jikey', age : 30};
-    $.extend(obj, { school : 'shanghai', age : 25});
-    console.log(obj);
-    */
+    var a = $.merge([1,2,3], ['a','b','c']);
 
 
 </script>

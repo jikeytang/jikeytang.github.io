@@ -429,9 +429,23 @@
             return this;
         },
         html : function(value){
-            return _.access(this, function(value){
+            if(value === undefined){
+                return this[0] && this[0].nodeType === 1 ? $.trim(this[0].innerHTML) : null;
+            } else if(typeof value === 'string') {
+                try{
+                    for(var i = 0, l = this.length; i < l; i++){
+                        if(this[i].nodeType === 1){
+                            this[i].innerHTML = value;
+                        }
+                    }
+                } catch(e) {
+                    this.empty().append(value);
+                }
+            } else {
+                this.empty().append(value);
+            }
 
-            }, null, value, arguments.length);
+            return this;
         }
     });
 
@@ -587,6 +601,39 @@
     }
     $.browser = browser;
 
+    // css相关静态方法
+    $.extend({
+        cssHooks : function(){
+
+        },
+        cssNumber : function(){
+
+        },
+        cssProps : {
+            'float' : support.cssFloat ? 'cssFloat' : 'styleFloat'
+        },
+        setStyle : function(){
+            
+        },
+        css : function(){
+            
+        }
+    });
+
+    // 检测相关
+    (function(){
+        var a = null,
+            div = document.createElement('div');
+
+        div.innerHTML = '<a href="a">a</a>';
+        a = div.getElementsByTagName('a')[0];
+
+        a.style.cssText = 'float:left;opacity:.5;';
+        support.cssFloat = !!a.style.cssFloat;
+
+        a = div = null;
+    }());
+
 }(window));
 
 // 2014-04-21 : 准备开发第一版
@@ -594,4 +641,4 @@
 // 2014-05-04 : 增加$.get方法
 // 2014-05-05 : 以精减的方式添加：append,prepend,before,after方法，但存在tbody问题未处理；添加addClass,removeClass
 // 2014-05-06 : 增加$.browser方法
-// 2014-05-07 : 增加$().appendTo,$().prependTo等方法
+// 2014-05-07 : 增加$().appendTo,$().prependTo等方法，增加$().html();

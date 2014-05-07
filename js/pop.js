@@ -28,7 +28,7 @@
                 pop = null,
                 wrap = null;
 
-            pop = $('<div class="pop" />').appendTo('body');
+            pop = $('<div class="pop" />').appendTo('body').html('<p>春来江水鸭先知</p>');
             console.log(pop);
             /*
             wrap = handler.wrap = $.html('section', { class : 'pop-wrap' });
