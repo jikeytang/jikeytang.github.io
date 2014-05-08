@@ -56,6 +56,9 @@
                 handler = this.handler;
 
             m = $('<div class="ui-mask"></div>').appendTo('body');
+            console.log('m', $(window).width());
+            console.log('m', $(document).height());
+            m.css({ width :100, height : $(document).height() });
         }
     }
 }(window, Jing));

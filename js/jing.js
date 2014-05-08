@@ -213,6 +213,12 @@
         return target;
     }
 
+    var rmsPrefix = /^-ms-/,
+        rdashAlpha = /-([\da-z])/gi;
+
+    _.fcamelCase = function(all, letter){
+        return letter.toUpperCase();
+    }
 
     // 常用工具方法
     $.extend({
@@ -333,6 +339,14 @@
         },
         cleanData : function(elems, acceptData){
 
+        },
+        /**
+         * 中划线转为大写
+         * @param string
+         * @returns {XML|string}
+         */
+        camelCase : function(string){
+            return string.replace(rmsPrefix, 'ms-').replace(rdashAlpha, _.fcamelCase);
         }
     });
 
@@ -344,15 +358,15 @@
      * @param value
      * @param chainable
      * @param emptyGet
-     * @param raw
+     * @param raw // value值是否为函数的开关。如果是值，直接传递；如果是函数，则回调
      * @returns {*}
      */
     _.access = function(elems, fn, key, value, chainable, emptyGet, raw){
         var i = 0,
             length = elems.length,
-            bulk = key = null;
+            bulk = key == null;
 
-        if($.type(key) === 'object'){ // 传递参数如{ name : 'jikey', age : 30 }
+        if($.type(key) === 'object'){ // 传递参数如{ color : 'red', fontSize : '20px' }
             chainable = true;
             for(i in key){
                 _.access(elems, fn, i, key[i], true, emptyGet, raw);
@@ -623,6 +637,27 @@
     }
     $.browser = browser;
 
+    var getStyles,
+        curCSS,
+        rposition = /^(top|right|bottom|left)$/;
+
+    if(win.getComputedStyle){
+        getStyles = function(elem){
+            return elem.ownerDocument.defaultView.getComputedStyle(elem, null);
+        }
+        
+        curCSS = function(elem, name, computed){
+            
+        }
+    } else {
+    }
+
+    _.vendorPropName = function(style, name){
+        if(name in style){
+            return name;
+        }
+    }
+
     // css静态方法
     $.extend({
         cssHooks : function(){
@@ -634,8 +669,40 @@
         cssProps : {
             'float' : support.cssFloat ? 'cssFloat' : 'styleFloat'
         },
-        setStyle : function(){
-            
+
+        style : function(elem, name, value, extra){
+            // 忽略不存在的节点，文本节点，注释节点
+            if(!elem || elem.nodeType === 3 || elem.nodeType === 8 || !elem.style){
+                return ;
+            }
+
+            var ret,
+                type,
+                hooks,
+                style = elem.style,
+                origName = $.camelCase(name);
+
+            name = $.cssProps[origName] || ($.cssProps[origName] = _.vendorPropName(style, origName));
+
+            hooks = $.cssHooks[name] || $.cssHooks(origName);
+
+            if(value != undefined){
+                type = typeof value;
+                
+                if(!hooks || !('set' in hooks) || (value = hooks.set(elem, value, extra)) != undefined){
+                    try{
+                        style[name] = '';
+                        style[name] = value;
+                    } catch(e) {
+                    }
+                }
+            } else {
+                if(!hooks || !('get' in hooks) || (value = hooks.get(elem, value, extra)) != undefined){
+                    return ret;
+                }
+                
+                return style[name];
+            }
         },
         css : function(){
             
@@ -649,7 +716,12 @@
     // css原型方法
     $.fn.extend({
         css : function(name, value){
+            return _.access(this, function(elem, name, value){
+                var i = 0,
+                    len;
 
+                return value !== undefined ? $.style(elem, name, value) : $.css(elem, name);
+            }, name, value, arguments.length > 1);
         },
         show : function(){
             
@@ -676,6 +748,33 @@
         a = div = null;
     }());
 
+    // 尺寸大小
+    $.each({ Height : 'height', Width : 'width' }, function(name, type){
+        $.each({ padding : 'inner' + name, content : type, '' : 'outer'+ name }, function(defaultExtra, funcName){
+            $.fn[funcName] = function(margin, value){
+                var chainable = arguments.length && (defaultExtra || typeof margin != 'boolean'),
+                    extra = defaultExtra || (margin === true || value === true ? 'margin' : 'border');
+
+                return _.access(this, function(elem, type, value){
+                    var doc;
+
+                    if($.isWindow(elem)){
+                        return elem.document.documentElement['client' + name];
+                    }
+
+                    if(elem.nodeType === 9){
+                        doc = elem.documentElement;
+                        
+                        return Math.max(elem.body['scroll' + name], doc['scroll' + name], elem.body['offset' + name], doc['offset' + name], doc['client' + name]);
+                    }
+                    
+                    return value === undefined ? $.css(elem, type, extra) : $.style(elem, type, value, extra);
+                }, type, chainable ? margin : undefined, chainable, null);
+            }
+        });
+    });
+    
+
 }(window));
 
 // 2014-04-21 : 准备开发第一版
@@ -684,3 +783,4 @@
 // 2014-05-05 : 以精减的方式添加：append,prepend,before,after方法，但存在tbody问题未处理；添加addClass,removeClass
 // 2014-05-06 : 增加$.browser方法
 // 2014-05-07 : 增加$().appendTo,$().prependTo等方法，增加$().html();
+// 2014-05-08 : 增加$().css({ color : 'red' }), $(window).width,height(), $(document).width,height();
