@@ -637,16 +637,14 @@
     }
     $.browser = browser;
 
-    var getStyles,
-        curCSS,
-        rposition = /^(top|right|bottom|left)$/;
+    var rposition = /^(top|right|bottom|left)$/;
 
     if(win.getComputedStyle){
-        getStyles = function(elem){
+        _.getStyles = function(elem){
             return elem.ownerDocument.defaultView.getComputedStyle(elem, null);
         }
         
-        curCSS = function(elem, name, computed){
+        _.curCSS = function(elem, name, computed){
             
         }
     } else {
@@ -660,11 +658,28 @@
 
     // css静态方法
     $.extend({
-        cssHooks : function(){
-
+        cssHooks : {
+            opacity : {
+                get : function(elem, computed){
+                    if(computed){
+                        var ret = _.curCSS(elem, 'opacity');
+                        return ret === '' ? '1' : ret;
+                    }
+                }
+            }
         },
-        cssNumber : function(){
-
+        // 一个常量值，以下所有常量列表中是不需要自动添加'px'单位
+        cssNumber : {
+            'columnCount' : true,
+            'fillOpacity' : true,
+            'fontWeight' : true,
+            'lineHeight' : true,
+            'opacity' : true,
+            'order' : true,
+            'orphans' : true,
+            'windows' : true,
+            'zIndex' : true,
+            'zoom' : true
         },
         cssProps : {
             'float' : support.cssFloat ? 'cssFloat' : 'styleFloat'
@@ -684,10 +699,14 @@
 
             name = $.cssProps[origName] || ($.cssProps[origName] = _.vendorPropName(style, origName));
 
-            hooks = $.cssHooks[name] || $.cssHooks(origName);
+            hooks = $.cssHooks[name] || $.cssHooks[origName];
 
             if(value != undefined){
                 type = typeof value;
+
+                if(type === 'number' && !$.cssNumber[origName]){
+                    value += 'px';
+                }
                 
                 if(!hooks || !('set' in hooks) || (value = hooks.set(elem, value, extra)) != undefined){
                     try{
@@ -704,8 +723,39 @@
                 return style[name];
             }
         },
-        css : function(){
+        css : function(elem, name, extra, styles){
+            var num,
+                hooks,
+                val,
+                style = elem.style,
+                origName = $.camelCase(name);
+
+            name = $.cssProps[origName] || ($.cssProps[origName] = _.vendorPropName(style, origName));
+
+            hooks = $.cssHooks[name] || $.cssHooks[origName];
+
+            if(hooks && 'get' in hooks){
+                val = hooks.get(elem, true, extra);
+            }
+
+            if(val === undefined){
+                val = _.curCSS(elem, name, styles);
+            }
             
+            return val;
+        }
+    });
+
+    $.each(['height', 'width'], function(i, name){
+        $.cssHooks[name] = {
+            get : function(elem, computed, extra){
+                if(computed){
+                    return elem['offset' + name.charAt(0).toUpperCase() + name.slice(1)];
+                }
+            },
+            set : function(elem, value, extra){
+                return value;
+            }
         }
     });
 
@@ -773,7 +823,50 @@
             }
         });
     });
+
+
+    // 事件
+    $.event = {
+        global : {},
+        add : function(){
+
+        },
+        remove : function(){
+
+        },
+        trigger : function(){
+
+        },
+        dispatch : function(){
+
+        }
+    }
+
+    $.Event = function(){
+        
+    }
     
+    $.Event.prototype = {
+        
+    }
+
+    $.fn.extend({
+        on : function(){
+            
+        },
+        one : function(){
+
+        },
+        off : function(){
+
+        },
+        trigger : function(){
+            
+        },
+        triggerHandler : function(){
+            
+        }
+    });
 
 }(window));
 
@@ -784,3 +877,4 @@
 // 2014-05-06 : 增加$.browser方法
 // 2014-05-07 : 增加$().appendTo,$().prependTo等方法，增加$().html();
 // 2014-05-08 : 增加$().css({ color : 'red' }), $(window).width,height(), $(document).width,height();
+// 2014-05-09 : 增加$().width()方法;

@@ -21,6 +21,7 @@
         init : function(options){
             this.create();
             this.mask();
+            this.close();
         },
         create : function(){
             var defaults = this.defaults,
@@ -30,20 +31,11 @@
                 wrap = null;
 
             pop = $('<div class="ui-pop"><h1 class="ui-win-title">消息<a class="ui-closeWin" href="javascript:void(0)">关闭</a></h1><p>春来江水鸭先知1</p></div>').appendTo('body');
-            console.log(pop);
-            /*
-            wrap = handler.wrap = $.html('section', { class : 'pop-wrap' });
-            handler.title = $.html({ class : 'pop-title'});
-            handler.title.innerHTML = '我是一个兵';
-            handler.content = $.html({ class : 'pop-body' });
-            wrap.appendChild(handler.title);
-            wrap.appendChild(handler.content);
-            container.appendChild(handler.wrap);
-            */
+            pop.css({ top : ($(window).height() - pop.height()) / 2, left : ($(window).width() - pop.width()) / 2 });
 
-            this.position();
+            this.pop = pop;
         },
-        position : function(){
+        center : function(){
             var defaults = this.defaults,
                 handler = this.handler;
 
@@ -56,9 +48,14 @@
                 handler = this.handler;
 
             m = $('<div class="ui-mask"></div>').appendTo('body');
-            console.log('m', $(window).width());
-            console.log('m', $(document).height());
-            m.css({ width :100, height : $(document).height() });
+            m.css({ width :$(window).width(), height : $(document).height() });
+        },
+        // 绑定事件
+        close : function(){
+            var defaults = this.defaults,
+                handler = this.handler,
+                pop = this.pop;
+
         }
     }
 }(window, Jing));
