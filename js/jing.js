@@ -151,8 +151,8 @@
             }
         },
 
-        each : function(callback){
-            return $.each(this, callback);
+        each : function(callback, args){
+            return $.each(this, callback, args);
         },
         map : function(callback){
             return this.pushStack($.map(this, function(elem, i){
@@ -347,7 +347,9 @@
          */
         camelCase : function(string){
             return string.replace(rmsPrefix, 'ms-').replace(rdashAlpha, _.fcamelCase);
-        }
+        },
+        // 全局计数器对象
+        guid : 1
     });
 
     /**
@@ -828,8 +830,30 @@
     // 事件
     $.event = {
         global : {},
-        add : function(){
+        add : function(elem, types, hanlder, data, selector){
+            var t,
+                tmp,
+                events,
+                elemData = $._data(elem),
+                eventHandle;
 
+            if(!handler.guid){
+                handler.guid = $.guid++;
+            }
+
+            if(!(events = elemData.events)){
+                events = elemData.events = {};
+            }
+
+            if(!(eventHandle = elemData.handle)){
+                eventHandle.elem = elem;
+            }
+
+            types = (types || '').match(rnotwhite) || [''];
+            t = types.length;
+            while(t--){
+
+            }
         },
         remove : function(){
 
@@ -850,9 +874,25 @@
         
     }
 
+    _.returnTrue = function(){
+        return true;
+    }
+    _.returnFalse = function(){
+        return false;
+    }
     $.fn.extend({
-        on : function(){
-            
+        on : function(types, selector, data, fn, one){
+            var type,
+                origFn;
+
+            if(data == null && fn == null){
+                fn = selector;
+                data = selector = undefined;
+            }
+
+            return this.each(function(){
+                $.event.add(this, types, fn, data, selector);
+            });
         },
         one : function(){
 
@@ -868,6 +908,21 @@
         }
     });
 
+    _.internalData = function(elem, name, data, pvt){
+        
+    }
+    // 缓存
+    $.extend({
+        cache : {},
+        _data : function(elem, name, data){
+
+        }
+    });
+
+    $.fn.extend({
+
+    });
+
 }(window));
 
 // 2014-04-21 : 准备开发第一版
@@ -877,4 +932,4 @@
 // 2014-05-06 : 增加$.browser方法
 // 2014-05-07 : 增加$().appendTo,$().prependTo等方法，增加$().html();
 // 2014-05-08 : 增加$().css({ color : 'red' }), $(window).width,height(), $(document).width,height();
-// 2014-05-09 : 增加$().width()方法;
+// 2014-05-09 : 增加$().width()方法, event first;
