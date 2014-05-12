@@ -13,6 +13,7 @@
         concat = arr.concat,
         push = arr.push,
         indexOf = arr.indexOf,// js 1.6新增加的方法
+        version = '1.0',
         class2type = {},
         toString = class2type.toString,
         hasOwn = class2type.hasOwnProperty,
@@ -40,7 +41,7 @@
     }
     
     $.fn = $.prototype = {
-        jing : '1.0',
+        jing : version,
         constructor : $,
         sort : arr.sort,
         push : push,
@@ -222,6 +223,8 @@
 
     // 常用工具方法
     $.extend({
+        // 非重复标志位
+        expando : 'Jing' + (version + Math.random()).replace(/\D/g, ''),
         // 空函数快捷方式
         noop : function(){},
         isFunction : function(obj){
@@ -373,14 +376,18 @@
             for(i in key){
                 _.access(elems, fn, i, key[i], true, emptyGet, raw);
             }
-        } else if(value !== undefined){
+        } else if(value !== undefined){ // 设置data，即set
             chainable = true;
 
             if(!$.isFunction(value)){
-                raw = true;
+                raw = true; // value不是函数，则raw设为true
+            }
+            
+            if(bulk){ // data操作时必然true
+                
             }
 
-            if(fn){
+            if(fn){ // fn存在，开始正式执行fn
                 for(; i < length; i++){
                     fn(elems[i], key, raw ? value : value.call(elems[i], i, fn(elems[i], key)));
                 }
@@ -908,19 +915,130 @@
         }
     });
 
+    /**
+     * 缓存内部方法
+     * @param elem
+     * @param name
+     * @param data
+     * @param pvt Jing内部参数
+     * @returns {*}
+     */
     _.internalData = function(elem, name, data, pvt){
+        var ret,
+            thisCache,
+            internalKey = $.expando,
+            isNode = elem.nodeType,
+            cache = isNode ? $.cache : elem,
+            id = isNode ? elem[internalKey] : elem[internalKey] && internalKey;
+
+        if(!id){
+            if(isNode){
+                id = elem[internalKey] = arr.pop() || $.guid++;
+            } else {
+                id = internalKey;
+            }
+        }
         
+        if(!cache[id]){
+            cache[id] = isNode ? {} : { toJSON : $.noop };
+        }
+
+        thisCache = cache[id];
+
+        if(!pvt){
+            if(!thisCache.data){
+                thisCache.data = {};
+            }
+
+            thisCache = thisCache.data;
+        }
+
+        if(data !== undefined){
+            thisCache[$.camelCase(name)] = data;
+        }
+        
+        if(typeof name === 'string'){
+            ret = thisCache[name];
+
+            if(ret === null){
+                ret = thisCache[$.camelCase(name)];
+            }
+        } else {
+            ret = thisCache;
+        }
+
+        return ret;
+    }
+    /**
+     * 清除缓存数据
+     * @param elem
+     * @param name
+     * @param pvt
+     * @returns {*}
+     */
+    _.internalRemoveData = function(elem, name, pvt){
+        var ret;
+
+        return ret;
     }
     // 缓存
     $.extend({
         cache : {},
+        data : function(elem, name, data){
+            return _.internalData(elem, name, data);
+        },
         _data : function(elem, name, data){
-
+            return _.internalData(elem, name, data, true);
+        },
+        removeData : function(elem, name){
+            return _.internalRemoveData(elem, name);
+        },
+        _removeData : function(elem, name){
+            return _.internalRemoveData(elem, name, true);
         }
     });
 
-    $.fn.extend({
+    /**
+     * 获取html5 [data-key] 值
+     * @param elem
+     * @param key
+     * @param data
+     */
+    _.dataAttr = function(elem, key, data){
 
+    }
+    $.fn.extend({
+        data : function(key, value){
+            var i,
+                name,
+                data,
+                elem = this[0],
+                attrs = elem && elem.attributes;
+
+            // key不存在，即为取值
+            if(key === undefined){
+                
+            }
+
+            // key是对象，则递归set所有键值对
+            if(typeof key === 'object'){
+                return this.each(function(){
+                    $.data(this, key);
+                });
+            }
+
+            return arguments.length > 1 ?
+                this.each(function(){
+                    $.data(this, key, value)
+                }) :
+                elem ? $.data(elem, key) : undefined;
+//                elem ? _.dataAttr(elem, key, $.data(elem, key)) : undefined;
+        },
+        removeData : function(key){
+            return this.each(function(){
+                $.removeData(this, key);
+            });
+        }
     });
 
 }(window));
@@ -933,3 +1051,4 @@
 // 2014-05-07 : 增加$().appendTo,$().prependTo等方法，增加$().html();
 // 2014-05-08 : 增加$().css({ color : 'red' }), $(window).width,height(), $(document).width,height();
 // 2014-05-09 : 增加$().width()方法, event first;
+// 2014-05-12 : 增加$().data(), $().removeData()方法
