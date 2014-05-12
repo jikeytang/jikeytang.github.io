@@ -837,6 +837,7 @@
     });
 
 
+    var strundefined = typeof undefined;
     // 事件
     $.event = {
         global : {},
@@ -864,6 +865,11 @@
             }
 
             if(!(eventHandle = elemData.handle)){
+                eventHandle = elemData.handle = function(e){
+                    return typeof $ !== strundefined && (!e || $.event.triggered !== e.type) ?
+                        $.event.dispatch.apply(eventHandle.elem, arguments) :
+                        undefined;
+                }
                 eventHandle.elem = elem;
             }
 
