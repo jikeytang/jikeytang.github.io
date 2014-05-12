@@ -185,6 +185,9 @@
 
             return -1;
         },
+        now : function(){
+            return +(new Date());
+        },
         support : support
     }
 
@@ -837,6 +840,14 @@
     // 事件
     $.event = {
         global : {},
+        /**
+         * 给选中元素注册事件处理程序
+         * @param elem
+         * @param types
+         * @param hanlder
+         * @param data
+         * @param selector
+         */
         add : function(elem, types, hanlder, data, selector){
             var t,
                 tmp,
@@ -868,11 +879,35 @@
         trigger : function(){
 
         },
+        /**
+         * 分派(执行)事件处理函数
+         */
         dispatch : function(){
 
+        },
+        /**
+         * 组装事件处理器队列
+         * 用来区分原生与委托事件
+         * @param event
+         * @param handlers
+         */
+        handlers : function(event, handlers){
+
+        },
+        /**
+         * fix修正Event对象
+         * 将原生的事件对象 event 修正为一个 可以读读写event 对象，并对该 event 的属性以及方法统一接口
+         * @param event
+         */
+        fix : function(event){
+            
         }
     }
 
+    /**
+     * 构造函数创建可读写的 jQuery事件对象 event， 该对象即可以是原生事件对象 event 的增强版，也可以是用户自定义事件
+     * @constructor
+     */
     $.Event = function(){
         
     }
@@ -887,7 +922,17 @@
     _.returnFalse = function(){
         return false;
     }
+
     $.fn.extend({
+        /**
+         * 事件绑定总入口
+         * @param types 绑定类型
+         * @param selector 选择器
+         * @param data 传递数据
+         * @param fn 事件处理函数
+         * @param one
+         * @returns {*}
+         */
         on : function(types, selector, data, fn, one){
             var type,
                 origFn;
@@ -981,6 +1026,7 @@
 
         return ret;
     }
+
     // 缓存
     $.extend({
         cache : {},
