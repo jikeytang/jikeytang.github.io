@@ -47,15 +47,20 @@
                 defaults = this.defaults,
                 handler = this.handler;
 
-            m = $('<div class="ui-mask"></div>').appendTo('body');
+            this.mask = m = $('<div class="ui-mask"></div>').appendTo('body');
             m.css({ width :$(window).width(), height : $(document).height() });
         },
         // 绑定事件
         close : function(){
             var defaults = this.defaults,
                 handler = this.handler,
+                mask = this.mask,
                 pop = this.pop;
 
+            pop.on('click', function(){
+                $(this).hide();
+                mask.hide();
+            });
         }
     }
 }(window, Jing));

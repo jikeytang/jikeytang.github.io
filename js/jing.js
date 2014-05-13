@@ -836,8 +836,14 @@
         });
     });
 
-
     var strundefined = typeof undefined;
+
+    var rformElems = /^(?:input|select|textarea)$/i,
+        rkeyEvent = /^key/,
+        rmouseEvent = /^(?:mouse|contextmenu)|click/,
+        rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
+        rtypenamespace = /^([^.]*)(?:\.(.+)|)$/;
+
     // 事件
     $.event = {
         global : {},
@@ -849,14 +855,28 @@
          * @param data
          * @param selector
          */
-        add : function(elem, types, hanlder, data, selector){
+        add : function(elem, types, handler, data, selector){
             var t,
                 tmp,
+                type,
                 events,
-                elemData = $._data(elem),
-                eventHandle;
+                handlers,
+                origType,
+                handleObj,
+                namespaces,
+                handleObjIn,
+                elemData = $._data(elem), // 1. 在$.cahce缓存中获取存储的事件句柄对象，如果没就新建elemData
+                eventHandle; // 不仅仅只是只是充当一个回调函数的角色，而是一个实现了EventListener接口的对象
 
+            if(handler.handler){
+                handleObjIn = handler;
+                handler = handleObjIn.handler;
+                selector = handleObjIn.selector;
+            }
+            
+            // 第二步：创建编号
             if(!handler.guid){
+                // 用来寻找或者删除handler，因为这个东东是缓存在缓存对象上的，没有直接跟元素节点发生关联
                 handler.guid = $.guid++;
             }
 
@@ -864,6 +884,7 @@
                 events = elemData.events = {};
             }
 
+            // 第三步：分解事件名与句柄
             if(!(eventHandle = elemData.handle)){
                 eventHandle = elemData.handle = function(e){
                     return typeof $ !== strundefined && (!e || $.event.triggered !== e.type) ?
@@ -873,11 +894,51 @@
                 eventHandle.elem = elem;
             }
 
+            // 第四步: 填充事件名与事件句柄
             types = (types || '').match(rnotwhite) || [''];
             t = types.length;
             while(t--){
+                tmp = rtypenamespace.exec(types[t]) || [];
+                type = origType = tmp[1];
+                namespaces = (tmp[2] || '').split('.').sort();
 
+                if(!type){
+                    continue;
+                }
+
+                handleObj = $.extend({
+                    type : type,
+                    origType : origType,
+                    data : data,
+                    handler : handler,
+                    guid : handler.guid,
+                    selector : selector,
+                    needsContext : selector,
+                    namespace : namespaces.join('.')
+                }, handleObjIn);
+
+                if(!(handlers = events[type])){
+                    handlers = events[type] = [];
+                    handlers.delegateCount = 0;
+
+                    if(elem.addEventListener){
+                        elem.addEventListener(type, eventHandle, false);
+                    } else if(elem.attachEvent){
+                        elem.attachEvent('on' + type, eventHandle);
+                    }
+                }
+                
+                if(selector){
+                    handlers.splice(handlers.delegateCount++, 0, handleObj);
+                } else {
+                    handlers.push(handleObj);
+                }
+
+                // 表示事件曾经使用过，用于事件优化
+                $.event.global[type] = type;
             }
+
+            elem = null;
         },
         remove : function(){
 
@@ -888,7 +949,19 @@
         /**
          * 分派(执行)事件处理函数
          */
-        dispatch : function(){
+        dispatch : function(event){
+            var i,
+                j,
+                args = slice.call(arguments),
+                handlerQueue = [],
+                handlers = ($._data(this, 'events') || {})[event.type] || [],
+                handleObj;
+
+            args[0] = event;
+            event.delegateTarget = this;
+
+            handlerQueue = $.event.handlers.call(this, event, handlers);
+            handlers[0].handler.apply(handlerQueue[0].elem, args);
 
         },
         /**
@@ -898,7 +971,14 @@
          * @param handlers
          */
         handlers : function(event, handlers){
+            var handleQueue = [],
+                delegateCount = handlers.delegateCount;
 
+            if(delegateCount < handlers.length){
+                handleQueue.push({ elem : this, handlers : handlers.slice(delegateCount) });
+            }
+
+            return handleQueue;
         },
         /**
          * fix修正Event对象
@@ -906,28 +986,25 @@
          * @param event
          */
         fix : function(event){
-            
-        }
+            if(event[Jing.expando]){
+                return event;
+            }
+
+            var i,
+                prop,
+                copy,
+                type = event.type,
+                originalEvent = event,
+                fixHook = this.fixHooks[type];
+
+            if(!fixHook){
+
+            }
+
+        },
+        fixHooks : {}
     }
 
-    /**
-     * 构造函数创建可读写的 jQuery事件对象 event， 该对象即可以是原生事件对象 event 的增强版，也可以是用户自定义事件
-     * @constructor
-     */
-    $.Event = function(){
-        
-    }
-    
-    $.Event.prototype = {
-        
-    }
-
-    _.returnTrue = function(){
-        return true;
-    }
-    _.returnFalse = function(){
-        return false;
-    }
 
     $.fn.extend({
         /**
@@ -943,12 +1020,18 @@
             var type,
                 origFn;
 
-            if(data == null && fn == null){
+            if(data == null && fn == null){ // 以 on('click', fn)方式调用
                 fn = selector;
                 data = selector = undefined;
             }
+            
+            if(fn === false){
+                fn = _.returnFalse;
+            } else if(!fn) {
+                return this;
+            }
 
-            return this.each(function(){
+            return this.each(function(){ // 对所有elem进行处理，比如$('#a,.a'),
                 $.event.add(this, types, fn, data, selector);
             });
         },
@@ -965,6 +1048,25 @@
             
         }
     });
+
+    /**
+     * 构造函数创建可读写的 jQuery事件对象 event， 该对象即可以是原生事件对象 event 的增强版，也可以是用户自定义事件
+     * @constructor
+     */
+    $.Event = function(){
+
+    }
+
+    $.Event.prototype = {
+
+    }
+
+    _.returnTrue = function(){
+        return true;
+    }
+    _.returnFalse = function(){
+        return false;
+    }
 
     /**
      * 缓存内部方法
@@ -1081,7 +1183,7 @@
 
             return arguments.length > 1 ?
                 this.each(function(){
-                    $.data(this, key, value)
+                    $.data(this, key, value);
                 }) :
                 elem ? $.data(elem, key) : undefined;
 //                elem ? _.dataAttr(elem, key, $.data(elem, key)) : undefined;
@@ -1092,6 +1194,22 @@
             });
         }
     });
+
+    $.fn.show = function(){
+        this.css({ display : 'block' });
+    }
+
+    $.fn.hide = function(){
+        this.css({ display : 'none' });
+    }
+
+    /*
+    $.each(['toggle', 'show', 'hide'], function(i, name){
+        $.fn[name] = function(){
+            $(this).css({ display : 'none' })
+        }
+    });
+    */
 
 }(window));
 
@@ -1104,3 +1222,4 @@
 // 2014-05-08 : 增加$().css({ color : 'red' }), $(window).width,height(), $(document).width,height();
 // 2014-05-09 : 增加$().width()方法, event first;
 // 2014-05-12 : 增加$().data(), $().removeData()方法
+// 2014-05-13 : 增加$().event.dispatch方法

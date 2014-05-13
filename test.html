@@ -11,11 +11,11 @@
 <div id="test" style="width:100px;">test</div>
 <div class="a">aa</div>
 <div class="a">bbb</div>
+<input id="btn" type="button" value="test-click"/>
 <script type="text/javascript">
-    $('#test').data('name', 'jikey');
-    var a = $('#test').data('name');
-    console.log(a);
-
+    $('#btn').on('click', function(){
+        console.log('click');
+    });
 </script>
 </body>
 </html>
