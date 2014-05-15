@@ -159,11 +159,7 @@
             return this.pushStack($.map(this, function(elem, i){
                 return callback.call(elem, i, elem);
             }));
-        },
-        now : function(){
-            return +(new Date());
-        },
-        support : support
+        }
     }
 
     $.fn.init.prototype = $.fn;
@@ -371,7 +367,11 @@
             return string.replace(rmsPrefix, 'ms-').replace(rdashAlpha, _.fcamelCase);
         },
         // 全局计数器对象
-        guid : 1
+        guid : 1,
+        now : function(){
+            return +(new Date());
+        },
+        support : support
     });
 
     /**
