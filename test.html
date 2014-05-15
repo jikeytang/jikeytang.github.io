@@ -6,6 +6,9 @@
     <!--<script type="text/javascript" src="js/common.js"></script>-->
     <!--<script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.8.3/jquery.min.js"></script>-->
     <script type="text/javascript" src="js/jing.js"></script>
+    <style type="text/css">
+        .a{}
+    </style>
 </head>
 <body>
 <div id="test" style="width:100px;">test</div>
@@ -13,9 +16,11 @@
 <div class="a">bbb</div>
 <input id="btn" type="button" value="test-click"/>
 <script type="text/javascript">
-    $('#btn').on('click', function(){
-        console.log('click');
+    $("#test").queue(function () {
+        $(this).addClass("newcolor");
+        $(this).dequeue();
     });
+
 </script>
 </body>
 </html>

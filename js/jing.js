@@ -160,31 +160,6 @@
                 return callback.call(elem, i, elem);
             }));
         },
-        /**
-         * 确定elem在数组中的位置，从0开始计数(如果没有找到则返回 -1 )。
-         * @param elem
-         * @param arr
-         * @param i 开始位置
-         */
-        inArray : function(elem, arr, i){
-            var len;
-
-            if(arr){
-                if(indexOf){
-                    return indexOf.call(elem, arr, i);
-                }
-
-                len = arr.length;
-                i = i ? i < 0 ? Math.max(0, len + i) : i : 0;
-                for( ; i < len; i++){
-                    if(i in arr && arr[i] == elem){
-                        return i;
-                    }
-                }
-            }
-
-            return -1;
-        },
         now : function(){
             return +(new Date());
         },
@@ -269,6 +244,47 @@
             }
 
             return obj;
+        },
+        makeArray : function(arr, results){
+            var ret = results || [];
+
+            if(arr != null){
+                if(_.isArraylike(Object(arr))){
+                    $.merge(ret,
+                        typeof arr === 'string' ?
+                        [arr] : arr
+                    );
+                } else {
+                    push.call(ret, arr);
+                }
+            }
+
+            return ret;
+        },
+        /**
+         * 确定elem在数组中的位置，从0开始计数(如果没有找到则返回 -1 )。
+         * @param elem
+         * @param arr
+         * @param i 开始位置
+         */
+        inArray : function(elem, arr, i){
+            var len;
+
+            if(arr){
+                if(indexOf){
+                    return indexOf.call(elem, arr, i);
+                }
+
+                len = arr.length;
+                i = i ? i < 0 ? Math.max(0, len + i) : i : 0;
+                for( ; i < len; i++){
+                    if(i in arr && arr[i] == elem){
+                        return i;
+                    }
+                }
+            }
+
+            return -1;
         },
         /**
          * 合并两个参数
@@ -1360,7 +1376,106 @@
         return self;
     }
 
+    // 队列方法
+    $.extend({
+        queue : function(elem, type, data){
+            var queue;
+            
+            if(elem){
+                type = (type || 'fx') + 'queue';
+                queue = $._data(elem, type);
 
+                if(data){
+                    if(!queue || $.isArray(data)){
+                        queue = $._data(elem, type, $.makeArray(data));
+                    } else {
+                        queue.push(data);
+                    }
+                }
+
+                return queue || [];
+            }
+        },
+        dequeue : function(elem, type){
+            type = type || 'fx';
+
+            var queue = $.queue(elem, type),
+                startLength = queue.length,
+                fn = queue.shift(),
+                hooks = $._queueHooks(elem, type),
+                next = function(){
+                    $.dequeue(elem, type);
+                };
+            
+            if(fn === 'inprogress'){
+                fn = queue.shift();
+                startLength--;
+            }
+            
+            if(fn){
+                if(type == 'fx'){
+                    queue.unshift('inprogress');
+                }
+
+                delete hooks.stop;
+                fn.call(elem, next, hooks);
+            }
+            
+            if(!startLength && hooks){
+                hooks.empty.fire();
+            }
+        },
+        _queueHooks : function(elem, type){
+            var key = type + 'queueHooks';
+
+            return $._data(elem, key) || $._data(elem, key, {
+                empty : $.Callbacks('once memory').add(function(){
+                    $._removeData(elem, type + 'queue');
+                    $._removeData(elem, key);
+                })
+            });
+        }
+    });
+
+    // 队列公共方法
+    $.fn.extend({
+        queue : function(type, data){
+            var setter = 2;
+            
+            if(typeof type !== 'string'){
+                data = type;
+                type = 'fx';
+                setter--;
+            }
+
+            if(arguments.length < setter){
+                return $.queue(this[0], type);
+            }
+
+            return data === undefined ?
+                this :
+                this.each(function(){
+                    var queue = $.queue(this, type, data);
+
+                    $._queueHooks(this, type);
+                    
+                    if(type === 'fx' && queue[0] !== 'inprogress'){
+                        $.dequeue(this, type);
+                    }
+                });
+        },
+        dequeue : function(type){
+            return this.each(function(){
+                $.dequeue(this, type);
+            });
+        },
+        clearQueue : function(type){
+            return this.queue(type || 'fx', []);
+        },
+        promise : function(){
+            
+        }
+    });
 
 }(window));
 
@@ -1375,3 +1490,4 @@
 // 2014-05-12 : 增加$().data(), $().removeData()方法
 // 2014-05-13 : 增加$().event.dispatch方法
 // 2014-05-14 : 增加$().CallBacks()方法
+// 2014-05-15 : 增加$().queue()方法
