@@ -159,6 +159,24 @@
             return this.pushStack($.map(this, function(elem, i){
                 return callback.call(elem, i, elem);
             }));
+        },
+        slice : function(){
+            return this.pushStack(slice.apply(this, arguments));
+        },
+        first : function(){
+            return this.eq(0);
+        },
+        last : function(){
+            return this.eq(-1);
+        },
+        eq : function(i){
+            var len = this.length,
+                j = +i + (i < 0 ? len : 0);
+
+            return this.pushStack(j >= 0 && j < len ? [this[j]] : []);
+        },
+        end : function(){
+            return this.prevObject || this.constructor(null);
         }
     }
 
@@ -1491,3 +1509,4 @@
 // 2014-05-13 : 增加$().event.dispatch方法
 // 2014-05-14 : 增加$().CallBacks()方法
 // 2014-05-15 : 增加$().queue()方法
+// 2014-05-16 : 增加$().first,end,eq,last方法
