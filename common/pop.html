@@ -7,29 +7,13 @@
     <meta name="keywords" content="豪情-前端开发"/>
     <meta name="description" content="豪情-前端开发"/>
     <link rel="stylesheet" type="text/css" href="../css/common.css"/>
-    <!--<link rel="stylesheet" type="text/css" href="../css/main.css"/>-->
+    <link rel="stylesheet" type="text/css" href="../css/pop.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/demo.css"/>
     <link rel="stylesheet" type="text/css" href="../css/jkcodecolor.css"/>
     <link rel="shortcut icon" href="images/favicon.ico"/>
-    <script type="text/javascript" src="../js/jing.js"></script>
+    <script type="text/javascript" src="../js/libs/libs.js"></script>
     <script type="text/javascript" src="../js/libs/highlight.js"></script>
     <script type="text/javascript" src="../js/libs/lang-js.js"></script>
-    <script type="text/javascript" src="../js/pop.js"></script>
-    <style type="text/css">
-        html,body{ height:100%;background: #f1f1f1;}
-        .main{ width:700px;line-height:23px;margin:20px 0 20px 200px;border-radius:10px;border:solid #ccc 1px;box-shadow:0 0 8px rgba(0,0,0,.3);}
-        .cont{ width:100%; height:100%;background: #fff;border-radius:10px;}
-        .section{ padding:25px;}
-        .section h1{ font-size:16px; font-weight:normal; font-family:'微软雅黑';}
-        .section h2{ font-size:16px; font-weight:normal; font-family:'微软雅黑';}
-        .overlay{ position:absolute;width:100%;height:100%;background:#373938;top:0;left:0;display:none;filter:alpha(opacity=70);opacity:0.7;-moz-border-radius:10px;-webkit-border-radius:10px;border-radius:10px;border:solid #c79d5f 1px;}
-        .list{ padding-top:15px;}
-        .list li{list-style:decimal inside; }
-        .list li pre{background: #333;}
-        .code{display:none;height:1px;overflow:hidden;}
-        .btn{ padding:0 5px; cursor:pointer;}
-        .tab{border-collapse:collapse;border:1px solid #ccc;}
-        .tab td{border:1px solid #ccc;padding:5px;}
-    </style>
 </head>
 <body>
 <div class="wrap">
@@ -39,47 +23,65 @@
                 <h1>这是一个简单的弹出层组件，为了演示方便，做了一些特殊的处理。</h1>
                 <ol class="list">
                     <li>
-                        <span>普通的字面量传值，主题：默认风格</span>
+                        <span>普通的click弹出页面指定内容，callOpen,callClose</span>
                         <textarea class="code">
-new Jing.uiwindow({
-    title     : '标题',
-    content   : '这是一个示例内容',
-    callClose : function(){
-        alert('我已经被关闭！');
-    }
+$('#btn01').on('click',function(){
+    var d = new $.pop({
+        title     : '标题',
+        content   : $('#btncontent1').html(),
+        callOpen : function(){
+            setTimeout(function(){
+                alert('open');
+            },500);
+        },
+        callClose : function(){
+            alert('close');
+        }
+    });
 });
                         </textarea>
                         <pre></pre>
+                        <div id="btncontent1" class="none">
+                            <div>test</div>
+                            <p>春江潮水连海平，海上明月共潮生。</p>
+                        </div>
                         <p align="right">
                             <input id="btn01" class="btn" type="submit" value="点击运行">
                         </p>
                         <script type="text/javascript">
-                            var btn = Jing.id('btn01');
-                            btn.onclick = function(){
-                                new Jing.pop({
+                            $('#btn01').on('click',function(){
+                                var d = new $.pop({
                                     title     : '标题',
-                                    content   : '这是一个示例内容',
+                                    content   : $('#btncontent1').html(),
+                                    callOpen : function(){
+                                        setTimeout(function(){
+                                            alert('open');
+                                        },500);
+                                    },
                                     callClose : function(){
-
+                                        alert('close');
                                     }
                                 });
-                            }
+                            });
+
                         </script>
                     </li>
                     <li>
-                        <span>传入一般的HTML元素，主题：WIN7风格</span>
-                        <div id="testcont">《精通js》这本书，承载了众多jqer期待的梦，结果可想而知。</div>
+                        <span>遮罩的控制。</span>
+                        <div id="testcont" class="none">《精通js》这本书，承载了众多jqer期待的梦，结果可想而知。</div>
                         <textarea class="code">
-new Jing.uiwindow({
-    pattern  : 'aero',  // WIN7风格
-    title    : '标题',
-    content  : document.getElementById('testcont').innerHTML,
-    callOpen : function(){
-        document.getElementById('testcont').style.display = 'none';
-    },
-    callClose: function(){
-        document.getElementById('testcont').style.display = 'block';
-    }
+$('#btn02').click(function(){
+    new $.pop({
+        title    : '标题',
+        mask : 0,
+        content  : document.getElementById('testcont').innerHTML,
+        callOpen : function(){
+            document.getElementById('testcont').style.display = 'none';
+        },
+        callClose: function(){
+            document.getElementById('testcont').style.display = 'block';
+        }
+    });
 });
                         </textarea>
                         <pre></pre>
@@ -87,11 +89,10 @@ new Jing.uiwindow({
                             <input id="btn02" class="btn" type="submit" value="点击运行">
                         </p>
                         <script type="text/javascript">
-                            var btn02 = Jing.id('btn02');
-                            btn02.onclick = function(){
-                                new Jing.uiwindow({
-                                    pattern  : 'aero', // WIN7风格
+                            $('#btn02').click(function(){
+                                new $.pop({
                                     title    : '标题',
+                                    mask : 0,
                                     content  : document.getElementById('testcont').innerHTML,
                                     callOpen : function(){
                                         document.getElementById('testcont').style.display = 'none';
@@ -100,66 +101,70 @@ new Jing.uiwindow({
                                         document.getElementById('testcont').style.display = 'block';
                                     }
                                 });
-                            }
+                            });
                         </script>
                     </li>
                     <li>
-                        <span>弹出后，通过外部方法关闭，主题：MAC风格</span>
+                        <span>弹出后，通过外部方法关闭</span>
                         <textarea class="code">
-                            new Jing.uiwindow({
-                            pattern  : 'mac', // mac风格
-                            title    : '标题',
-                            content  :  '<input type="button" id="firstBtn" value="通过外部方法关闭" />',
-                            callOpen : function(){
-                            var me      = this,
-                            btn     = document.getElementById('firstBtn');
-                            btn.onclick = function(){
-                            me.close();
-                            }
-                            }
-                            });
+$('#btn03').click(function(){
+    var d = new $.pop({
+        pattern  : 'mac', // mac风格
+        title    : '标题',
+        content  : '<input type="button" id="firstBtn" value="通过外部方法关闭" />',
+        callOpen : function(){
+            var me      = this,
+                btn     = me.pop.find('#firstBtn');
+            btn.click(function(){
+                console.log(me);
+                me.close();
+            });
+        }
+    });
+});
                         </textarea>
                         <pre></pre>
                         <p align="right">
                             <input id="btn03" class="btn" type="submit" value="点击运行">
                         </p>
                         <script type="text/javascript">
-                            var btn03 = Jing.id('btn03');
-                            btn03.onclick = function(){
-                                new Jing.uiwindow({
+                            $('#btn03').click(function(){
+                                var d = new $.pop({
                                     pattern  : 'mac', // mac风格
                                     title    : '标题',
                                     content  :  '<input type="button" id="firstBtn" value="通过外部方法关闭" />',
                                     callOpen : function(){
-                                        var me     = this,
-                                                btn     = document.getElementById('firstBtn');
-                                        btn.onclick = function(){
+                                        var me      = this,
+                                            btn     = me.pop.find('#firstBtn');
+                                        btn.click(function(){
+                                            console.log(me);
                                             me.close();
-                                        }
+                                        });
                                     }
                                 });
-                            }
+                            });
                         </script>
                     </li>
                     <li>
                         <span>弹出窗中窗，以字面量方式传值,主题：blue风格</span>
                         <textarea class="code">
-                            new Jing.uiwindow({
-                            pattern  : 'blue', // blue风格
-                            title    : '标题',
-                            content  : document.getElementById('testcontent'),
-                            callOpen : function(){
-                            var subBtn = document.getElementById('subBtn');
-                            subBtn.onclick = function(){
-                            new Jing.uiwindow({
-                            title  : '我是新弹出的小窗口',
-                            content: '新弹出小窗口的测试内容',
-                            width  : 200,
-                            height : 200
-                            });
-                            }
-                            }
-                            });
+$('#btn04').click(function(){
+    new $.pop({
+        title  : '标题',
+        content : '<input id="smallWin" type="submit" value="再来一个小窗口" />',
+        width : 200,
+        callOpen : function(){
+            var subBtn     = this.pop.find('#smallWin');
+            subBtn.click(function(){
+                new $.pop({
+                    title  : '我是新弹出的小窗口',
+                    content: '新弹出小窗口的测试内容',
+                    height : 250
+                });
+            });
+        }
+    });
+});
                         </textarea>
                         <pre></pre>
                         <div id="testcontent" class="testtab" style="display:none;">
@@ -181,112 +186,110 @@ new Jing.uiwindow({
                             <input id="btn04" class="btn" type="submit" value="点击运行">
                         </p>
                         <script type="text/javascript">
-                            var btn04 = Jing.id('btn04');
-
-                            btn04.onclick = function(){
-                                new Jing.uiwindow({
-                                    pattern  : 'blue', // blue风格
+                            $('#btn04').click(function(){
+                                new $.pop({
                                     title    : '标题',
                                     content  : '<input id="smallWin" type="submit" value="再来一个小窗口" />',
+                                    width : 200,
                                     callOpen : function(){
-                                        var subBtn     = document.getElementById('smallWin');
-                                        console.log(subBtn);
-                                        subBtn.onclick = function(){
-                                            new Jing.uiwindow({
-                                                pattern: 'blue', // blue风格
+                                        var subBtn     = this.pop.find('#smallWin');
+                                        subBtn.click(function(){
+                                            new $.pop({
                                                 title  : '我是新弹出的小窗口',
                                                 content: '新弹出小窗口的测试内容',
-                                                width  : 200,
-                                                height : 200
+                                                height : 250
                                             });
-                                        }
+                                        });
                                     }
                                 });
-                            }
+                            });
                         </script>
                     </li>
                     <li>
                         <span>标题栏设置，主题：无风格</span>
                         <textarea class="code">
-                            new Jing.uiwindow({
-                            title    : false, // 没有标题栏
-                            content  :  '<input type="button" id="secondBtn" value="通过外部方法关闭" />',
-                            callOpen : function(){
-                            var me      = this,
-                            btn     = document.getElementById('secondBtn');
-                            btn.onclick = function(){
-                            me.close();
-                            }
-                            }
-                            });
+$('#btn05').click(function(){
+    new $.pop({
+        title    : false, // 没有标题栏
+        content  : '<input type="button" id="secondBtn" value="通过外部方法关闭" />',
+        callOpen : function(){
+            var me = this,
+                btn = this.pop.find('#secondBtn');
+            console.log(btn);
+            btn.click(function(){
+                me.close();
+            });
+        }
+    });
+});
                         </textarea>
                         <pre></pre>
                         <p align="right">
                             <input id="btn05" class="btn" type="submit" value="点击运行">
                         </p>
                         <script type="text/javascript">
-                            var btn05 = Jing.id('btn05');
-                            btn05.onclick = function(){
-                                new Jing.uiwindow({
+                            $('#btn05').click(function(){
+                                new $.pop({
                                     title    : false, // 没有标题栏
-                                    content  :  '<input type="button" id="secondBtn" value="通过外部方法关闭" />',
+                                    content  : '<input type="button" id="secondBtn" value="通过外部方法关闭" />',
                                     callOpen : function(){
-                                        var me      = this,
-                                                btn     = document.getElementById('secondBtn');
-                                        btn.onclick = function(){
+                                        var me = this,
+                                            btn = this.pop.find('#secondBtn');
+                                        console.log(btn);
+                                        btn.click(function(){
                                             me.close();
-                                        }
+                                        });
                                     }
                                 });
-                            }
+                            });
                         </script>
                     </li>
                     <li>
                         <span>拖动设置，主题：绿色风格</span>
                         <textarea class="code">
-                            new Jing.uiwindow({
-                            pattern  : 'green', // 绿色风格
-                            isDrag   : false,   // 不能拖动
-                            content  : document.getElementById('testcont').innerHTML
-                            });
+$('#btn06').click(function(){
+    new $.pop({
+        content  : document.getElementById('testcont').innerHTML,
+        isDrag   : false    // 不能拖动
+    });
+});
                         </textarea>
                         <pre></pre>
                         <p align="right">
                             <input id="btn06" class="btn" type="submit" value="点击运行">
                         </p>
                         <script type="text/javascript">
-                            var btn06 = Jing.id('btn06');
-                            btn06.onclick = function(){
-                                new Jing.uiwindow({
-                                    pattern  : 'green', // 绿色风格
+                            $('#btn06').click(function(){
+                                new $.pop({
                                     content  : document.getElementById('testcont').innerHTML,
                                     isDrag   : false    // 不能拖动
                                 });
-                            }
+                            });
                         </script>
                     </li>
                     <li>
                         <span>遮罩设置，主题：橙色风格</span>
                         <textarea class="code">
-                            new Jing.uiwindow({
-                            pattern  : 'orange', // 橙色风格
-                            isMask   : false,    // 没有遮罩
-                            content  : document.getElementById('testcont').innerHTML
-                            });
+$('#btn07').click(function(){
+    new $.pop({
+        pattern  : 'orange', // 橙色风格
+        mask   : false,    // 没有遮罩,
+        content  : document.getElementById('testcont').innerHTML
+    });
+});
                         </textarea>
                         <pre></pre>
                         <p align="right">
                             <input id="btn07" class="btn" type="submit" value="点击运行">
                         </p>
                         <script type="text/javascript">
-                            var btn07 = Jing.id('btn07');
-                            btn07.onclick = function(){
-                                new Jing.uiwindow({
+                            $('#btn07').click(function(){
+                                new $.pop({
                                     pattern  : 'orange', // 橙色风格
-                                    isMask   : false,    // 没有遮罩,
+                                    mask   : false,    // 没有遮罩,
                                     content  : document.getElementById('testcont').innerHTML
                                 });
-                            }
+                            });
                         </script>
                     </li>
                 </ol>
@@ -296,9 +299,7 @@ new Jing.uiwindow({
         <div class="overlay"></div>
     </div>
 </div>
-<script type="text/javascript" src="../js/demo.js"></script>
-<script type="text/javascript">
-
-</script>
+<script type="text/javascript" src="../js/init/pop.init.js"></script>
+<!--<script type="text/javascript" src="../js/demo.js"></script>-->
 </body>
 </html>

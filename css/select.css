@@ -1,0 +1,9 @@
+.ui-select{ position:relative; height:22px; line-height:22px;background: #fafafa; border:1px solid #ddd; border-top-color:#eee;border-bottom: 1px solid #b7b7b7;cursor: pointer; display:inline-block;}
+.ui-select:hover{ border:1px solid #09e;}
+.ui-select-icon{position:absolute;right:4px;top:50%;margin-top:-2px;border-top:5px solid #A7A7A7;border-left:5px dashed transparent;border-right:5px dashed transparent;border-bottom:0 none;display:block;width:0;height:0;overflow:hidden;line-height:0;font-size:0;}
+.ui-select-down{}
+.ui-select-list{position:relative;overflow-y:auto;overflow-x:hidden;border:1px solid #ccc;font-family:Helvetica,arial,sans-serif;background:#FFF;border:1px solid #dcdcdc;}
+.ui-select-items{padding:8px 10px;white-space:nowrap;cursor:pointer;color:#333;background:transparent;outline:0 none;}
+
+
+

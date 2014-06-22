@@ -1,4 +1,4 @@
-.jkhightlight{border:1px solid #817168;font:10pt Andale Mono;margin:10px 0;-moz-border-radius:6px;-webkit-border-radius:6px;-webkit-box-shadow:2px 2px 5px #8a4019;-moz-box-shadow:2px 2px 5px #8a4019;word-wrap:break-word;word-break:normal;}
+.jkhightlight{border:1px solid #817168;font:10pt Andale Mono;margin:10px 0;-moz-border-radius:6px;-webkit-border-radius:6px;word-wrap:break-word;word-break:normal;}
 pre{margin:0;padding:0;}
 .jkhightlight pre{margin:0;padding:10px;overflow:hidden;font:15px/22px Consolas, Droid Sans Mono,Courier;color:#66ff66;border:1px solid #535252;-moz-border-radius:6px;-webkit-border-radius:6px;}
 .jkhightlight .keyword{color:#ffff00;}
