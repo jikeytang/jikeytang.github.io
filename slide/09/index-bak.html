@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>百度商业服务市场-轮换图片</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" media="all"/>
+</head>
+<body>
+<!--https://open2.baidu.com/-->
+<div class="wrapper">
+    <div id="index-banner">
+        <div id="box" style="width: 980px; position: relative; height: 210px; overflow: hidden;">
+            <ul style="position: absolute;top: 0;left: 0;width: 9800px;">
+                <li class="img-li-float">
+                    <a target="_blank"><img src="img/1.jpg"></a>
+                </li>
+                <li class="img-li-float">
+                    <a target="_blank"><img src="img/2.png"></a>
+                </li>
+                <li class="img-li-float">
+                    <a target="_blank"><img src="img/3.jpg"></a>
+                </li>
+                <li class="img-li-float">
+                    <a target="_blank"><img src="img/4.png"></a>
+                </li>
+                <li class="img-li-float">
+                    <a target="_blank"><img src="img/5.jpg"></a>
+                </li>
+            </ul>
+            <div id="ico" class="banner-ico-box">
+                <a class="active"></a><a class=""></a><a class=""></a><a class=""></a><a></a>
+            </div>
+            <a id="prev" class="banner-left-btn"></a><a id="next" class="banner-right-btn"></a>
+        </div>
+    </div>
+</div>
+<script>
+    (function(){
+        var box = document.getElementById('box');
+        var ul = box.getElementsByTagName('ul')[0];
+        ul.innerHTML += ul.innerHTML;
+        var li = ul.getElementsByTagName('li');
+        var len = li.length;
+        var ico = document.getElementById('ico').getElementsByTagName('a');
+        var prev = document.getElementById('prev');
+        var next = document.getElementById('next');
+        var li_w = li[0].offsetWidth;
+        var timer = null;
+        var now = 0;
+
+        ul.style.left = -li_w * (len / 2) + 'px';
+
+        function auto(){
+            now++;
+            if(now >= len / 2){
+                now = 0;
+            }
+            scroll();
+        }
+//        timer = setInterval(auto, 3000);
+
+        prev.onclick = function(){
+            if(now > 0){
+                now--;
+
+            } else {
+                now = len - 1;
+            }
+            scroll();
+        }
+        next.onclick = function(){
+            if(now < len - 1){
+                now++;
+            } else {
+                now = 0;
+            }
+            scroll();
+        }
+
+        box.onmouseover = function(){
+            clearInterval(timer);
+        }
+        box.onmouseout = function(){
+//            timer = setInterval(auto, 3000);
+        }
+
+        function scroll(){
+            act(ul, 'left', -li_w * now);
+            tab();
+        }
+
+        function tab(){
+            for(var i = 0; i < ico.length / 2; i++){
+                ico[i].className = '';
+            }
+            ico[now].className = 'active';
+        }
+
+        function css(obj, attr){
+            if(obj.currentStyle){
+                return obj.currentStyle[attr];
+            } else {
+                return getComputedStyle(obj, false)[attr];
+            }
+        }
+
+        function act(obj, attr, target, fn){
+            clearInterval(obj.timer);
+
+            obj.timer = setInterval(function(){
+                var stop = true;
+                var cur = parseInt(css(obj, attr));
+                var speed = (target - cur) / 8;
+                speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed);
+                if(cur != target){
+                    stop = false;
+                    obj.style[attr] = cur + speed + 'px';
+                }
+
+                if(stop){
+                    clearInterval(obj.timer);
+                    obj.timer = null;
+                    fn && fn();
+                }
+            }, 30);
+        }
+
+    }());
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" media="all"/>
+</head>
+<body>
+<!--http://iwan.baidu.com/mobilegame?dlfrom=&yeyouquery=&mobilebannerquery=&mobilequery=&wangyouquery=&tn=&query=%E7%88%B1%E7%8E%A9%E9%A6%96%E9%A1%B5&pvid=1409375128366036&qid=1409375128366036&sid=0&zt=self&from=self&fenlei=&hcQuery=&isid=ui%3A1%26as%3A2%26bs%3A0&fromtab=index-->
+<div id="mp-banner" class="mp-banner-slide">
+    <ul id="mpList" class="mp-banner-list">
+        <li class="item banner0">
+            <a target="_blank">
+                <img src="images/1.jpg" alt="发光武器装备，限量免费放送，等你哟！">
+                <span class="mp-line-opacity">发光武器装备，限量免费放送，等你哟！</span>
+            </a>
+        </li>
+        <li class="item banner1">
+            <a target="_blank">
+                <img src="images/2.jpg" alt="暗黑战神-极速3D动作手游">
+                <span class="mp-line-opacity">暗黑战神-极速3D动作手游</span>
+            </a>
+        </li>
+        <li class="item banner2">
+            <a target="_blank">
+                <img src="images/3.jpg" alt="传奇安卓手游，不删档内侧">
+                <span class="mp-line-opacity">传奇安卓手游，不删档内侧</span>
+            </a>
+        </li>
+        <li class="item banner3">
+            <a target="_blank">
+                <img src="images/4.jpg" alt="本年度最热门手机游戏<<放开那三国>>">
+                <span class="mp-line-opacity">本年度最热门手机游戏&lt;&lt;放开那三国&gt;&gt;</span>
+            </a>
+        </li>
+        <li class="item banner4">
+            <a target="_blank">
+                <img src="images/5.jpg" alt="最受欢迎的手机游戏<<时空猎人(街机格斗)>>">
+                <span class="mp-line-opacity">最受欢迎的手机游戏&lt;&lt;时空猎人(街机格斗)&gt;&gt;</span>
+            </a>
+        </li>
+    </ul>
+    <div id="dots" class="mp-banner-dots">
+        <a class="dot"></a>
+        <a class="dot"></a>
+        <a class="dot dot-active"></a>
+        <a class="dot"></a>
+        <a class="dot"></a>
+    </div>
+</div>
+<script>
+    (function(){
+        var box = document.getElementById('mp-banner');
+        var ul = document.getElementById('mpList');
+        var li = ul.getElementsByTagName('li');
+        var len = li.length;
+        var dots = document.getElementById('dots');
+        var dot = dots.getElementsByTagName('a');
+        var arr = [];
+        for(var i = 0; i < len; i++){
+            var item = li[i];
+            arr.push({
+                top : parseInt(css(item, 'top')),
+                left : parseInt(css(item, 'left')),
+                width : parseInt(css(item, 'width')),
+                height : parseInt(css(item, 'height')),
+                zIndex : parseInt(css(item, 'zIndex'))
+            });
+            dot[i].index = i;
+            dot[i].onmouseover = function(){
+                scroll(this.index);
+            }
+        }
+        function scroll(n){
+            tab(n);
+            var ret = center(n, arr.slice(0));
+            for(var i = 0; i < len; i++){
+                li[i].style.zIndex = ret[i].zIndex;
+                act(li[i], ret[i]);
+            }
+        }
+        function tab(n){
+            for(var i = 0; i < len; i++){
+                dot[i].className = 'dot';
+            }
+            dot[n].className += ' dot-active';
+        }
+        function center(n, arr){
+            n -= Math.floor(arr.length / 2);
+            for(var i = 0; i < Math.abs(n); i++){
+                if(n > 0){
+                    arr.push(arr.shift());
+                } else {
+                    arr.unshift(arr.pop());
+                }
+            }
+            return arr;
+        }
+        function css(obj, attr){
+            if(obj.currentStyle){
+                return obj.currentStyle[attr];
+            } else {
+                return getComputedStyle(obj, false)[attr];
+            }
+        }
+        function act(obj, json, fn){
+            clearInterval(obj.timer);
+            obj.timer = setInterval(function(){
+                var stop = true;
+                for(var attr in json){
+                    var target = json[attr];
+                    var cur = parseInt(css(obj, attr));
+                    var speed = (target - cur) / 8;
+                    speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed);
+                    if(target != cur){
+                        stop = false;
+                    }
+                    cur += speed;
+                    obj.style[attr] = cur + 'px';
+                }
+                if(stop){
+                    clearInterval(obj.timer);
+                    obj.timer = null;
+                    fn && fn();
+                }
+            }, 30);
+        }
+
+    }());
+</script>
+</body>
+</html>

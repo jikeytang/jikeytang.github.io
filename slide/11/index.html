@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>百度票务图片轮换</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" media="all"/>
+</head>
+<body>
+<!--http://piao.baidu.com/-->
+<section id="banner" class="piao-banner">
+    <div id="focus-wrapper">
+        <div id="focus-bg-wrapper">
+            <img id="focus-bg" src="images/1.jpg" alt=""/>
+        </div>
+        <div id="focus">
+            <div id="prev" class="focus-ctrl ctrl-prev"></div>
+            <div id="focus-main">
+                <div class="frame left">
+                    <a href="#"><img src="images/1.jpg" alt=""/></a>
+                </div>
+                <div class="frame focus">
+                    <a href="#"><img src="images/2.jpg" alt=""/></a>
+                </div>
+                <div class="frame right">
+                    <a href="#"><img src="images/3.jpg" width="700" height="280" alt=""/></a>
+                </div>
+                <div class="frame">
+                    <a href="#"><img src="images/4.jpg" alt=""/></a>
+                </div>
+                <div class="frame" style="">
+                    <a href="#"><img src="images/5.jpg" alt=""/></a>
+                </div>
+                <div class="frame">
+                    <a href="#"><img src="images/6.jpg" alt=""/></a>
+                </div>
+                <div class="frame">
+                    <a href="#"><img src="images/7.jpg" alt=""/></a>
+                </div>
+                <div class="frame">
+                    <a href="#"><img src="images/8.jpg" alt=""/></a>
+                </div>
+            </div>
+            <div id="next" class="focus-ctrl ctrl-next"></div>
+            <ul id="focus-indicator">
+                <li class="ac"><span class="i-index"></span></li>
+                <li><span class="i-index"></span></li>
+                <li><span class="i-index"></span></li>
+                <li><span class="i-index"></span></li>
+                <li><span class="i-index"></span></li>
+                <li><span class="i-index"></span></li>
+                <li><span class="i-index"></span></li>
+                <li><span class="i-index"></span></li>
+            </ul>
+        </div>
+    </div>
+</section>
+<h3 id="out"></h3>
+<script type="text/javascript" src="js/mv.js"></script>
+<script>
+    (function(){
+        var box = document.getElementById('banner');
+        var prev = document.getElementById('prev');
+        var next = document.getElementById('next');
+        var main = document.getElementById('focus-main');
+        var items = main.getElementsByTagName('div');
+//        var len = items.length;
+        var len = 3;
+        var bar = document.getElementById('focus-indicator');
+        var dot = bar.getElementsByTagName('li');
+        var timer = null;
+        var now = 1;
+        var arr = [];
+
+        for(var i = 0; i < len; i++){
+            var item = items[i];
+            arr.push({
+                top : parseInt(css(item, 'top')),
+                right : parseInt(css(item, 'right')),
+                bottom : parseInt(css(item, 'bottom')),
+                left : parseInt(css(item, 'left')),
+                zIndex : parseInt(css(item, 'zIndex'))
+            });
+        }
+
+        prev.onclick = function(){
+            if(now < len - 2){
+                now++;
+            } else {
+                now = 1;
+            }
+            document.getElementById('out').innerHTML = now;
+            scroll();
+        }
+
+        next.onclick = function(){
+            if(now <= 1){
+                now = len;
+            } else {
+                now--;
+            }
+            document.getElementById('out').innerHTML = now;
+            scroll(now);
+        }
+        function scroll(n){
+            tab();
+            var update = mid(n, arr);
+            for(var i = 0; i < len; i++){
+                act(items[i], update[i]);
+            }
+        }
+        function tab(){
+            for(var i = 0; i < len; i++){
+                dot[i].className = '';
+            }
+            dot[now].className = 'ac';
+        }
+        function mid(n, arr){
+            n -= Math.floor(arr.length/2);
+            for(var i = 0; i < Math.abs(n); i++){
+                if(n > 0){
+                    arr.push(arr.shift());
+                } else {
+                    arr.unshift(arr.pop());
+                }
+            }
+            return arr;
+        }
+        function css(obj, attr){
+            if(obj.currentStyle){
+                return obj.currentStyle[attr];
+            } else {
+                return getComputedStyle(obj, null)[attr];
+            }
+        }
+        function act(obj, json, fn){
+            clearInterval(obj.timer);
+            obj.timer = setInterval(function(){
+                var stop = true;
+                for(var attr in json){
+                    var cur = 0;
+                    var target = json[attr];
+                    cur = parseInt(css(obj, attr));
+                    var speed = (target - cur) / 8;
+                    speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed);
+
+                    if(cur != target){
+                        stop = false;
+                    }
+                    cur += speed;
+                    obj.style[attr] = cur + 'px';
+                }
+                if(stop){
+                    clearInterval(obj.timer);
+                    obj.timer = null;
+                    fn && fn();
+                }
+            }, 30);
+        }
+    }());
+</script>
+</body>
+</html>

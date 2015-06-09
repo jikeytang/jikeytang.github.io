@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" media="all"/>
+</head>
+<body>
+<!--http://v.qq.com/movie/-->
+<div class="site_focus" id="mod_txv_focus">
+    <div class="focus_inner">
+        <a href="#" class="focus_img incoming" id="mod_txv_focus_showpic" style="background-image: url(images/1.jpg); background-color:#000"></a>
+        <a href="javascript:;" class="focus_img outgoing" id="mod_txv_focus_prevpic" style="display: block; background-image: url(images/1.jpg); background-color: rgb(23, 19, 16);"></a>
+        <div class="focus_control">
+            <h2 class="focus_title" id="mod_txv_focus_title">老男孩之猛龙过江<br>无节操励志神作</h2>
+            <div class="focus_thumbnails">
+                <div class="focus_thumbnails_inner" id="mod_txv_focus_nav">
+                    <ul id="list" class="focus_thumbnails_list cf">
+                        <li>
+                            <a href="#" class="link_thumbnails" data-pic="images/1.jpg" data-color="#000"><img src="images/icon-1.jpg"></a>
+                        </li>
+                        <li class="">
+                            <a href="#" class="link_thumbnails" data-pic="images/2.jpg" data-color="#2b8890"><img src="images/icon-2.jpg"></a>
+                        </li>
+                        <li class="">
+                            <a href="#" class="link_thumbnails" data-pic="images/3.jpg" data-color="#172120"><img src="images/icon-3.jpg"></a>
+                        </li>
+                        <li class="">
+                            <a href="#" class="link_thumbnails" data-pic="images/4.jpg" data-color="#c7f8f5"><img src="images/icon-4.jpg"></a>
+                        </li>
+                        <li>
+                            <a href="#" class="link_thumbnails" data-pic="images/5.jpg" data-color="#2b060e"><img src="images/icon-5.jpg"></a>
+                        </li>
+                        <li>
+                            <a href="#" class="link_thumbnails" data-pic="images/6.jpg" data-color="#181411"><img src="images/icon-6.jpg"></a>
+                        </li>
+                        <li>
+                            <a href="#" class="link_thumbnails" data-pic="images/7.jpg" data-color="#6c2022"><img src="images/icon-7.jpg"></a>
+                        </li>
+                        <li>
+                            <a href="#" class="link_thumbnails" data-pic="images/8.jpg" data-color="#020202"><img src="images/icon-8.jpg"></a>
+                        </li>
+                        <li>
+                            <a href="#" class="link_thumbnails" data-pic="images/9.jpg" data-color="#fbd886"><img src="images/icon-9.jpg"></a>
+                        </li>
+                        <li>
+                            <a href="#" class="link_thumbnails" data-pic="images/10.jpg" data-color="#270a04"><img src="images/icon-10.jpg"></a>
+                        </li>
+                        <li>
+                            <a href="#" class="link_thumbnails" data-pic="images/11.jpg" data-color="#b7d7e4"><img src="images/icon-11.jpg"></a>
+                        </li>
+                        <li>
+                            <a href="#" class="link_thumbnails" data-pic="images/12.jpg" data-color="#04070c"><img src="images/icon-12.jpg"></a>
+                        </li>
+                        <li>
+                            <a href="#" class="link_thumbnails" data-pic="images/13.jpg" data-color="#691b1b"><img src="images/icon-13.jpg"></a>
+                        </li>
+                        <li>
+                            <a href="#" class="link_thumbnails" data-pic="images/14.jpg" data-color="#1b1714"><img src="images/icon-14.jpg"></a>
+                        </li>
+                    </ul>
+                </div>
+                <a href="javascript:;" class="btn_prev" id="prev" hidefocus="true"><i class="ico_prev"></i><span class="btn_inner">上一组</span></a>
+                <a href="javascript:;" class="btn_next" id="next" hidefocus="true"><span class="btn_inner">下一组</span><i class="ico_next"></i></a>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<script>
+    (function(){
+        var box = document.getElementById('box');
+        var income = document.getElementById('mod_txv_focus_showpic');
+        var out = document.getElementById('mod_txv_focus_prevpic');
+        var ul = document.getElementById('list');
+        ul.innerHTML += ul.innerHTML;
+        var li = ul.getElementsByTagName('li');
+        li[0].className = 'current';
+        ul.style.width = ul.offsetWidth * 5 + 'px';
+        var title = document.getElementById('mod_txv_focus_title');
+        var prev = document.getElementById('prev');
+        var next = document.getElementById('next');
+        var u_width = ul.parentNode.offsetWidth;
+        var li_w = li[0].offsetWidth;
+        var max = li.length;
+        var len = max / 2;
+        var page = 4;
+        var half = 2;
+        var now = 0;
+        var cur = 0;
+        var timer = null;
+
+        function auto(){
+            if(cur > 0){
+                cur--;
+            } else {
+                cur = max - 1;
+                ul.style.marginLeft = -li_w * max + 'px';
+            }
+            hover();
+        }
+        timer = setInterval(auto, 3000);
+
+        prev.onclick = function(){
+            if(now > 0){
+                now--;
+            } else {
+                now = half - 1;
+                ul.style.marginLeft = -u_width * half + 'px';
+            }
+            scroll();
+        }
+        next.onclick = function(){
+            if(now < page - 1){
+                now++;
+            } else {
+                now = half;
+                ul.style.marginLeft = -(u_width * (half - 1)) + 'px';
+            }
+            scroll();
+        }
+        function scroll(){
+            act(ul, { marginLeft : -(u_width + parseInt(css(li[0], 'marginRight'))) * now });
+        }
+        function hover(){
+            for(var i = 0; i < len; i++){
+                li[i].index = i;
+                li[i].onmouseover = function(){
+                    tab(this);
+                }
+            }
+        }
+        hover();
+        var img = null;
+        function tab(obj){
+            for(i = 0; i < len; i++){
+                li[i].className = '';
+            }
+            obj.className = 'current';
+            img = attr(obj.children[0], 'data-pic');
+            fade(img);
+        }
+        var tmp = null;
+        function fade(img){
+            var inImg = 'url('+img+')';
+            if(tmp){
+                out.className += ' active';
+                out.style.backgroundImage = tmp;
+            }
+            act(out, { opacity : 0 }, function(){
+                this.className = 'focus_img outgoing';
+            });
+            income.style.backgroundImage = inImg;
+            tmp = inImg;
+
+        }
+        function attr(obj, name){
+            return obj.getAttribute(name);
+        }
+        function css(obj, attr){
+            if(obj.currentStyle){
+                return obj.currentStyle[attr];
+            } else {
+                return getComputedStyle(obj, false)[attr];
+            }
+        }
+        function act(obj, json, fn){
+            obj.timer && clearInterval(obj.timer);
+            obj.timer = setInterval(function(){
+                var stop = true;
+                for(var prop in json){
+                    var target = json[prop];
+                    var cur = 0;
+                    var speed = 0;
+                    if(prop == 'opacity'){
+                        cur = css(obj, prop) * 100;
+                    } else {
+                        cur = parseInt(css(obj, prop));
+                    }
+                    speed = (target - cur) / 8;
+                    speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed);
+                    if(cur != target){
+                        stop = false;
+                    }
+                    cur += speed;
+                    if(prop == 'opacity'){
+                        obj.style.filter = 'alpha(opacity:' + cur + ')';
+                        obj.style.opacity = cur / 100;
+                    } else {
+                        obj.style[prop] = cur + 'px';
+                    }
+                }
+                if(stop){
+                    clearInterval(obj.timer);
+                    obj.timer = null;
+                    fn && fn.call(obj);
+                }
+            }, 30);
+        }
+    }());
+</script>
+</body>
+</html>

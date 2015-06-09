@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>白发魔女传之明月天国</title>
+    <meta name="keywords" content="html5,css3,mobile,transform,transition,translate">
+    <meta name="description" content="原生JavaScript结合CSS3实现的移动端单页面应用效果，蒙层涂抹利用HTML5中的Canvas实现，兼容移动设备和PC高级浏览器。">
+    <meta name="author" content="mailzwj@126.com">
+    <script>
+        if(/Android (\d+\.\d+)/.test(navigator.userAgent)){
+            var version = parseFloat(RegExp.$1);
+            if(version > 2.3){
+                var phoneScale = parseInt(window.screen.width) / 640;
+                document.write('<meta name="viewport" content="width=640,minimum-scale=' + phoneScale + ',maximum-scale=' + phoneScale + ',target-densitydpi=device-dpi">');
+            } else {
+                document.write('<meta name="viewport" content="width=640,target-densitydpi=device-dpi">');
+            }
+        } else {
+            document.write('<meta name="viewport" content="width=640,user-scalable=no,target-densitydpi=device-dpi,minimal-ui">');
+        }
+    </script>
+</head>
+<body>
+<style>
+    /* 重置样式忽略 */
+    body, ul, li, p, h1, h2, h3, h4, h5, h6{ margin:0; padding:0; }
+    body{ background-color:#333; -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; -o-user-select:none; user-select:none; font-family:'\5fae\8f6f\96c5\9ed1', Arial, sans-serif; }
+    img{ vertical-align:top; }
+
+    .clearfix{ *zoom:1; }
+    .clearfix:before,
+    .clearfix:after{ display:table; content:""; }
+    .clearfix:after{ clear:both; }
+
+    .page{
+        position:absolute;
+        left:50%;
+        top:0;
+        max-width:640px;
+        width:100%;
+        height:100%;
+        overflow:hidden;
+        -webkit-transform:translate3d(-50%, 0, 0);
+        -ms-transform:translate3d(-50%, 0, 0);
+        -o-transform:translate3d(-50%, 0, 0);
+        transform:translate3d(-50%, 0, 0);
+    }
+
+    .page .page-scroller{
+        position:absolute;
+        width:100%;
+    }
+
+    .page .pannels{
+        width:100%;
+        height:100%;
+        overflow:hidden;
+    }
+
+    .page .pannels .stage{
+        position:relative;
+        width:100%;
+        height:100%;
+        background-repeat:no-repeat;
+        background-color:#fff;
+        background-position:center center;
+        -webkit-background-size:cover;
+        background-size:cover;
+        overflow:hidden;
+    }
+
+    .has-transition{
+        -webkit-transition:-webkit-transform .3s ease-out;
+        -o-transition:-o-transform .3s ease-out;
+        transition:transform .3s ease-out;
+    }
+
+    .blur-canvas{
+        position:absolute;
+        left:50%;
+        top:0;
+        z-index:10;
+        width:100%;
+        max-width:640px;
+        height:100%;
+        -webkit-transition:opacity .3s ease-out;
+        -o-transition:opacity .3s ease-out;
+        transition:opacity .3s ease-out;
+        -webkit-transform:translate3d(-50%, 0, 0);
+        -ms-transform:translate3d(-50%, 0, 0);
+        -o-transform:translate3d(-50%, 0, 0);
+        transform:translate3d(-50%, 0, 0);
+    }
+
+    /*
+     * 明月天国
+     */
+    .pannels .theme{
+        position:absolute;
+        bottom:64px;
+        left:0;
+        width:100%;
+        height:140px;
+        background:url(imgs/title.png) center center no-repeat;
+        -webkit-background-size:contain;
+        background-size:contain;
+        opacity:0;
+        -webkit-transform:translate3d(0, 100%, 0);
+        -ms-transform:translate3d(0, 100%, 0);
+        -o-transform:translate3d(0, 100%, 0);
+        transform:translate3d(0, 100%, 0);
+        -webkit-transition:-webkit-transform .3s ease-out, opacity .3s ease-out;
+        -o-transition:-o-transform .3s ease-out, opacity .3s ease-out;
+        transition:transform .3s ease-out, opacity .3s ease-out;
+    }
+
+    .pannels .sub-title{
+        position:absolute;
+        right:65px;
+        bottom:37px;
+        width:135px;
+        height:35px;
+        background:url(imgs/subtitle.png) center center no-repeat;
+        -webkit-background-size:contain;
+        background-size:contain;
+        opacity:0;
+        -webkit-transform:translate3d(100%, 0, 0);
+        -ms-transform:translate3d(100%, 0, 0);
+        -o-transform:translate3d(100%, 0, 0);
+        transform:translate3d(100%, 0, 0);
+        -webkit-transition:-webkit-transform .3s ease-out .4s, opacity .3s ease-out .4s;
+        -o-transition:-o-transform .3s ease-out .4s, opacity .3s ease-out .4s;
+        transition:transform .3s ease-out .4s, opacity .3s ease-out .4s;
+    }
+
+    .pannels .type{
+        position:absolute;
+        right:40px;
+        bottom:160px;
+        width:70px;
+        height:60px;
+        background:url(imgs/3d.png) center center no-repeat;
+        -webkit-background-size:contain;
+        background-size:contain;
+        -webkit-transform-origin:center bottom;
+        -moz-transform-origin:center bottom;
+        -ms-transform-origin:center bottom;
+        -o-transform-origin:center bottom;
+        transform-origin:center bottom;
+        -webkit-transform:rotate3d(1, 0, 0, 90deg);
+        -ms-transform:rotate3d(1, 0, 0, 90deg);
+        -o-transform:rotate3d(1, 0, 0, 90deg);
+        transform:rotate3d(1, 0, 0, 90deg);
+        -webkit-transition:-webkit-transform .4s cubic-bezier(.28, .64, .56, 1.49) .6s;
+        -o-transition:-o-transform .4s cubic-bezier(.28, .64, .56, 1.49) .6s;
+        transition:transform .4s cubic-bezier(.28, .64, .56, 1.49) .6s;
+    }
+
+    .scene-2 .person-info,
+    .scene-3 .person-info{
+        position:absolute;
+        top:76px;
+        right:35px;
+        width:300px;
+        height:400px;
+        background-position:right top;
+        background-repeat:no-repeat;
+        background-color:transparent;
+        -webkit-background-size:contain;
+        background-size:contain;
+        opacity:0;
+        -webkit-transform:translate3d(100%, 0, 0);
+        -ms-transform:translate3d(100%, 0, 0);
+        -o-transform:translate3d(100%, 0, 0);
+        transform:translate3d(100%, 0, 0);
+        -webkit-transition:-webkit-transform .3s ease-out, opacity .3s ease-out;
+        -o-transition:-o-transform .3s ease-out, opacity .3s ease-out;
+        transition:transform .3s ease-out, opacity .3s ease-out;
+    }
+
+    .scene-2 .person-info{
+        background-image:url(imgs/s2l.png);
+    }
+
+    .scene-3 .person-info{
+        background-image:url(imgs/s3l.png);
+    }
+
+    .scene-2 .person-info img,
+    .scene-3 .person-info img{
+        opacity:0;
+        -webkit-transform:translate3d(40px, 0, 0);
+        -ms-transform:translate3d(40px, 0, 0);
+        -o-transform:translate3d(40px, 0, 0);
+        transform:translate3d(40px, 0, 0);
+        -webkit-transition:-webkit-transform .3s ease-out .4s, opacity .3s ease-out .4s;
+        -o-transition:-o-transform .3s ease-out .4s, opacity .3s ease-out .4s;
+        transition:transform .3s ease-out .4s, opacity .3s ease-out .4s;
+    }
+
+    .start-animate .theme,
+    .start-animate .sub-title{
+        opacity:1;
+        -webkit-transform:translate3d(0, 0, 0);
+        -ms-transform:translate3d(0, 0, 0);
+        -o-transform:translate3d(0, 0, 0);
+        transform:translate3d(0, 0, 0);
+    }
+
+    .start-animate .type{
+        -webkit-transform:rotate3d(1, 0, 0, 0);
+        -ms-transform:rotate3d(1, 0, 0, 0);
+        -o-transform:rotate3d(1, 0, 0, 0);
+        transform:rotate3d(1, 0, 0, 0);
+    }
+
+    .start-animate .person-info,
+    .start-animate .person-info img{
+        opacity:1;
+        -webkit-transform:translate3d(0, 0, 0);
+        -ms-transform:translate3d(0, 0, 0);
+        -o-transform:translate3d(0, 0, 0);
+        transform:translate3d(0, 0, 0);
+    }
+</style>
+<img src="imgs/face.png" style="display:none" id="J_ImgSrc">
+<div id="J_opaPage" class="page">
+    <div id="J_opaScroll" class="page-scroller">
+        <div class="J_opaPannel pannels scene-1">
+            <div class="stage" style="background-image: url(imgs/s1.png);">
+                <div class="theme"></div>
+                <div class="sub-title"></div>
+                <div class="type"></div>
+            </div>
+        </div>
+        <div class="J_opaPannel pannels scene-2">
+            <script class="J_MiLazyLoad" type="text/template">
+                <div class="stage" style="background-image: url(imgs/s2.png);">
+                    <div class="person-info">
+                        <img src="imgs/s2t.png">
+                    </div>
+                </div>
+            </script>
+        </div>
+        <div class="J_opaPannel pannels scene-3">
+            <script class="J_MiLazyLoad" type="text/template">
+                <div class="stage" style="background-image: url(imgs/s3.png);">
+                    <div class="person-info">
+                        <img src="imgs/s3t.png">
+                    </div>
+                </div>
+            </script>
+        </div>
+    </div>
+</div>
+<canvas id="J_MyCanvas" class="blur-canvas" width="640" height="960">您的浏览器不支持Canvas。</canvas>
+<script src="js/app.js"></script>
+<script>
+    var imgData = document.getElementById("J_ImgSrc"),
+            cvs = document.getElementById("J_MyCanvas"),
+            ctx = cvs.getContext('2d'),
+            size = {
+                width : window.innerWidth > 640 ? 640 : window.innerWidth,
+                height : window.innerHeight
+            },
+            touchdown = 'ontouchstart' in window ? 'touchstart' : 'mousedown',
+            touchmove = 'ontouchmove' in window ? 'touchmove' : 'mousemove',
+            touchup = 'ontouchend' in window ? 'touchend' : 'mouseup';
+
+    if(imgData.complete){
+        imgData.src = imgData.src + "?_t=" + new Date().getTime();
+    }
+
+    imgData.onload = function(){
+
+        var app = new Mi.Moonlight({
+            size : size,
+            transEnd : function(){
+                // console.log(this.get('offset'));
+                var util = Mi.Utils,
+                    page = this.get('pageNode'),
+                    aNode = page.querySelector('.start-animate'),
+                    cNode = page.querySelector('.current');
+                util.removeClass(aNode, 'start-animate');
+                util.addClass(cNode, 'start-animate');
+            }
+        });
+
+        var getpos = function(node){
+            return node.getBoundingClientRect();
+        };
+
+        var getPercent = function(data){
+            var len = data.length, total = len / 4, count = 0;
+            for(var i = 0; i < len; i++){
+                if(i % 4 == 3){
+                    if(data[i] < 20){
+                        count++;
+                    }
+                }
+            }
+            return Math.round((count / total) * 100);
+        };
+
+        var scale = {
+            x : size.width / imgData.width,
+            y : size.height / imgData.height
+        }
+
+        cvs.width = size.width;
+        cvs.height = size.height;
+        // ctx.fillRect(0, 0, size.width, size.height);
+        ctx.scale(scale.x, scale.y);
+        ctx.drawImage(imgData, 0, 0);
+        ctx.strokeStyle = 'rgab(0, 0, 0, 1)';
+        ctx.globalCompositeOperation = "destination-out";
+        ctx.lineWidth = 60;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        cvs.addEventListener(touchdown, function(ev){
+            var npos = getpos(this),
+                evo = ev.touches ? ev.touches[0] : ev,
+                epos = {x : evo.clientX, y : evo.clientY},
+                mpos = {};
+
+            mpos.x = epos.x - npos.left;
+            mpos.y = epos.y - npos.top;
+            ctx.moveTo(mpos.x / scale.x, mpos.y / scale.y);
+            cvs['on' + touchmove] = function(ev){
+                evo = ev.touches ? ev.touches[0] : ev
+                epos = {x : evo.clientX, y : evo.clientY};
+                mpos.x = epos.x - npos.left;
+                mpos.y = epos.y - npos.top;
+                ctx.lineTo(mpos.x / scale.x, mpos.y / scale.y);
+                /*
+                 * 后面三行解决部分Android系统浏览器不支持globalCompositeOperation问题
+                 */
+                cvs.style.display = 'none';
+                cvs.offsetHeight;
+                cvs.style.display = 'inherit';
+                ctx.stroke();
+                ev.preventDefault();
+            };
+            cvs['on' + touchup] = function(ev){
+                cvs['on' + touchmove] = null;
+                cvs['on' + touchup] = null;
+                if(getPercent(ctx.getImageData(size.width / 4, size.height / 4, size.width / 2, size.height / 2).data) > 80){
+                    cvs.style.opacity = 0;
+                    setTimeout(function(){
+                        cvs.parentNode.removeChild(cvs);
+                    }, 300);
+                }
+                ev.preventDefault();
+            }
+        }, false);
+    };
+</script>
+<p style="display:none;">
+</p>
+</body>
+</html>

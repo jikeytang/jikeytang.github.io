@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>百度微购-图片轮换</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" media="all"/>
+</head>
+<body>
+<div id="box" class="main-promo">
+    <div id="bar" class="switch-items">
+        <div class="switch-item active-switch-item">聚蟹客 中秋好礼</div>
+        <div class="switch-item">赚网 相思惠明月</div>
+        <div class="switch-item">草莓网 彩妆大促</div>
+        <div class="switch-item">中秋送礼 浓情促销</div>
+    </div>
+    <a class="main-item" target="_blank" href="#"><img src="images/1.jpg"></a>
+    <a class="main-item" target="_blank" href="#"><img src="images/2.jpg"></a>
+    <a class="main-item" target="_blank" href="#"><img src="images/3.jpg"></a>
+    <a class="main-item" target="_blank" href="#"><img src="images/4.jpg"></a>
+</div>
+<script>
+    (function(){
+        var box = document.getElementById('box');
+        var link = box.getElementsByTagName('a');
+        var bar = document.getElementById('bar');
+        var div = bar.getElementsByTagName('div');
+        var cur = 0;
+        var timer = null;
+
+        for(var i = 0; i < div.length; i++){
+            div[i].index = i;
+            div[i].onmouseover = function(){
+                fadeTo(this.index);
+            }
+        }
+
+        function fadeTo(index){
+            for(var i = 0; i < div.length; i++){
+                div[i].className = 'switch-item';
+                fade(link[i], 0);
+            }
+            fade(link[index], 100);
+            div[index].className += ' active-switch-item';
+        }
+
+        function auto(){
+            cur ++;
+            if(cur >= link.length){
+                cur = 0;
+            }
+            fadeTo(cur);
+        }
+
+        timer = setInterval(auto, 3000);
+
+        box.onmouseover = function(){
+            clearInterval(timer);
+        }
+        box.onmouseout = function(){
+            timer = setInterval(auto, 3000);
+        }
+
+        function css(obj, attr){
+            if(obj.currentStyle){
+                return obj.currentStyle[attr];
+            } else {
+                return getComputedStyle(obj, false)[attr];
+            }
+        }
+
+        function fade(obj, target, fn){
+            obj.timer && clearInterval(obj.timer);
+
+            obj.timer = setInterval(function(){
+                var alpha = 0;
+                var cur = css(obj, 'opacity') * 100;
+                alpha = (target - cur) / 8;
+                alpha = alpha > 0 ? Math.ceil(alpha) : Math.floor(alpha);
+                var stop = true;
+
+                if(cur != target){
+                    stop = false;
+                    cur += alpha;
+                    obj.style.filter = 'alpha(opacity=' + cur + ')';
+                    obj.style.opacity = cur / 100;
+                }
+
+                if(stop){
+                    clearInterval(obj.timer);
+                    obj.timer = null;
+                    fn && fn();
+                }
+            }, 30);
+        }
+    }());
+</script>
+</body>
+</html>

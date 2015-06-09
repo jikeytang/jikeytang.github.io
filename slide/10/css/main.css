@@ -1,0 +1,57 @@
+*{ margin:0; padding:0;}
+body{font:12px/1.125 Arial,Helvetica,sans-serif;background:#fff;}
+table{border-collapse:collapse;border-spacing:0;}
+li{list-style:none;}
+fieldset,img{border:0;}
+article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}
+q:before,q:after{content:'';}
+a:focus,input,textarea{outline-style:none;}
+input[type="text"],input[type="password"],textarea{outline-style:none;-webkit-appearance:none;}
+textarea{resize:none}
+address,caption,cite,code,dfn,em,i,th,var{font-style:normal;font-weight:normal;}
+legend{color:#000;}
+abbr,acronym{border:0;font-variant:normal;}
+a{color:#0a8cd2;text-decoration:none;}
+a:hover{text-decoration:underline;}
+.clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden;}
+.clearfix{display:inline-block;}
+.clearfix{display:block;}
+.clear{clear:both;height:0;font:0/0 Arial;visibility:hidden;}
+.none{display:none}
+/* main */
+.hotsell-section,.phone-section,.elec-section,.computer-section,.others-car-section{width:1200px;margin:30px auto 0}
+.hotsell-section .section-header{border-bottom:2px solid #bb3239;position:relative}
+.section-header{height:39px;border-bottom:1px solid #666;font-size:14px;overflow:hidden;padding-bottom:8px}
+.section-header .hot-phone-tab,.section-header .hot-elec-tab,.section-header .hot-computer-tab{background:url('http://bs.baidu.com/weigou-baidu-com/ed1c53d2f43452d8d5c91883ce90a5a6.png') no-repeat;width:58px;height:22px;float:right;margin:25px 71px 0;cursor:pointer;_display:inline}
+.section-header .hot-phone-tab{background-position:-200px -192px}
+.section-header .hot-elec-tab{background-position:-259px -192px}
+.section-header .hot-computer-tab{background-position:-318px -192px}
+.section-header .current-hot-phone-tab{background-position:-200px -215px}
+.section-header .current-hot-elec-tab{background-position:-259px -215px}
+.section-header .current-hot-computer-tab{background-position:-318px -215px}
+.section-header #current-tab-icon{width:11px;height:4px;_font-size:0;background:url('http://bs.baidu.com/weigou-baidu-com/ed1c53d2f43452d8d5c91883ce90a5a6.png') no-repeat;background-position:-202px -174px;position:absolute;bottom:0;_bottom:-1px;left:695px}
+
+.section-logo{float:left;height:20px;margin:10px 20px 0 5px;background:url(http://bs.baidu.com/weigou-baidu-com/b3e1e96ffa37fd8ef3962c0b99741105.png) no-repeat;width:82px}
+.section-tag{float:left;background:url(http://bs.baidu.com/weigou-baidu-com/b3e1e96ffa37fd8ef3962c0b99741105.png) no-repeat;width:24px;height:35px}
+.section-body{min-height:100px;width:1200px;overflow:hidden}
+.section-body a{color:#333}
+.hotsell-items{float:left;width:1199px;overflow:hidden;border-left:1px solid #dcdcdc}
+.hotsell-item{position:relative;float:left;width:199px;height:267px;overflow:hidden;border-right:1px solid #dcdcdc;border-bottom:1px solid #dcdcdc}
+.hotsell-image{width:160px;height:160px;margin:10px auto 0;overflow:hidden}
+.hotsell-image img{height:160px}
+.hotsell-bottom{width:160px;margin:10px auto 0;font-size:12px;line-height:20px}
+.highlight{color:#d42536;overflow:hidden}
+.mobile-text .highlight,.hotsell-bottom .highlight,.other-bottom .highlight{height:20px}
+.left{float:left}
+.right{float:right}
+.merchant{color:#999;padding:0 3px;cursor:default}
+.highlight a:hover{text-decoration:none;background:#fa8000;color:#fff}
+.hotsell-name{height:40px;overflow:hidden}
+.hotsell-item:hover .merchant,.brand-item:hover .merchant,.mobile-item:hover .merchant,.other-product:hover .merchant,.brand-large:hover .merchant{text-decoration:none;background:#fa8000;color:#fff}
+.price{font-weight:bold;color:#d12533}
+
+
+
+
+
+

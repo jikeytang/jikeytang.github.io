@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Ta 在联想</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" media="all"/>
+</head>
+<body>
+<div id="container" class="page page5">
+    <div class="div1200">
+        <span class="link page5span1 current"><img src="images/n8_03.png"></span>
+        <ul class="ullist8" style="margin-top: 30px;">
+            <li data-id="1" class="transform">
+                <div>
+                    <i></i>
+                    <span>Dillon</span>
+                    <p>来自哈佛的战略伙伴经理</p>
+                </div>
+                <img src="images/n8_10.png">
+            </li>
+            <li data-id="2" class="transform">
+                <div>
+                    <i></i>
+                    <span>成俞晟</span>
+                    <p>技术宅服务器工程师</p>
+                </div>
+                <img src="images/n8_07.png">
+            </li>
+            <li data-id="3" class="transform">
+                <div>
+                    <i></i>
+                    <span>段路路</span>
+                    <p>爱生活的百变游戏MM</p>
+                </div>
+                <img src="images/n8_13.png">
+            </li>
+            <li data-id="4" class="transform">
+                <div>
+                    <i></i>
+                    <span>Said </span>
+                    <p>开朗健谈的中国通</p>
+                </div>
+                <img src="images/n8_18.png">
+            </li>
+            <li data-id="5" class="transform">
+                <div>
+                    <i></i>
+                    <span>宋琦</span>
+                    <p>小清新专利保护女超人</p>
+                </div>
+                <img src="images/n8_15.png">
+            </li>
+
+            <li data-id="6" class="transform">
+                <div>
+                    <i></i>
+                    <span>孙小清</span>
+                    <p>懂管理的大客户销售 </p>
+                </div>
+                <img src="images/n8_25.png">
+            </li>
+            <li data-id="7" class="transform">
+                <div>
+                    <i></i>
+                    <span>孙玉莎</span>
+                    <p>联想给了我更大的舞台</p>
+                </div>
+                <img src="images/n8_26.png">
+            </li>
+            <li data-id="8" class="transform">
+                <div>
+                    <i></i>
+                    <span>田雨丰</span>
+                    <p>开朗又细心的会计暖男 </p>
+                </div>
+                <img src="images/n8_27.png">
+            </li>
+            <li data-id="9" class="transform">
+                <div>
+                    <i></i>
+                    <span>许力诺</span>
+                    <p>不安于现状 <br>但乐于知足的人力妹纸</p>
+                </div>
+                <img src="images/n8_28.png">
+            </li>
+            <li data-id="10" class="transform">
+                <div>
+                    <i></i>
+                    <span>于乐</span>
+                    <p>与联想同龄的研发工程师 </p>
+                </div>
+                <img src="images/n8_29.png">
+            </li>
+        </ul>
+    </div>
+</div>
+<div id="bg" class="box_bg1"></div>
+<div id="dialog" class="box_ovo ">
+    <span id="close" class="close"><i></i></span>
+    <span class="prev"><i></i></span>
+    <span class="next"><i></i></span>
+    <div id="div_temp1">
+        <img class="oimg1" src="images/j4.jpg">
+        <div class="ovotxt">
+            <div class="ovohead">
+                <h1>段路路</h1>
+                <i>Duan Lu Lu</i>
+                <em>爱生活的百变游戏MM </em>
+                <span>ECS</span>
+            </div>
+            <p>2013年加入联想，联想游戏中心最霸气的女商务，性格大大咧咧，柔弱的外表下有一颗强大的心。自诩内可安邦定天下，外可御敌千里外。</p><p>联想游戏中心作为北研最靓丽的风景线，不仅有着最潮、最流行的游戏可以玩，有各种精美的游戏周边随便拿，最关键的是有这样娇(ba)媚(qi)可(shi)人(zu)的女汉子陪聊，陪工作，陪吃饭。总之一句话，联想游戏中心，你值得拥有。</p>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    (function(){
+        var box = document.getElementById('container');
+        var li = box.getElementsByTagName('li');
+        var bg = document.getElementById('bg');
+        var dialog = document.getElementById('dialog');
+        var close = document.getElementById('close');
+
+        for(var i=0; i<li.length; i++){
+            li[i].onclick = function(){
+                bg.className += ' current';
+                dialog.className += ' current';
+            }
+        }
+
+        close.onclick = function(){
+            bg.className = 'box_bg1';
+            dialog.className = 'box_ovo';
+        }
+    }());
+</script>
+</body>
+</html>

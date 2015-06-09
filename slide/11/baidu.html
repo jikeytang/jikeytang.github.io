@@ -1,0 +1,213 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        #div{ width:100px; }
+    </style>
+</head>
+<body>
+<input id="btn" type="button" value="test"/>
+<div id="div" style="position:absolute;width: 200px;height: 200px;background: #f00;"></div>
+<script>
+    require(["common/modal"], function(t){
+        if($("#fail-popup-modal").length){
+            var e = t({id : "#fail-popup"});
+            e.on("hide.bs.modal", function(){
+                window.location.href = "/order/list"
+            })
+        }
+    });
+    require(["jquery", "jquery.easing"], function(t, e){
+        var i = function(e, i, o){
+            this.duration = 500;
+            this.autoSlideDuration = 5e3;
+            this.root = t(e);
+            this.ctrl = t(i);
+            this.wrapper = t(o);
+            this.bg = t("#focus-bg");
+            this.indicator = t("#focus-indicator").children();
+            this.initConf();
+            this.initSlideAction();
+            this.initTrigger();
+            this.initAutoSlide()
+        };
+        i.prototype.initConf = function(){
+            this.conf = {};
+            this.conf.index = 1;
+            this.conf.count = this.root.children().length;
+            this.conf.pos = {};
+            this.conf.pos.left = this._getOffset(".left");
+            this.conf.pos.middle = this._getOffset(".middle");
+            this.conf.pos.right = this._getOffset(".right")
+        };
+        i.prototype._getOffset = function(e){
+            var i = t(e, this.root);
+            var o = i.position();
+            o.width = i.width();
+            o.height = i.height();
+            return o
+        };
+        i.prototype.initSlideAction = function(){
+            this.initPrevFn();
+            this.initNextFn()
+        };
+        i.prototype.initTrigger = function(){
+            var e = this;
+            t(".ctrl-prev").on("click", this.prev);
+            t(".ctrl-next").on("click", this.next);
+            this.wrapper.on("mouseover",function(){
+                e.ctrl.show()
+            }).on("mouseleave", function(){
+                e.ctrl.hide()
+            });
+            t("a", this.root).live("click", function(i){
+                var o = t(this).parent(".frame");
+                if(o.hasClass("left")){
+                    e.prev();
+                    return false
+                } else if(o.hasClass("right")){
+                    e.next();
+                    return false
+                }
+            });
+            this.indicator.on("mouseover", function(i){
+                var o = e.indicator.index(t(this));
+                var n = e.conf.index;
+                if(o != -1 && o != n){
+                    var r = e.duration;
+                    e.duration = 1;
+                    if(o < n){
+                        while(--n > o){
+                            e.prev()
+                        }
+                        e.duration = r;
+                        e.prev()
+                    } else {
+                        while(++n < o){
+                            e.next()
+                        }
+                        e.duration = r;
+                        e.next()
+                    }
+                }
+            })
+        };
+        i.prototype.initAutoSlide = function(){
+            var t = this;
+            clearTimeout(this.conf.tid);
+            this.conf.tid = setTimeout(function(){
+                t.next()
+            }, this.autoSlideDuration)
+        };
+        i.prototype.initPrevFn = function(){
+            var e = this;
+            return this.prev = function(){
+                e.initAutoSlide();
+                var i;
+                var o = t(".focus", e.root);
+                var n = o.next();
+                var r = o.prev();
+                o.stop(true, true);
+                n.stop(true, true);
+                r.stop(true, true);
+                o = t(".focus", e.root);
+                r = o.prev();
+                var s = r.prev();
+                var a = function(){
+                    t(".right", e.root).removeClass("right");
+                    o.removeClass("focus").removeClass("middle").addClass("right").removeAttr("style");
+                    r.removeClass("focusing").addClass("focus").removeClass("left").addClass("middle").removeAttr("style")
+                };
+                if(s.length == 0){
+                    var l = e.root.children().last();
+                    l.clone().removeClass("right").addClass("left").prependTo(e.root);
+                    i = function(){
+                        a();
+                        l.remove()
+                    }
+                } else {
+                    s.addClass("left");
+                    i = a
+                }
+                o.animate(e.conf.pos.right, e.duration, "easeOutQuint", i);
+                r.addClass("focusing").animate(e.conf.pos.middle, e.duration, "easeOutQuint", i);
+                e.updateIndex("prev");
+                e.updateBG(r.find("img").attr("src"))
+            }
+        };
+        i.prototype.initNextFn = function(){
+            var e = this;
+            return this.next = function(){
+                e.initAutoSlide();
+                var i;
+                var o = t(".focus", e.root);
+                var n = o.prev();
+                var r = o.next();
+                o.stop(true, true);
+                n.stop(true, true);
+                r.stop(true, true);
+                o = t(".focus", e.root);
+                r = o.next();
+                var s = r.next();
+                var a = function(){
+                    t(".left", e.root).removeClass("left");
+                    o.removeClass("focus").removeClass("middle").addClass("left").removeAttr("style");
+                    r.removeClass("focusing").addClass("focus").removeClass("right").addClass("middle").removeAttr("style")
+                };
+                if(s.length == 0){
+                    var l = e.root.children().eq(0);
+                    l.clone().removeClass("left").addClass("right").appendTo(e.root);
+                    i = function(){
+                        a();
+                        l.remove()
+                    }
+                } else {
+                    s.addClass("right");
+                    i = a
+                }
+                o.animate(e.conf.pos.left, e.duration, "easeOutQuint", i);
+                r.addClass("focusing").animate(e.conf.pos.middle, e.duration, "easeOutQuint");
+                e.updateIndex("next");
+                e.updateBG(r.find("img").attr("src"))
+            }
+        };
+        i.prototype.updateBG = function(t){
+            if(t){
+                this.bg.attr("src", t)
+            }
+        };
+        i.prototype.updateIndex = function(t){
+            if(t == "prev"){
+                if(this.conf.index == 0){
+                    this.conf.index = this.conf.count - 1
+                } else {
+                    this.conf.index--
+                }
+            } else if(t == "next"){
+                if(this.conf.index + 1 >= this.conf.count){
+                    this.conf.index = 0
+                } else {
+                    this.conf.index++
+                }
+            }
+            this.indicator.removeClass("ac").eq(this.conf.index).addClass("ac")
+        };
+        new i("#focus-main", ".focus-ctrl", "#focus-wrapper");
+        var o = window.Hunter || {};
+        o.userConfig = o.userConfig || [];
+        o.userConfig.push({hid : 37003});
+        t("#mv").on("click", function(){
+            var e = t(this);
+            var i = e.data("videoId");
+            e.html('<embed pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="196" height="110" flashvars="videoId=' + i + '&autostart=true&amp;&showlyrics=false&amp;local=true&amp;refererdomain=yinyuetai.com&amp;capturevideoavailable=true&amp;sendsnaplog=true&amp;usepromptbar=true&amp;popupwin=true&amp;amovid=5f4ffbc12418024" bgcolor="#000000" allowfullscreen="true" allowscriptaccess="always" wmode="window" id="yinyuetaiplayer" name="yinyuetaiplayer" src="http://s.yytcdn.com/swf/common/mvplayer.$47459.swf">')
+        })
+    });
+    var console = console || {};
+    console.log && console.log("hello AR");
+    /** If u are interested in our code and would like to make it robust, just contact us^^ <@音乐前端> **/
+    /** Generated by M3D. **/
+</script>
+</body>
+</html>

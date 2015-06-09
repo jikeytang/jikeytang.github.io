@@ -1,0 +1,219 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" media="all"/>
+</head>
+<body>
+    <div monkey="NI_new_album" class="mod mod-release">
+        <div class="hd clearfix">
+            <div class="mui-slider-controller">
+                <div class="slider-page slider-right">
+                    <div id="bar" class="slider-page-inner">
+                        <a class="page on" href=""><i> </i> </a>
+                        <a class="page " href=""><i> </i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bd">
+            <div id="box" class="release mui-slider">
+                <a href="#" id="prev" class="control-left"><i> </i> <em> </em> </a>
+                <a href="#" id="next" class="control-right"><i> </i> <em> </em> </a>
+                <div class="mui-slider-scroll-wrap">
+                    <div id="container" class="mui-slider-scroll-container">
+                        <ul class="clearfix">
+                            <li>
+                                <div class="pic">
+                                    <a target="_blank" href="#">
+                                        <img alt="images/1.jpg" src="images/1.jpg">
+                                    </a>
+                                    <span><a class="play icon-play-white js-play-album" href="#"></a></span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="pic">
+                                    <a target="_blank" href="#">
+                                        <img alt="" src="images/2.jpg">
+                                    </a>
+                                    <span><a class="play icon-play-white js-play-album" href="#"></a></span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="pic">
+                                    <span class="icon icon-cover-special icon-top-right"></span>
+                                    <a target="_blank" href="#">
+                                        <img alt="" src="images/3.jpg">
+                                    </a>
+                                    <span><a class="play icon-play-white js-play-album" href="#"></a></span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="pic">
+                                    <a target="_blank" href="#">
+                                        <img alt="" src="images/4.jpg">
+                                    </a>
+                                    <span><a class="play icon-play-white js-play-album" href="#"></a></span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="pic">
+                                    <a target="_blank" href="#">
+                                        <img alt="" src="images/5.jpg">
+                                    </a>
+                                    <span><a class="play icon-play-white js-play-album" href="#"></a></span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="pic">
+                                    <span class="icon icon-cover-special icon-top-right"></span>
+                                    <a target="_blank" href="#">
+                                        <img alt="" src="images/6.jpg">
+                                    </a>
+                                    <span><a class="play icon-play-white js-play-album" href="#"></a></span>
+                                </div>
+                            </li>
+                        </ul>
+                        <ul class="clearfix">
+                            <li>
+                                <div class="pic">
+                                    <a target="_blank" href="#">
+                                        <img alt="images/1.jpg" src="images/21.jpg">
+                                    </a>
+                                    <span><a class="play icon-play-white js-play-album" href="#"></a></span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="pic">
+                                    <a target="_blank" href="#">
+                                        <img alt="" src="images/22.jpg">
+                                    </a>
+                                    <span><a class="play icon-play-white js-play-album" href="#"></a></span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="pic">
+                                    <span class="icon icon-cover-special icon-top-right"></span>
+                                    <a target="_blank" href="#">
+                                        <img alt="" src="images/23.jpg">
+                                    </a>
+                                    <span><a class="play icon-play-white js-play-album" href="#"></a></span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="pic">
+                                    <a target="_blank" href="#">
+                                        <img alt="" src="images/24.jpg">
+                                    </a>
+                                    <span><a class="play icon-play-white js-play-album" href="#"></a></span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="pic">
+                                    <a target="_blank" href="#">
+                                        <img alt="" src="images/25.jpg">
+                                    </a>
+                                    <span><a class="play icon-play-white js-play-album" href="#"></a></span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="pic">
+                                    <span class="icon icon-cover-special icon-top-right"></span>
+                                    <a target="_blank" href="#">
+                                        <img alt="" src="images/26.jpg">
+                                    </a>
+                                    <span><a class="play icon-play-white js-play-album" href="#"></a></span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <script>
+        (function(){
+            var box = document.getElementById('box');
+            var bar = document.getElementById('bar');
+            var dot = bar.getElementsByTagName('a');
+            var prev = document.getElementById('prev');
+            var next = document.getElementById('next');
+            var container = document.getElementById('container');
+            container.innerHTML += container.innerHTML;
+            var ul = container.getElementsByTagName('ul');
+            var li = ul[0].getElementsByTagName('li');
+            var ul_w = ul[0].offsetWidth;
+            var len = li.length * 2;
+            var page = 4;
+            var half = (page/2);
+            var now = 0;
+            var timer = null;
+
+            function auto(){
+                next.onclick();
+            }
+            timer = setInterval(auto, 3000);
+
+            prev.onclick = function(){
+                if(now > 0){
+                    now--;
+                } else {
+                    now = half - 1;
+                    container.style.left = -(ul_w * half) + 'px';
+                }
+                scroll();
+            }
+            next.onclick = function(){
+                if(now < page - 1){
+                    now++;
+                } else {
+                    now = half;
+                    container.style.left = -(ul_w * (half - 1)) + 'px';
+                }
+                scroll();
+            }
+            function scroll(){
+                tab();
+                act(container, 'left', -ul_w * now);
+            }
+            box.onmouseover = function(){
+                clearInterval(timer);
+            }
+            box.onmouseout = function(){
+                timer = setInterval(auto, 3000);
+            }
+            function tab(){
+                for(var i = 0; i < 2; i++){
+                    dot[i].className = 'page';
+                }
+                dot[now % 2].className = 'page on';
+            }
+            function css(obj, attr){
+                if(obj.currentStyle){
+                    return obj.currentStyle[attr];
+                } else {
+                    return getComputedStyle(obj, false)[attr];
+                }
+            }
+            function act(obj, attr, target, fn){
+                obj.timer && clearInterval(obj.timer);
+                obj.timer = setInterval(function(){
+                    var stop = true;
+                    var cur = parseInt(css(obj, attr));
+                    var speed = (target - cur) / 8;
+                    speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed);
+                    if(target != cur){
+                        stop = false;
+                        obj.style[attr] = speed + cur + 'px';
+                    }
+                    if(stop){
+                        clearInterval(obj.timer);
+                        obj.timer = null;
+                        fn && fn();
+                    }
+                }, 30);
+            }
+        }());
+    </script>
+</body>
+</html>

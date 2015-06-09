@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>iPhone手机图片查看器 - 妙味课堂 - www.miaov.com</title>
+    <link href="style.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="perfectDrag.js"></script>
+    <script type="text/javascript">
+        var oTimer = null;
+        var iSpeed = 0;
+        var iNow = 0;
+
+        window.onload = function(){
+            var oUl = document.getElementById('wrap').getElementsByTagName('ul')[0];
+
+            var iStartX;
+
+            new MiaovPerfectDrag(
+                oUl, 
+                function(){
+                    return {x : oUl.offsetLeft, y : oUl.offsetTop};
+                }, 
+                function(x, y){
+                    oUl.style.left = x + 'px';
+                    //oUl.style.top=y+'px';
+                }, 
+                function(){
+                    stopMove();
+                    iStartX = oUl.offsetLeft;
+                }, 
+                function() { //当拖拽结束
+                    if(Math.abs(oUl.offsetLeft - iStartX) >= 50){
+                        if(oUl.offsetLeft > iStartX){
+                            iNow--;
+                            if(iNow < 0){
+                                iNow = 0;
+                            }
+                        } else {
+                            iNow++;
+                            if(iNow >= oUl.getElementsByTagName('li').length){
+                                iNow = oUl.getElementsByTagName('li').length - 1;
+                            }
+                        }
+                    }
+                    startMove(-iNow * oUl.getElementsByTagName('li')[0].offsetWidth);
+                }
+            );
+        };
+
+        function startMove(iTarget){
+            if(oTimer){
+                clearInterval(oTimer);
+            }
+
+            oTimer = setInterval("doMove(" + iTarget + ")", 30);
+        }
+
+        function doMove(iTarget){
+            var oUl = document.getElementById('wrap').getElementsByTagName('ul')[0];
+            var l = oUl.offsetLeft;
+
+            iSpeed += (iTarget - oUl.offsetLeft) / 5;
+            iSpeed *= 0.7;
+
+            l += iSpeed;
+
+            if(Math.abs(iTarget - oUl.offsetLeft) < 1 && Math.abs(iSpeed) < 1){
+                clearInterval(oTimer);
+                oTimer = null;
+                l = iTarget;
+            }
+
+            oUl.style.left = l + 'px';
+        }
+
+        function stopMove(){
+            if(oTimer){
+                clearInterval(oTimer);
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+<div id="iphone">
+    <div id="wrap">
+        <ul>
+            <li style="background:url(images/pic1.png);" title="妙味课堂"></li>
+            <li style="background:url(images/pic2.png);" title="妙味课堂"></li>
+            <li style="background:url(images/pic3.png);" title="妙味课堂"></li>
+            <li style="background:url(images/pic4.png);" title="妙味课堂"></li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>

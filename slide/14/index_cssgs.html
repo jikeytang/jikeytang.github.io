@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<!--[if lte IE 9 ]> <html class="ie9" lang="zh-CN"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="zh-CN"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>v.qq.com - focus</title>
+    <link href="css/focus.css" rel="stylesheet">
+</head>
+<body>
+<div class="focus" id="focus">
+    <ul class="focus_main" id="focus_main"></ul>
+    <div class="focus_tools">
+        <h2 class="focus_title" id="focus_title">《画江湖之不良人》（至18集） 黑白无常遭人猿双煞追杀</h2>
+        <div class="focus_sub">
+            <a href="javascript:;" class="focus_prev" id="focus_prev"><i></i></a>
+            <div class="focus_list"><ul id="focus_list"></ul></div>
+            <a href="javascript:;" class="focus_next" id="focus_next"><i></i></a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="focus.js"></script>
+<script>
+    /**
+     *
+     * @authors 小魔 (7040423@qq.com)
+     * @date    2014-11-13 14:59:05
+     * @version 1.0
+     * @param {set} 配置项
+     * @param {set.data} 数据列表 src:小图地址 title:图片说明 pic:大图地址 url:链接地址
+     * @param {set.type} 大图运动类型 string ('opacity' || 'opacity')
+     * @param {set.data} 数据列表
+     */
+    var focus = function(set) {
+        this.set = set || {};
+        this.init();
+    };
+    focus.prototype = {
+        init: function() {
+            //处理配置
+            this.data = this.set.data || [];
+            this.type = this.set.type || 'opacity';
+            //定义容器
+            this.Focus = document.getElementById('focus');
+            this.Main = document.getElementById('focus_main');
+            this.Title = document.getElementById('focus_title');
+            this.List = document.getElementById('focus_list');
+            this.Prev = document.getElementById('focus_prev');
+            this.Next = document.getElementById('focus_next');
+            //运动类型
+            this.Focus.className = this.Focus.className + ' focus_' + this.type;
+            //创建容器
+            this.createMain();
+            this.createList();
+            this.drawTitle();
+            //列表运动
+            this.moveList();
+        },
+        createMain: function() {
+            var _frag = document.createDocumentFragment();
+            for (var i = 0; i < this.data.length; i++) {
+                var _li = document.createElement('li');
+                i == 0 && (_li.className = 'active');
+                _li.innerHTML = '<a href="' + this.data[i].url + '" title="' + this.data[i].title + '" target="_blank" style="background-image:url(' + this.data[i].pic + ')"></a>';
+                _frag.appendChild(_li);
+            };
+            this.Main.appendChild(_frag);
+            this.MainLi = this.Main.getElementsByTagName('li');
+        },
+        createList: function() {
+            var _self = this;
+            var _frag = document.createDocumentFragment();
+            for (var i = 0; i < this.data.length; i++) {
+                var _li = document.createElement('li');
+                _li.index = i;
+                i == 0 && (_li.className = 'active');
+                _li.innerHTML = '<a href="javascript:;"><img src="' + this.data[i].src + '" alt="' + this.data[i].src + '"></a>';
+                _frag.appendChild(_li);
+                _li.onmouseenter = function() {
+                    _self.overList(this);
+                };
+            };
+            this.List.appendChild(_frag);
+        },
+        drawTitle: function(index) {
+            index = index || 0;
+            this.Title.innerHTML = this.data[index].title.replace(/ /ig, '<br/>');
+        },
+        moveList: function() {
+            var _self = this;
+            //列表容器宽度
+            this.Width = this.List.parentNode.offsetWidth;
+            //当前页
+            var _index = 0;
+            //总页数
+            var _total = Math.ceil(this.List.getElementsByTagName('li').length / 7) - 1;
+            //左右按钮
+            this.Prev.onclick = function() {
+                _index == 0 ? _index = _total : _index--;
+                _self.List.style.marginLeft = '-' + (_index * _self.Width) + 'px';
+            };
+            this.Next.onclick = function() {
+                _index == _total ? _index = 0 : _index++;
+                _self.List.style.marginLeft = '-' + (_index * _self.Width) + 'px';
+            };
+        },
+        overList: function(obj) {
+            var _li = this.commonFn.Class(this.List, 'active')[0];
+            _li.className = '';
+            obj.className = 'active';
+            this.drawTitle(obj.index);
+            this.moveMain(obj.index);
+        },
+        moveMain: function(index) {
+            var _self = this;
+            switch (this.type) {
+                case 'opacity':
+                    var _li = this.commonFn.Class(this.Main, 'active')[0];
+                    _li.className = '';
+                    this.MainLi[index].className = 'active';
+                    break;
+                case 2:
+                    break;
+            };
+        },
+        commonFn: {
+            Class: function(o, ClassName, tag) {
+                if (!o) {
+                    return [];
+                };
+                if (document.getElementsByClassName) {
+                    return o.getElementsByClassName(ClassName);
+                } else {
+                    tag = tag || "*";
+                    var r = new RegExp("\\b" + ClassName + "\\b");
+                    var a = new Array();
+                    var t = o.getElementsByTagName(tag);
+                    for (i = 0; i < t.length; i++) {
+                        if (r.test(t[i].className)) {
+                            a.push(t[i]);
+                        };
+                    };
+                    return a;
+                };
+            }
+        }
+    };
+
+
+    var data = [{
+        "src": "http://img1.gtimg.com/ent/pics/hv1/219/54/1743/113352564.jpg",
+        "title": "《Hi歌》 姚贝娜旋灵木两代好声音同台",
+        "pic": "http://ugc.qpic.cn/tv/0/286096_1680504/0?max_age=604800",
+        "url": "http://v.qq.com/cover/l/l0tmyon4rqb0alh.html"
+    }, {
+        "src": "http://img1.gtimg.com/v/pics/hv1/147/53/1743/113352237.jpg",
+        "title": "《有一个地方》MV首发 独家！吴亦凡归来闪耀乐坛",
+        "pic": "http://ugc.qpic.cn/tv/0/285295_1680504/0?max_age=604800",
+        "url": "http://v.qq.com/cover/j/jmth7q181vlhyr6.html?vid=j0015521pus"
+    }, {
+        "src": "http://img1.gtimg.com/v/pics/hv1/2/103/1743/113364842.jpg",
+        "title": "正在直播 湖人VS鹈鹕",
+        "pic": "http://img1.gtimg.com/sports/pics/hv1/242/80/1743/113359217.jpg?max_age=604800",
+        "url": "http://sports.qq.com/kbsweb/basket.htm?matchId=1459475&competitionId=100000"
+    }, {
+        "src": "http://img1.gtimg.com/v/pics/hv1/9/178/1734/112798749.jpg",
+        "title": "《红高粱》（至47集） 朱豪三向余占鳌低头示弱",
+        "pic": "http://img1.gtimg.com/v/pics/hv1/76/254/1740/113208346.jpg?max_age=604800",
+        "url": "http://v.qq.com/p/tv/detail/hgl/"
+    }, {
+        "src": "http://img1.gtimg.com/v/pics/hv1/138/144/1742/113310408.jpg",
+        "title": "《风中奇缘》（至26集） 胡歌为救彭于晏命悬一线",
+        "pic": "http://img1.gtimg.com/v/pics/hv1/133/144/1742/113310403.jpg?max_age=604800",
+        "url": "http://v.qq.com/p/tv/detail/soundofthedesert/"
+    }, {
+        "src": "http://i.gtimg.cn/qqlive/images/20141112/i1415790281_1.jpg",
+        "title": "《郊游》 蔡明亮神作 金狮金马载誉而归",
+        "pic": "http://i.gtimg.cn/qqlive/images/20141112/i1415787954_1.jpg?max_age=604800",
+        "url": "http://film.qq.com/cover/7/7c3s20mjqhsuo6y.html"
+    }, {
+        "src": "http://i.gtimg.cn/qqlive/images/20141112/i1415798137_1.jpg",
+        "title": "《中国好男儿》今晚首播 萧亚轩为选手泪洒现场",
+        "pic": "http://i.gtimg.cn/qqlive/images/20141112/i1415798191_1.jpg?max_age=604800",
+        "url": "http://v.qq.com/cover/y/y0t4dfqmg1wfmp0.html?vid=p0015n8bsg2"
+    }, {
+        "src": "http://img1.gtimg.com/ent/pics/hv1/253/35/1743/113347753.jpg",
+        "title": "剧有戏 荧幕男神集体杀入光棍圈",
+        "pic": "http://img1.gtimg.com/ent/pics/hv1/5/35/1743/113347505.jpg?max_age=604800",
+        "url": "http://v.qq.com/topic/2014/juyouxi41.html"
+    }, {
+        "src": "http://i.gtimg.cn/qqlive/images/20141112/i1415776959_1.jpg",
+        "title": "《电影放》萌宠特工队 企鹅四贱客教你做贱谍",
+        "pic": "http://i.gtimg.cn/qqlive/images/20141112/i1415778446_1.jpg?max_age=604800",
+        "url": "http://v.qq.com/cover/6/6rk1j4gu6jcpbfl.html"
+    }, {
+        "src": "http://i.gtimg.cn/qqlive/images/20141111/i1415690711_1.jpg",
+        "title": "《星际穿越》特辑 诺兰全新史诗大作",
+        "pic": "http://i.gtimg.cn/qqlive/images/20141113/i1415835546_1.jpg?max_age=604800",
+        "url": "http://v.qq.com/cover/c/c2seabnsfozypl8.html"
+    }, {
+        "src": "http://img1.gtimg.com/v/pics/hv1/132/245/1685/109629732.jpg",
+        "title": "《画江湖之不良人》（至18集） 黑白无常遭人猿双煞追杀",
+        "pic": "http://ugc.qpic.cn/tv/0/256352_1680504/0?max_age=604800",
+        "url": "http://v.qq.com/cover/c/coawy9vjecqxe3d.html"
+    }, {
+        "src": "http://img1.gtimg.com/v/pics/hv1/213/90/1743/113361738.jpg",
+        "title": "《喵星人抢不到》开播 萌神驾到！",
+        "pic": "http://img1.gtimg.com/v/pics/hv1/199/90/1743/113361724.jpg?max_age=604800",
+        "url": "http://v.qq.com/cover/e/ehzok7kviza3tud.html"
+    }, {
+        "src": "http://img1.gtimg.com/v/pics/hv1/68/73/1742/113292233.jpg",
+        "title": "用心对话 最长的情书 ",
+        "pic": "http://ugc.qpic.cn/tv/0/281407_1680504/0?max_age=604800",
+        "url": "http://v.qq.com/cover/3/3xjh4t2cf61rts3.html?vid=a0140l5ni5n"
+    }, {
+        "src": "http://img1.gtimg.com/v/pics/hv1/198/23/1720/111849063.png",
+        "title": "弘扬社会主义核心价值观 全国原创网络节目优秀作品展播",
+        "pic": "http://img1.gtimg.com/v/pics/hv1/90/211/1723/112091970.jpg?max_age=604800",
+        "url": "http://v.qq.com/zt2014/chinadream/index.htm"
+    }];
+    new focus({
+        'data': data,
+        'type': 'opacity'
+    });
+</script>
+</body>
+</html>
