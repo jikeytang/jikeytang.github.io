@@ -1,4 +1,5 @@
 .wrap{ width:500px;font-size:22px; margin:20px auto 0; padding:40px 20px;}
+.auto{ width:500px;margin: 0 auto;}
 .list{ padding:0 60px;}
 .list li{list-style:decimal; line-height:50px;border-bottom: 1px solid #f2f2f2;}
 .list li h1{font-size:22px; font-style:normal; font-family:"Hiragino Sans GB","Hiragino Sans GB W3",'微软雅黑';}
@@ -8,6 +9,6 @@
 .sub-dl{ display:none;}
 .sub-dl a{ margin-left:25px;}
 .sub-dl a:hover{}
-
+.welcome{ text-align:center; padding-top:30px;}
 
 
