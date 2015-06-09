@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>动态操作下拉选项</title>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../css/reset.css" media="all"/>
+    <style type="text/css">
+        .demo1{ width:220px; text-align:left;}
+        .demo1 input{ margin-right:5px;}
+        .mb10 a{ margin-left:10px;}
+    </style>
+</head>
+<body>
+<div class="demo1">
+    <div>
+        <div class="mb10">
+            <input type="text" name="" id="txt"/><a id="add" href="javascript:;">添加</a>
+        </div>
+        <select name="" id="country">
+            <option value="">中国人</option>
+            <option value="">蒙古人</option>
+            <option value="">朝鲜人</option>
+        </select>
+        <div class="pt10"><a id="del" href="javascript:;">删除</a></div>
+    </div>
+</div>
+<script>
+    (function(){
+        var txt = document.getElementById('txt');
+        var add = document.getElementById('add');
+        var del = document.getElementById('del');
+        var country = document.getElementById('country');
+        add.onclick = function(){
+            var v = checkTxt(txt);
+            if(v){
+                country.options.add(new Option(v, v));
+            }
+        }
+        del.onclick = function(){
+            var i = country.selectedIndex;
+            country.options.remove(i);
+        }
+        function checkTxt(obj){
+            if(obj.value.length < 1){
+                alert('选项不能为空!');
+                return false;
+            }
+            return obj.value;
+        }
+
+    }());
+</script>
+</body>
+</html>

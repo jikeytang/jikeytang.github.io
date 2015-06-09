@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>可输入的下拉框</title>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../css/reset.css" media="all"/>
+    <style type="text/css">
+        .demo1{ width:350px; text-align:left;}
+        .out{ position:relative;}
+        .txt{ position:absolute;top: 0;left: 0; z-index:2; width:90px; border-right:none;}
+        .country{ position:absolute;top: 0;left: 0; z-index:1; width:115px;}
+    </style>
+</head>
+<body>
+<div class="demo1">
+    <div id="div" class="out">
+        <input class="txt" type="text" name="" id="txt"/>
+        <select name="" id="country" class="country">
+        </select>
+    </div>
+</div>
+<script>
+    (function(){
+        var txt = document.getElementById('txt');
+        var country = document.getElementById('country');
+        txt.onkeyup = function(e){
+            e = e || window.event;
+            var code = e.keyCode || e.charCode;
+            if(code == 13){
+                addOpt(country, this.value);
+                this.value = '';
+            }
+        }
+
+        function addOpt(obj, v){
+            var o = document.createElement('option');
+            o.value = v;
+            o.text = v;
+            obj.options.add(o);
+        }
+        country.onchange = function(){
+            txt.value = this.value;
+        }
+    }());
+</script>
+</body>
+</html>

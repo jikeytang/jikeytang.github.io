@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>点击图片逐渐放大</title>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../css/reset.css" media="all"/>
+    <style type="text/css">
+        .demo{ width:350px;margin:250px auto; text-align:left; padding:0; }
+        #div{border:1px solid #ccc; width:350px; height:350px; position:relative;cursor: pointer; }
+        .b{ position:absolute;top: 0;left: 0; width:350px; height:350px; border:1px dashed #c00; z-index:2;background: #fff;filter:alpha(opacity:30);opacity:0.3;}
+        .small_pic{ background:#eee; position:relative; }
+        .small_pic img{ position:absolute;top: 0;left: 0; width:350px; height:350px; z-index:1;}
+    </style>
+</head>
+<body>
+<div id="div" class="demo">
+    <div class="small_pic">
+        <img src="images/big.jpg" alt="放大镜图片二"/>
+    </div>
+    <div class="b"></div>
+</div>
+<script>
+    (function(){
+        var div = document.getElementById('div');
+        var img = div.getElementsByTagName('img')[0];
+        div.onclick = function(){
+            act(img, {width : 500, height : 500, top : -80, left : -80}, function(){
+                alert('动画已经完成!');
+            });
+        }
+        function css(obj, attr){
+            if(obj.currentStyle){
+                return obj.currentStyle[attr];
+            } else {
+                return getComputedStyle(obj, false)[attr];
+            }
+        }
+        function act(obj, json, fn){
+            clearInterval(obj.timer);
+            obj.timer = setInterval(function(){
+                var stop = true;
+                for(var p in json){
+                    var value = json[p];
+                    var cur = parseInt(css(obj, p));
+                    var speed = (value - cur) / 8;
+                    speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed);
+                    if(cur != value){
+                        stop = false;
+                        obj.style[p] = cur + speed + 'px';
+                    }
+                }
+                if(stop){
+                    clearInterval(obj.timer);
+                    obj.timer = null;
+                    fn && fn();
+                }
+            }, 30);
+        }
+    }());
+</script>
+</body>
+</html>

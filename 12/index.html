@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>全选反选少选复选框</title>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../css/reset.css" media="all"/>
+    <style type="text/css">
+        .demo1{ text-align:center;}
+        .demo1 input{ margin-right:5px;}
+    </style>
+</head>
+<body>
+<div class="demo1">
+    <h5><input type="checkbox" id="all" /><label>全选选项</label></h5>
+    <p><input type="checkbox" name="item" /><label>选项（一）</label></p>
+    <p><input type="checkbox" name="item" /><label>选项（二）</label></p>
+    <p><input type="checkbox" name="item" /><label>选项（三）</label></p>
+    <p><input type="checkbox" name="item" /><label>选项（四）</label></p>
+    <p><input type="checkbox" name="item" /><label>选项（五）</label></p>
+    <p><input type="checkbox" name="item" /><label>选项（六）</label></p>
+    <p><input type="checkbox" name="item" /><label>选项（七）</label></p>
+    <p><input type="checkbox" name="item" /><label>选项（八）</label></p>
+    <p><input type="checkbox" name="item" /><label>选项（九）</label></p>
+    <p><input type="checkbox" name="item" /><label>选项（十）</label></p>
+</div>
+<script>
+    (function(){
+        var all = document.getElementById('all');
+        var check = document.getElementsByTagName('input');
+        var len = check.length - 1;
+        all.onclick = function(){
+            choose(this.checked);
+        }
+        function each(arr, callback){
+            var len = arr.length;
+            for(var i = 1; i < len; i++){
+                if(callback.call(arr[i], i, arr[i]) === false){
+                    break;
+                }
+            }
+            return arr;
+        }
+        function choose(t){
+            each(check, function(i){
+                check[i].checked = t;
+            });
+        }
+        each(check, function(i){
+            check[i].onclick = function(){
+                if(!this.checked){
+                    all.checked = false;
+                }
+                if(checkLen() == len){
+                    all.checked = true;
+                } else {
+                    all.checked = false;
+                }
+            }
+        });
+        function checkLen(){
+            var n = 0;
+            each(check, function(i){
+                if(this.checked){
+                    n++;
+                }
+            });
+            return n;
+        }
+    }());
+</script>
+</body>
+</html>

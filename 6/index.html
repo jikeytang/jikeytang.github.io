@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>限制只能输入数字</title>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../css/reset.css" media="all"/>
+</head>
+<body>
+<div class="demo1">
+    <form class="form-horizontal user-input" id="form" role="form">
+        <div class="form-group">
+            <label for="user" class="col-sm-2 control-label">用户名</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" data-ime="1" id="user" placeholder="用户名">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="password" class="col-sm-2 control-label">密码</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" id="password" placeholder="密码">
+
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button id="btn" type="button" class="btn btn-primary btn-block">提 交</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    (function(){
+        var form = document.getElementById('form');
+        var input = form.getElementsByTagName('input');
+        for(var i = 0; i < input.length; i++){
+            input[i].onfocus = input[i].onblur = input[i].onkeyup = function(){
+                this.value = this.value.replace(/\D/g, '');
+            }
+        }
+    }());
+</script>
+</body>
+</html>

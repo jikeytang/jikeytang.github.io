@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>鼠标移入移出改变透明度</title>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../css/reset.css" media="all"/>
+    <style type="text/css">
+        .demo1{ width:350px; text-align:left;}
+    </style>
+</head>
+<body>
+<div class="demo1">
+    <img id="img" src="http://img13.360buyimg.com/n1/jfs/t253/339/684583987/309716/5da5fdcb/53ef8a13Ncc2614f0.jpg" alt=""/>
+</div>
+<script>
+    (function(){
+        var img = document.getElementById('img');
+        img.onmouseover = function(){
+            fade(this, 30);
+        }
+        img.onmouseout = function(){
+            fade(this, 100);
+        }
+
+        function css(obj, attr){
+            if(obj.currentStyle){
+                return obj.currentStyle[attr];
+            } else {
+                return getComputedStyle(obj, false)[attr];
+            }
+        }
+        function fade(obj, target){
+            clearInterval(obj.timer);
+            obj.timer = setInterval(function(){
+                var alpha = 0;
+                var cur = css(obj, 'opacity') * 100;
+                alpha = (target - cur) / 8;
+                alpha = alpha > 0 ? Math.ceil(alpha) : Math.floor(alpha);
+                var stop = true;
+                if(cur != target){
+                    stop = false;
+                }
+                cur += alpha;
+                obj.style.fitler = 'alpha(opacity=' + cur + ')';
+                obj.style.opacity = cur / 100;
+                if(stop){
+                    clearInterval(obj.timer);
+                    obj.timer = null;
+                }
+            }, 30);
+        }
+    }());
+</script>
+</body>
+</html>

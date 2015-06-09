@@ -1,14 +1,93 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title></title>
-    <!--<script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.10.2/jquery-1.10.2.min.js"></script>-->
-    <script type="text/javascript" src="../jquery-1.8.3.min.js"></script>
+    <meta charset="utf-8"/>
+    <title>豪情前端作品列表 - 着重于原生js的研究与探索</title>
+    <link rel="stylesheet" type="text/css" href="css/reset.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="css/main.css" media="all"/>
 </head>
 <body>
-test
-<script>
+<!--http://1.gitapp.sinaapp.com/base/-->
+
+<div class="wrap shadow">
+    <ol id="ol" class="list">
+
+    </ol>
+</div>
+<script type="text/javascript">
+    var str = '',
+        data = [
+            [
+                { title : '第一章 表单常用代码'},
+                { url : '1/index.html', title : '去除字符串左右的空格' },
+                { url : '2/index.html', title : '验证用户是否输入' },
+                { url : '3/index.html', title : '禁止用户输入' },
+                { url : '4/index.html', title : '关闭用户中文输入法' },
+                { url : '5/index.html', title : '禁止用户复制和粘贴' },
+                { url : '6/index.html', title : '限制只能输入数字' },
+                { url : '7/index.html', title : '限制字符串长度' },
+                { url : '8/index.html', title : '仿微博提示可输入剩余字数' },
+                { url : '9/index.html', title : '换行文本自动滚动' },
+                { url : '10/index.html', title : 'Ctrl + Return提交表单' },
+                { url : '11/index.html', title : '文本内容进行关键字过滤' },
+                { url : '12/index.html', title : '全选反选少选复选框' },
+                { url : '13/index.html', title : '动态操作下拉选项' },
+                { url : '14/index.html', title : '级联菜单' },
+                { url : '15/index.html', title : '可添加的下拉选项' }
+            ],
+            [
+                { title : '第二章 常用图片相关代码'},
+                { url : '16/index.html', title : '可添加的下拉选项' },
+                { url : '17/index.html', title : '图片放大镜效果' },
+                { url : '18/index.html', title : '点击图片逐渐放大' }
+            ],
+            [
+                { title : '第三章 内容展示常用代码'},
+                { url : '19/index.html', title : '单元行上鼠标悬停提示' },
+                { url : '20/index.html', title : '隔行换色鼠标经过换色' },
+                { url : '21/index.html', title : '添加或删除表格行' },
+                { url : '22/index.html', title : '表格的行拖动' },
+                { url : '1/index.html', title : '鼠标移入移出改变样式' }
+            ]
+        ];
+    for(var i = 0; i < data.length; i++){
+        var items = data[i];
+        var sub = '';
+        for(var j=0; j<items.length; j++){
+            var son = items[j];
+            if(j == 0){
+                sub += '<li><h1><a href="javascript:;" title="' + son.title + '">' + son.title + '</a></h1><dl class="sub-dl">';
+            } else {
+                sub += '<dd><a href="' + son.url + '" target="_blank" title="' + son.title + '">' + son.title + '</a></dd>';
+            }
+            if(j == items.length - 1){
+                sub += '</dl></li>';
+            }
+        }
+        str += sub;
+    }
+    var ol = document.getElementById('ol');
+    ol.innerHTML = str;
+    var h1 = ol.getElementsByTagName('h1');
+    var dl = ol.getElementsByTagName('dl');
+    var tmp = -1;
+    var open = false;
+    for(var i=0; i < h1.length; i++){
+        h1[i].index = i;
+        h1[i].onclick = function(){
+            for(var i=0; i<h1.length; i++){
+                dl[i].style.display = 'none';
+            }
+            if(tmp == this.index && open){
+                dl[this.index].style.display = 'none';
+                open = false;
+            } else {
+                dl[this.index].style.display = 'block';
+                open = true;
+            }
+            tmp = this.index;
+        }
+    }
 
 </script>
 </body>

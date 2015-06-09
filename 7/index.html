@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>限制字符串长度</title>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../css/reset.css" media="all"/>
+</head>
+<body>
+<div class="demo1">
+    <form class="form-horizontal user-input" id="form" role="form">
+        <div class="form-group">
+            <label for="user" class="col-sm-2 control-label">用户名</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="user" maxlength="15" placeholder="用户名">
+                <div class="popover right"><div class="popover-content"><div class="">最多只能输入15个中文</div></div><div class="arrow"></div></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="password" class="col-sm-2 control-label">密码</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" id="password" maxlength="15" placeholder="密码">
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="msg" class="col-sm-2 control-label">备注</label>
+            <div class="col-sm-10">
+                <textarea class="from-control" name="" id="msg" maxlength="50" placeholder="备注" cols="47" rows="10"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox">  记住我
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button id="btn" type="button" class="btn btn-primary btn-block">提 交</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    (function(){
+        var form = document.getElementById('form');
+        var input = form.getElementsByTagName('input');
+        var textarea = form.getElementsByTagName('textarea')[0];
+        var btn = document.getElementById('btn');
+        btn.onclick = function(){
+            max(textarea);
+            return false;
+        }
+        textarea.onfocus = function(){
+
+        }
+        function max(o){
+            var m = o.getAttribute('maxlength');
+            if(o.value.length >= m && o.className.indexOf('error') == -1){
+                error(o, '信息过长只能显示50字');
+                o.className += ' error';
+            }
+        }
+        function error(o, txt, show){
+            if(arguments.length == 3 && show){
+                o.tip && (o.tip.style.display = 'none');
+            } else {
+                if(o.className.search(/error/) == -1){
+                    o.tip = over(o, txt);
+                } else {
+                    o.tip.style.display = 'block';
+                }
+            }
+        }
+        function over(o, txt){
+            var pop = div('popover right');
+            var arr = div('arrow');
+            var content = div('popover-content');
+            content.appendChild(div('', 'p', txt));
+            pop.appendChild(content);
+            pop.appendChild(arr);
+            o.parentNode.insertBefore(pop, o.nextSibling);
+            return pop;
+        }
+        function div(cls, tag, txt){
+            if(!tag){
+                tag = cls;
+            }
+            var d = document.createElement('div' || tag);
+            d.className = cls;
+            txt && (d.innerHTML = txt);
+            return d;
+        }
+    }());
+</script>
+</body>
+</html>

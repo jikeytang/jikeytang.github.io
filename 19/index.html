@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>单元行上鼠标悬停提示</title>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../css/reset.css" media="all"/>
+    <style type="text/css">
+        .demo{ width:350px;margin:50px auto; text-align:left; padding:0; }
+        .list{ color:#2a6496;}
+        .list li{ position:relative; width:320px;list-style:decimal inside;line-height:35px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        .list a{font-size:18px;}
+        .tip{position:absolute;left: 0;display:none;color:#fff;background:rgba(0,0,0, 0.6); line-height:25px;font-size:12px;padding:2px 5px;border-radius:5px;z-index:1}
+        .ellipsis{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    </style>
+</head>
+<body>
+<div id="div" class="demo">
+    <ol class="list">
+        <li><i></i><a href="#" data-title="铁路部门：火车票丢失需“先补买再退款”">铁路部门：火车票丢失需“先补买再退款”</a></li>
+        <li><i></i><a href="#" data-title="新修订新疆宗教事务条例施行 禁止宣扬极端思想">新修订新疆宗教事务条例施行 禁止宣扬极端思想</a></li>
+        <li><i></i><a href="#" data-title="长征火箭从天而降瞬间被拍下 民众围观(图)">长征火箭从天而降瞬间被拍下 民众围观(图)</a></li>
+        <li><i></i><a href="#" data-title="呼格父母:今后不再上访 打算先给儿子买个好墓地">呼格父母:今后不再上访 打算先给儿子买个好墓地</a></li>
+        <li><i></i><a href="#" data-title="中国驻印尼使馆:印尼未对持普通护照中方人员免签">中国驻印尼使馆:印尼未对持普通护照中方人员免签</a></li>
+        <li><i></i><a href="#" data-title="陕西圈养大熊猫发生犬瘟热  一8岁大熊猫死亡">陕西圈养大熊猫发生犬瘟热  一8岁大熊猫死亡</a></li>
+    </ol>
+</div>
+<script>
+    (function(){
+        var div = document.getElementById('div');
+        var links = div.getElementsByTagName('a');
+        var tip = createTip();
+        for(var i = 0; i < links.length; i++){
+            links[i].onmousemove = function(e){
+                e = e || event;
+                var title = this.getAttribute('data-title');
+                tip.innerHTML = title;
+                tip.style.display = 'block';
+                tip.style.left = e.clientX + 10 + 'px';
+                tip.style.top = e.clientY + 15 + 'px';
+            }
+            links[i].onmouseout = function(e){
+                tip.style.display = 'none'
+            }
+        }
+        function createTip(){
+            var div = document.createElement('div');
+            div.className = 'tip';
+            return document.body.appendChild(div);
+        }
+    }());
+</script>
+</body>
+</html>

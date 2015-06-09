@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>图片放大镜效果</title>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../css/reset.css" media="all"/>
+    <style type="text/css">
+        .demo{ width:350px;margin:30px auto; text-align:left; padding:0; }
+        #div{border:1px solid #ccc; position:relative; }
+        #div .small_pic{ width:350px; height:350px; background:#eee; position:relative; }
+        #div .float_layer{ width:100px; height:100px; border:1px solid #000; background:#fff; filter:alpha(opacity:30); opacity:0.3; position:absolute; top:0; left:0; display:none; }
+        #div .mark{ width:100%; height:100%; position:absolute; z-index:2; left:0px; top:0px; background:red; filter:alpha(opacity:0); opacity:0; }
+        #div .big_pic{ position:absolute; top:-1px; left:360px; width:250px; height:250px; overflow:hidden; border:2px solid #CCC; display:none; }
+        #div .big_pic img{ position:absolute; top:-30px; left:-80px; }
+    </style>
+</head>
+<body>
+<div id="div" class="demo">
+    <div class="small_pic">
+        <span class="mark"></span>
+        <span class="float_layer"></span>
+        <img src="images/small.jpg" alt="放大镜图片一"/>
+    </div>
+
+    <div class="big_pic">
+        <img src="images/big.jpg" alt="放大镜图片二"/>
+    </div>
+</div>
+<script>
+    (function(){
+        var div = document.getElementById('div');
+        var small = getByCls(div, 'small_pic')[0];
+        var big = getByCls(div, 'big_pic')[0];
+        var img = big.getElementsByTagName('img')[0];
+        var mark = small.getElementsByTagName('span')[0];
+        var layer = small.getElementsByTagName('span')[1];
+        small.onmousemove = function(e){
+            e = e || event;
+            this.style.cursor = 'move';
+            layer.style.display = big.style.display = 'block';
+            var t = e.clientY - div.offsetTop - layer.clientHeight/2;
+            var l = e.clientX - div.offsetLeft - layer.clientWidth/2;
+            if(t < 0){
+                t = 0;
+            } else if(t > div.clientHeight - layer.clientHeight){
+                t = div.clientHeight - layer.clientHeight;
+            }
+            if(l < 0){
+                l = 0;
+            } else if(l > div.clientWidth - layer.clientWidth){
+                l = div.clientWidth - layer.clientWidth;
+            }
+            var scaleX = l / (div.clientHeight - layer.clientHeight);
+            var scaleY = t / (div.clientWidth - layer.clientWidth);
+            layer.style.top = t + 'px';
+            layer.style.left = l + 'px';
+            img.style.left = -scaleX * (img.clientWidth - big.clientWidth) + 'px';
+            img.style.top = -scaleY * (img.clientHeight - big.clientHeight) + 'px';
+        }
+        small.onmouseout = function(e){
+            layer.style.display = big.style.display = 'none';
+        }
+        function getByCls(obj, cls){
+            if(obj.getElementsByClassName){
+                return obj.getElementsByClassName(cls);
+            } else {
+                var res = [],
+                    reg = new RegExp('^|\\s+' + cls + '\\s+|$'),
+                    all = obj.all;
+                for(var i = 0; i < all.length; i++){
+                    if(reg.test(all[i].className)){
+                        res.push(all[i]);
+                    }
+                }
+                return res;
+            }
+        }
+    }());
+</script>
+</body>
+</html>
