@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>选项卡-豪情</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <style type="text/css">
+        *{ margin:0; padding:0;}
+        body{ background:url(images/bg.jpg) 0 0 no-repeat;}
+        ul,li{list-style: none;}
+        a{ text-decoration:none;}
+        .wrap{ width:322px; height:640px;margin:8% auto 0; clear:both; overflow:hidden;animation:load 1s 1 linear;-webkit-animation:load 1s 1 linear;}
+        .top{width: 100%; height:42px; background:url(images/top.png) 0 0 no-repeat;}
+        .bar{ height:20px; background:url(images/bar.jpg) 0 0 no-repeat;}
+        .bottom{width: 100%; height:47px; background:url(images/bottom.png) 0 0 no-repeat; overflow:hidden;}
+        .bottom i{ display:block;margin:8px auto 0;width:30px; height:30px;background: #333;border-radius:50%; overflow:hidden;}
+        .bottom i:after{content:'';background: #444; width:15px; height:15px;margin:7px auto 0; display:block;border-radius:50%;}
+        .main{position:relative; height:486px; border-left:1px solid #fff; border-right:1px solid #fff;background: #fff; overflow:hidden; z-index:4;}
+        .inner{  width:2000px;}
+        .list{ position:relative; z-index:2;}
+        .list li{ float:left;width:320px;height: 486px;}
+        .list li:nth-child(1){background:url(images/1.jpg) 0 0 no-repeat;background-size:cover;}
+        .list li:nth-child(2){background:url(images/2.jpg) 0 0 no-repeat;background-size:cover;}
+        .list li:nth-child(3){background:url(images/3.jpg) 0 0 no-repeat;background-size:cover;}
+        .menu{ position:absolute;top: 0;left: 0;width: 100%; z-index:3;}
+        .menu a{ display:inline-block; height:40px; line-height:40px;color: #fff; text-align:center;}
+        .menu a:nth-child(1){width:33%;background:rgba(0,255,255, 0.6);}
+        .menu a:nth-child(2){width:34%;background:rgba(255,255,0, 0.6);}
+        .menu a:nth-child(3){width:33%;background:rgba(255,0,255, 0.5);}
+        .menu a.on{background:rgba(0,0,0,0.3);}
+        .info{ text-align:center; line-height:30px;color: #fff;}
+        @keyframes load1{
+            0%{transform:scale(1);}
+            50%{transform:scale(0.6);}
+            100%{transform:scale(1);}
+        }
+        @-webkit-keyframes load{
+            0%{transform:scale(1);}
+            50%{transform:scale(0.6);}
+            100%{transform:scale(1);}
+        }
+    </style>
+</head>
+<body>
+<div id="out"></div>
+<div class="wrap">
+    <div class="top"></div>
+    <div class="bar"></div>
+    <div class="main">
+        <nav class="menu"><a class="on" href="javascript:;">1</a><a href="javascript:;">2</a><a href="javascript:;">3</a></nav>
+        <div class="inner">
+            <ul class="list">
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+    </div>
+    <div class="bottom"><i></i></div>
+    <div class="info">支持移动端拖动切换，pc端点击切换</div>
+</div>
+<script>
+    (function(){
+        var ul = document.querySelector('.list');
+        var li = document.querySelectorAll('.list li');
+        var menu = document.querySelectorAll('.menu a');
+        var len = li.length;
+        var support = 'ontouchstart' in window;
+        var start = support ? 'touchstart' : 'mousedown';
+        var move = support ? 'touchmove' : 'mousemove';
+        var end = support ? 'touchend' : 'mouseup';
+        var startX = 0;
+        var now = 0;
+        var last = 0;
+        var width = li[0].clientWidth;
+        var animate = true;
+        var addEvent = function(obj, type, fn){
+            if(document.addEventListener){
+                obj.addEventListener(type, fn, false);
+            }
+        }
+        var removeEvent = function(obj, type, fn){
+            if(document.removeEventListener){
+                obj.removeEventListener(type, fn, false);
+            }
+        }
+        var drag = {
+            start : function(e){
+                if(!e.changedTouches) { return; }
+                startX = e.changedTouches[0].clientX;
+                addEvent(li[last], move, drag.move);
+                addEvent(li[last], end, drag.end);
+                return false;
+            },
+            move : function(e){
+                if(!animate){ return; }
+                animate = false;
+                var moveX = e.changedTouches[0].clientX;
+                if(moveX < startX){ // left
+                    if(last < len-1){
+                        last++;
+                    }
+                } else { // right
+                    if(last > 0){
+                        last--;
+                    }
+                }
+                ul.style.transform = 'translate(' + (-width * last + moveX - startX) + 'px, 0)';
+                ul.style.transition = '.5s';
+                e.stopPropagation();
+            },
+            end : function(e){
+                var moveX = e.clientX ? e.clientX : e.changedTouches[0].clientX;
+                ul.style.transform = 'translate(-' + (width * last) + 'px, 0)';
+                removeEvent(li[last], move, drag.move);
+                removeEvent(li[last], end, drag.end);
+                animate = true;
+                drag.cur();
+            },
+            finish : function(e){
+                animate = true;
+            },
+            cur : function(){
+                for(var i=0; i<li.length; i++){
+                    menu[i].classList.remove('on');
+                }
+                menu[last].classList.add('on');
+            }
+        }
+        addEvent(document, start, drag.start);
+        addEvent(ul, 'webkitTransitionEnd', drag.finish);
+        for(var i = 0; i < li.length; i++){
+            menu[i].index = i;
+            menu[i].onclick = function(){
+                last = this.index;
+                ul.style.transform = 'translate(-' + (width * last) + 'px, 0)';
+                ul.style.transition = '.5s';
+                for(i=0; i<li.length; i++){
+                    menu[i].classList.remove('on');
+                }
+                this.classList.add('on');
+            }
+        }
+    }());
+</script>
+</body>
+</html>
