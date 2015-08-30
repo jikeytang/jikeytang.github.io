@@ -1,182 +1,51 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!doctype html>
+<html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title></title>
-    <link rel="stylesheet" type="text/css" href="style.css"/>
-    <style type="text/css">
-        #div1{
-            width:200px;
-            height:200px;
-            padding:5px;
-            border:1px solid #ccc;
-            position:relative;
-        }
-
-        #div1 .small_pic{
-            width:200px;
-            height:200px;
-            background:#eee;
-            position:relative;
-        }
-        #div1 .float_layer{
-            width:100px;
-            height:100px;
-            border:1px solid #000;
-            background:#fff;
-            filter:alpha(opacity:30);
-            opacity:0.3;
-            position:absolute;
-            top:0;
-            left:0;
-            display:none;
-        }
-        #div1 .mark{
-            width:100%;
-            height:100%;
-            position:absolute;
-            z-index:2;
-            left:0px;
-            top:0px;
-            background:red;
-            filter:alpha(opacity:0);
-            opacity:0;
-        }
-        #div1 .big_pic{
-            position:absolute;
-            top:-1px;
-            left:215px;
-            width:250px;
-            height:250px;
-            overflow:hidden;
-            border:2px solid #CCC;
-            display:none;
-        }
-        #div1 .big_pic img{
-            position:absolute;
-            top:0px;
-            left:0px;
-        }
-    </style>
-    <script type="text/javascript" src="miaov.js"></script>
+    <meta charset="UTF-8">
+    <title>打字机效果</title>
 </head>
 <body>
-<div id="div1">
-    <div class="small_pic">
-        <span class="mark"></span> <span class="float_layer"></span>
-    </div>
-    <div class="big_pic"></div>
+<div id="wrap">
 </div>
+
 <script>
-    function getByClass(oParent, sClass){
-        var aEle = oParent.getElementsByTagName('*');
-        var aTmp = [];
-        var i = 0;
-
-        for(i = 0; i < aEle.length; i++){
-            if(aEle[i].className == sClass){
-                aTmp.push(aEle[i]);
+    (function(){
+        var wrap = document.getElementById('wrap');
+        var txt = '嘿，兄弟！我们好久不见你在哪里'+
+            '嘿，朋友，如果真的是你，请打招呼！'+
+            '嘿，兄弟！我们好久不见你在哪里 '+
+            '嘿，朋友，如果真的是你，请打招呼！ '+
+            '别对着我笑,没人会在乎 '+
+            '别对着我哭,没人会无助 '+
+            '其实大家早已经清清楚楚 '+
+            '脚下踏上了不回头的路 '+
+            '我说好久不见你去何处 '+
+            '你却对我说，我去江湖 '+
+            '恩恩怨怨，没人会认输 '+
+            '舞刀弄剑,一点都不酷 '+
+            '来吧,热上一壶好酒 '+
+            '说吧,要说原来的辛苦 '+
+            '难得知已,聪明又糊涂 '+
+            '儿女情长,牵肠又挂肚 '+
+            '你我更需要忍受孤独 '+
+            '独来独往,英雄没有出处 '+
+            '笑一笑朋友,快乐会无数 '+
+            '喝完了这壶让我们上路 '+
+            '嘿，兄弟！嘿，朋友! '+
+            '嘿，兄弟！我们好久不见你在哪里 '+
+            '嘿，朋友，如果真的是你，请打招呼！ '+
+            '嘿，兄弟！我们好久不见你在哪里 '+
+            '嘿，朋友，如果真的是你，请打招呼！';
+        var len = txt.length;
+        var n = 0;
+        var timer = setInterval(function(){
+            if(n >= len){
+                clearInterval(timer);
+                return;
             }
-        }
-
-        return aTmp;
-    }
-
-    window.onload = function(){
-        var oDiv = document.getElementById('div1');
-        var oMark = getByClass(oDiv, 'mark')[0];//整个图片透明区
-        var oFloat = getByClass(oDiv, 'float_layer')[0];//移动的小框
-        var oBig = getByClass(oDiv, 'big_pic')[0];
-        var oSmall = getByClass(oDiv, 'small_pic')[0];
-        //var oImg=oBig.getElementsByTagName('img')[0];
-
-        var iNow = 0;
-
-        var dataSmall = [
-            "http://i.niupic.com/images/2015/01/07/54ac9bf45e65c.png",
-            "http://i.niupic.com/images/2015/01/07/54ac9bf6357fc.jpg",
-            "http://i.niupic.com/images/2015/01/07/54ac9bf7b496c.jpg"
-        ];
-
-        var dataBig = [
-            "http://i.niupic.com/images/2015/01/07/54ac9c0aea734.png",
-            "http://i.niupic.com/images/2015/01/07/54ac9c0531242.jpg",
-            "http://i.niupic.com/images/2015/01/07/54ac9bfb85484.jpg"
-        ];
-
-
-        oMark.onmouseover = function(){
-            oFloat.style.display = 'block';
-            oBig.style.display = 'block';
-        };
-
-        oMark.onmouseout = function(){
-            oFloat.style.display = 'none';
-            oBig.style.display = 'none';
-        };
-
-
-        var oImgs = document.createElement("img");
-        var oImgb = document.createElement("img");
-
-        oMark.onclick = function(){
-
-            iNow++;
-
-            oImgs.src = "";
-            oImgb.src = "";
-
-            if(iNow > dataSmall.length){
-                iNow = 1;
-            }
-
-            oImgs.src = dataSmall[iNow - 1];
-            oSmall.appendChild(oImgs);
-
-            oImgb.src = dataBig[iNow - 1];
-            oBig.appendChild(oImgb);
-
-            Imglocation();
-
-        };
-
-        var percentX = 0;
-        var percentY = 0;
-
-        function Imglocation(){
-            oImgb.style.left = -percentX * (oImgb.offsetWidth - oBig.offsetWidth) + "px";
-            oImgb.style.top = -percentY * (oImgb.offsetHeight - oBig.offsetHeight) + "px";
-        }
-
-        oMark.onmousemove = function(ev){
-            var oEvent = ev || event;
-            var l = oEvent.clientX - oDiv.offsetLeft - oSmall.offsetLeft - oFloat.offsetWidth / 2;
-            var t = oEvent.clientY - oDiv.offsetTop - oSmall.offsetTop - oFloat.offsetHeight / 2;
-
-            if(l < 0){
-                l = 0;
-            } else if(l > oMark.offsetWidth - oFloat.offsetWidth){
-                l = oMark.offsetWidth - oFloat.offsetWidth;
-            }
-
-            if(t < 0){
-                t = 0;
-            } else if(t > oMark.offsetHeight - oFloat.offsetHeight){
-                t = oMark.offsetHeight - oFloat.offsetHeight;
-            }
-
-            oFloat.style.left = l + 'px';
-            oFloat.style.top = t + 'px';
-
-            percentX = l / (oMark.offsetWidth - oFloat.offsetWidth);
-            percentY = t / (oMark.offsetHeight - oFloat.offsetHeight);
-
-            Imglocation();
-
-        };
-
-
-    };
+            wrap.innerHTML = txt.slice(0, n++) + '_';
+        }, 200);
+    }());
 </script>
 </body>
 </html>
