@@ -1,7 +1,7 @@
 *{ margin:0; padding:0;}
 body{font:14px/1.5 "Hiragino Sans GB","Hiragino Sans GB W3",'微软雅黑';background:#fff;}
 table{border-collapse:collapse;border-spacing:0;}
-li{list-style:none;}
+ul,li{list-style:none;}
 fieldset,img{border:0;}
 article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}
 q:before,q:after{content:'';}
