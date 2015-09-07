@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>字母上下间歇滚动</title>
+    <link rel="stylesheet" type="text/css" href="../../css/reset.css" media="all"/>
+    <style type="text/css">
+        .outer{ width:500px;margin: 30px auto; overflow:hidden;}
+    </style>
+</head>
+<body>
+<div id="wrap" class="outer">
+    <ul id="list" class="list">
+        <li>春天的江潮水势浩荡，与大海连成一片</li>
+        <li>一轮明月从海上升起，好像与潮水一起涌出来。</li>
+        <li>月光照耀着春江，随着波浪闪耀千万里，所有地方的春江都有明亮的月光。</li>
+        <li>江水曲曲折折地绕着花草丛生的原野流淌，</li>
+        <li>月光照射着开遍鲜花的树林好像细密的雪珠在闪烁。</li>
+        <li>月色如霜，所以霜飞无从觉察。</li>
+        <li>洲上的白沙和月色融合在一起，看不分明。</li>
+        <li>江水、天空成一色，没有一点微小灰尘，</li>
+        <li>明亮的天空中只有一轮孤月高悬空中。</li>
+        <li>江边上什么人最初看见月亮，江上的月亮哪一年最初照耀着人？</li>
+    </ul>
+</div>
+<script>
+    (function(){
+        var wrap = document.getElementById('wrap');
+        var list = document.getElementById('list');
+        var li = list.getElementsByTagName('li');
+        var first = list.children[0];
+        var height = first.offsetHeight;
+        var outHeight = wrap.offsetHeight;
+        function css(obj, attr){
+            if(obj.currentStyle){
+                return obj.currentStyle[attr];
+            } else {
+                return window.getComputedStyle(obj, false)[attr];
+            }
+        }
+        function animate(obj, attr, target){
+            clearInterval(obj.timer);
+            obj.timer = setInterval(function(){
+                var stop = true;
+                var cur = parseInt(css(obj, attr));
+                var speed = (target - cur) / 8;
+                speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed);
+                if(target != cur){
+                    stop = false;
+                }
+                cur += speed;
+                obj.style[attr] = cur + 'px';
+                if(stop){
+                    clearInterval(obj.timer);
+                    obj.timer = null;
+                }
+            }, 30);
+        }
+        var i = 0;
+        var timer = setInterval(function(){
+            if(i == li.length){
+                clearInterval(timer);
+            }
+            animate(list, 'marginTop', -(height * i++));
+        }, 1000);
+    }());
+</script>
+</body>
+</html>
