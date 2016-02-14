@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>选项卡轮播-豪情</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <style type="text/css">
+        *{margin:0;padding:0;}
+        body{ font:12px/1.125 Arial, Helvetica, sans-serif; background:#fff; }
+        ul,li{list-style:none;}
+        a{text-decoration:none;}
+        .wrap{width:600px;height:350px;margin:10px auto;border:1px solid #ccc;}
+        .inner{padding:15px;}
+        .clearfix{overflow:hidden;_zoom:1;}
+        .nav li{float:left;padding:10px 30px;background:#d6efe2;color:#000;cursor:pointer;}
+        .nav li.on{background:#015963;color:#fff;}
+        .photo{float:left;width:430px;overflow:hidden;}
+        .photo img{width:430px;}
+        .part{width:10000px;}
+        .side{float:right;width:140px;}
+        .link{float:left;}
+        .bar li{height:40px;line-height:40px;text-indent:2em;background:#f7f7f7;border-bottom:1px solid #ccc;cursor:pointer;}
+        .bar li.on{background:#659bc7;color:#fff;}
+        .none{display:none;}
+    </style>
+</head>
+<body>
+<div id="out"></div>
+<div id="wrap" class="wrap">
+    <div class="inner">
+        <div class="title">
+            <ul class="nav clearfix">
+                <li class="on">菜单一</li>
+                <li>菜单二</li>
+            </ul>
+        </div>
+        <div class="main clearfix">
+            <div class="items">
+                <div class="photo">
+                    <div class="part">
+                        <a class="link" href="#"><img src="http://i3.vanclimg.com/cms/20151111/xiongyali.jpg" alt=""></a>
+                        <a class="link" href="#"><img src="http://i3.vanclimg.com/cms/20151112/erz-sj-1112.jpg" alt=""></a>
+                        <a class="link" href="#"><img src="http://i2.vanclimg.com/cms/20151111/hdhymjd.jpg" alt=""></a>
+                    </div>
+                </div>
+                <div class="side">
+                    <ul class="bar">
+                        <li class="on">图片一</li>
+                        <li>图片二</li>
+                        <li>图片三</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="items none">
+                <div class="photo">
+                    <div class="part">
+                        <a class="link" href="#"><img src="http://i3.vanclimg.com/cms/20151111/yangrongshanx.jpg" alt=""></a>
+                        <a class="link" href="#"><img src="http://i2.vanclimg.com/cms/20151112/jd5.jpg" alt=""></a>
+                        <a class="link" href="#"><img src="http://i5.vanclimg.com/cms/20151022/niuzaihuodong.jpg" alt=""></a>
+                        <a class="link" href="#"><img src="http://i5.vanclimg.com/cms/20151111/710x475.jpg" alt=""></a>
+                    </div>
+                </div>
+                <div class="side">
+                    <ul class="bar">
+                        <li class="on">图片四</li>
+                        <li>图片五</li>
+                        <li>图片六</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="none" style="display:none;">
+    <div id="div" style="width:100px;height:200px;background:#000;"></div>
+    <button id="btn">test</button>
+</div>
+<script>
+    (function(){
+        var li = document.querySelectorAll('.nav li'),
+                len = li.length,
+                link = document.querySelectorAll('.link'),
+                aLen = link.length,
+                bar = document.querySelectorAll('.bar li'),
+                barLen = bar.length,
+                items = document.querySelectorAll('.items'),
+                isDone = false;
+        function tab(index){
+            for(var i = 0; i < len; i++){
+                li[i].classList.remove('on');
+                items[i].style.display = 'none';
+            }
+            li[index].style.display = 'block';
+            li[index].classList.add('on');
+            items[index].style.display = 'block';
+        }
+        function tabBar(index){
+            for(var i = 0; i < barLen; i++){
+                bar[i].classList.remove('on');
+                link[i].style.display = 'none';
+                link[i].classList.remove('on');
+            }
+            bar[index].style.display = 'block';
+            bar[index].classList.add('on');
+            link[index].style.display = 'block';
+            link[index].classList.add('on');
+        }
+        var cur = 0,
+                barCur = 0;
+        function change(){
+            var timer = setInterval(function(){
+                if(barCur >= (barLen - 1)){
+                    barCur = 0;
+                } else {
+                    barCur++;
+                }
+                if(barCur % 3 == 0){
+                    if(cur >= len - 1){
+                        cur = 0;
+                    } else {
+                        cur++;
+                    }
+                    tab(cur);
+                }
+                tabBar(barCur);
+            }, 1500);
+        }
+        change();
+    }());
+</script>
+</body>
+</html>
