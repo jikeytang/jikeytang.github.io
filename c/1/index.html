@@ -7,7 +7,10 @@
     <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="../../css/reset.css" media="all"/>
     <style type="text/css">
-        .col-sm-10 button{margin:0 10px;}
+        .col-sm-10 button{width:43%;margin:0 10px 10px;}
+        .ui-dialog{position:fixed;text-align:center;top:50%;left:50%;transform:translate(-50%,-50%);min-width:500px;min-height:150px;z-index:13;background-color:#fafafc;border-radius:5px;}
+        .ui-dialog-mask{position:fixed;top:0;width:100%;height:100%;left:0;z-index:1;background:rgba(0, 0, 0, 0.6);}
+        .ui-dialog-title h1{font-size:17px;font-weight:400;}
     </style>
 </head>
 <body>
@@ -25,36 +28,29 @@
 <button id="btn">test</button>
 <script>
     (function(){
-        var tpl = '<div id="dialog" class="ui-dialog">' + 
-            '<div class="ui-dialog-title">' + 
-                '<h1>{{title}}</h1>' + 
-                '<a href="" class="ui-dialog-close"></a>' + 
-            '</div>' + 
-            '<div class="ui-dialog-main">{{content}}</div>' + 
-            '<div class="ui-dialog-footer"></div>' + 
-        '</div>';
-        var json = {
-            title : '弹出层',
-            content : '内容'
-        }
         var wrap = function(html, data){
             return html.replace(/{{(\w+)}}/g, function(item, a){
                 return data[a];
             });
         }
         function Dialog(){
-            var arg = arguments;
-            for(var i in arg){
-                this[i] = arg[i];
+            var args = arguments[0];
+            for(var i in args){
+                this[i] = args[i];
             }
             this.init();
         }
         Dialog.prototype = {
             init : function(){
-                
+                if(!document.getElementById(this.id)){
+                    var div = document.createElement('div');
+                    div.className = 'ui-dialog-outer';
+                    div.innerHTML = wrap(this.tpl, this.data);
+                    document.body.appendChild(div);
+                }
             },
             show : function(){
-                alert(1);
+
             },
             hide : function(){
                 
@@ -73,8 +69,25 @@
             }
         }
         var btn1 = document.getElementById('btn1');
+        var defaults = {
+            id : 'dialog',
+            tpl : 
+                '<div id="dialog" class="ui-dialog">' + 
+                    '<div class="ui-dialog-title">' + 
+                        '<h1>{{title}}</h1>' + 
+                        '<a href="" class="ui-dialog-close"></a>' + 
+                    '</div>' + 
+                    '<div class="ui-dialog-main">{{content}}</div>' + 
+                    '<div class="ui-dialog-footer"></div>' + 
+                '</div>' + 
+                '<div id="mask" class="ui-dialog-mask"></div>',
+            data : {
+                title : '弹出层',
+                content : '内容'
+            }
+        }
         btn1.onclick = function(){
-            var d = new Dialog();
+            var d = new Dialog(defaults);
             d.show();
         }
     }());
