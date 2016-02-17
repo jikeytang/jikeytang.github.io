@@ -78,13 +78,13 @@
 <script>
     (function(){
         var li = document.querySelectorAll('.nav li'),
-                len = li.length,
-                link = document.querySelectorAll('.link'),
-                aLen = link.length,
-                bar = document.querySelectorAll('.bar li'),
-                barLen = bar.length,
-                items = document.querySelectorAll('.items'),
-                isDone = false;
+            len = li.length,
+            link = document.querySelectorAll('.link'),
+            aLen = link.length,
+            bar = document.querySelectorAll('.bar li'),
+            barLen = bar.length,
+            items = document.querySelectorAll('.items'),
+            isDone = false;
         function tab(index){
             for(var i = 0; i < len; i++){
                 li[i].classList.remove('on');
@@ -106,7 +106,7 @@
             link[index].classList.add('on');
         }
         var cur = 0,
-                barCur = 0;
+            barCur = 0;
         function change(){
             var timer = setInterval(function(){
                 if(barCur >= (barLen - 1)){
