@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="../../css/reset.css" media="all"/>
     <style type="text/css">
         .col-sm-10 button{width:43%;margin:0 10px 10px;}
+        .none{display:none;}
         .ui-dialog{position:fixed;text-align:center;top:50%;left:50%;transform:translate(-50%,-50%);min-width:500px;min-height:150px;z-index:13;background-color:#fafafc;border-radius:5px;}
         .ui-dialog-mask{position:fixed;top:0;width:100%;height:100%;left:0;z-index:1;background:rgba(0, 0, 0, 0.6);}
         .ui-dialog-title h1{font-size:17px;font-weight:400;}
@@ -42,15 +43,24 @@
         }
         Dialog.prototype = {
             init : function(){
+                this.render();
+                this.bind();
+            },
+            render : function(){
                 if(!document.getElementById(this.id)){
                     var div = document.createElement('div');
-                    div.className = 'ui-dialog-outer';
+                    div.className = 'ui-dialog-outer none';
                     div.innerHTML = wrap(this.tpl, this.data);
                     document.body.appendChild(div);
                 }
+                this.dialog = document.getElementById(this.id);
+                this.box = this.dialog.parentNode;
+            },
+            bind : function(){
+                Drag(this.dialog);
             },
             show : function(){
-
+                this.box.style.display = 'block';
             },
             hide : function(){
                 
@@ -66,6 +76,94 @@
             },
             unLock : function(){
                 
+            }
+        }
+        function Drag(handler){
+            var startX  = 0,
+                startY  = 0,
+                lastX   = 0,
+                lastY   = 0,
+                box     = handler.parentNode,
+                width   = hogo.viewSize.width,
+                height  = hogo.viewSize.height,
+                drag    = {
+                    down: function(e){
+                        e                    = hogo.getEvent(e);
+                        handler.style.cursor = 'move';
+                        startX               = e.clientX - hogo.pos(handler, 'left');
+                        startY               = e.clientY - hogo.pos(handler, 'top');
+                        this.setCapture && this.setCapture(); // IE 下防止拖动过快丢失对象
+                        hogo.addEvent(document, 'mousemove', drag.move);
+                        hogo.addEvent(document, 'mouseup', drag.up);
+                        return false; // 防止在 chrome 下滚屏，并丢失 cursor:move 样式
+                    },
+                    move: function(e){
+                        e                  = hogo.getEvent(e);
+                        lastX              = e.clientX - startX;
+                        lastY              = e.clientY - startY;
+                        lastX              = Math.max(0, Math.min(width - handler.clientWidth, lastX));
+                        lastY              = Math.max(0, Math.min(height - handler.clientHeight, lastY));
+                        handler.style.top  = lastY + 'px';
+                        handler.style.left = lastX + 'px';
+                        hogo.stopPropagation(e);
+                        window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty(); // 取消选择文本
+                    },
+                    up: function(){
+                        handler.style.cursor = 'auto';
+                        hogo.removeEvent(document, 'mousemove', drag.move);
+                        hogo.removeEvent(document, 'mouseup', drag.up);
+                        handler.releaseCapture && handler.releaseCapture(); // 防止拖动过快丢失对象
+                    }
+                };
+            hogo.addEvent(handler, 'mousedown', drag.down);
+        }
+        var hogo = {
+            css : function (obj, attr){
+                if(obj.currentStyle){
+                    return obj.currentStyle[attr];
+                } else {
+                    return getComputedStyle(obj, false)[attr];
+                }
+            },
+            pos : function(obj, attr){
+                if(obj){
+                    var r = obj.getBoundingClientRect();
+                    return r[attr];    
+                } else {
+                    alert('对象不存在！');
+                }
+            },
+            viewSize: function(){
+                var de = document.documentElement;
+                return {
+                    'width': (window.innerWidth || (de && de.clientWidth) || doc.body.clientWidth),
+                    'height': (window.innerHeight || (de && de.clientHeight) || doc.body.clientHeight)
+                };
+            }(),
+            addEvent: function(ele, type, handler){
+                if(ele.addEventListener){
+                    ele.addEventListener(type, handler, false);
+                } else if(ele.attachEvent){
+                    ele.attachEvent('on' + type, handler);
+                }
+            },
+            removeEvent: function(ele, type, handler){
+                if(ele.removeEventListener){
+                    ele.removeEventListener(type, handler, false);
+                } else if(ele.detachEvent){
+                    ele.detachEvent('on' + type, handler);
+                }
+            },
+            stopPropagation: function(event) {
+                if (event.stopPropagation) {
+                    event.stopPropagation();
+                } else {
+                    event.cancelBubble = false;
+                }
+            },
+            // 格式化事件
+            getEvent: function(event) {
+                return event ? event : window.event;
             }
         }
         var btn1 = document.getElementById('btn1');
