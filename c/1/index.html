@@ -9,9 +9,16 @@
     <style type="text/css">
         .col-sm-10 button{width:43%;margin:0 10px 10px;}
         .none{display:none;}
-        .ui-dialog{position:fixed;text-align:center;top:50%;left:50%;transform:translate(-50%,-50%);min-width:500px;min-height:150px;z-index:13;background-color:#fafafc;border-radius:5px;}
+        .ui-dialog{position:fixed;text-align:center;width:500px;min-height:150px;z-index:13;background-color:#fafafc;border-radius:5px;}
         .ui-dialog-mask{position:fixed;top:0;width:100%;height:100%;left:0;z-index:1;background:rgba(0, 0, 0, 0.6);}
-        .ui-dialog-title h1{font-size:17px;font-weight:400;}
+        .ui-dialog-title h1{font-size:17px;font-weight:400;margin:0;display:block;height:50px;line-height:50px;}
+        .ui-dialog-main{line-height:1.2;padding:5px 20px;text-align:left;color:#999;}
+        .ui-dialog-footer{position:relative;height:40px;line-height:40px;border-top:1px solid #e1e1e1;display:-webkit-box;display:-webkit-flex;display:flex;}
+        .ui-dialog-footer a{position:relative;display:block;-webkit-box-flex:1;-webkit-flex:1;flex:1;color:#3CC51F;text-decoration:none;-webkit-tap-highlight-color:rgba(0,0,0,0);}
+        .ui-dialog-footer a:first-child:after{display:none;}
+        .ui-dialog-footer a:active{background-color:#EEEEEE;}
+        .ui-dialog-footer a:after{content:" ";position:absolute;left:0;top:0;width:1px;height:100%;border-left:1px solid #D5D5D6;color:#D5D5D6;-webkit-transform-origin:0 0;transform-origin:0 0;-webkit-transform:scaleX(0.5);transform:scaleX(0.5);}
+        a.ui-default{color:#353535;}
     </style>
 </head>
 <body>
@@ -27,6 +34,7 @@
 </div>
 <div id="div" style="width:200px;height:200px;background:#f1f1f1;"></div>
 <button id="btn">test</button>
+<div style="height:1000px;"></div>
 <script>
     (function(){
         var wrap = function(html, data){
@@ -46,6 +54,13 @@
                 this.render();
                 this.bind();
             },
+            setPos : function(){
+                var el = this.dialog,
+                    w  = el.offsetWidth,
+                    h  = el.offsetHeight;
+                el.style.top  = (hogo.viewSize.height - h) / 2 + 'px';
+                el.style.left = (hogo.viewSize.width - w) / 2 + 'px';
+            },
             render : function(){
                 if(!document.getElementById(this.id)){
                     var div = document.createElement('div');
@@ -55,9 +70,11 @@
                 }
                 this.dialog = document.getElementById(this.id);
                 this.box = this.dialog.parentNode;
+                this.show();
+                this.setPos();
             },
             bind : function(){
-                Drag(this.dialog);
+                Drag(this.dialog.children[0]);
             },
             show : function(){
                 this.box.style.display = 'block';
@@ -89,9 +106,8 @@
                 drag    = {
                     down: function(e){
                         e                    = hogo.getEvent(e);
-                        handler.style.cursor = 'move';
-                        startX               = e.clientX - hogo.pos(handler, 'left');
-                        startY               = e.clientY - hogo.pos(handler, 'top');
+                        startX               = e.clientX - box.offsetLeft;
+                        startY               = e.clientY - box.offsetTop;
                         this.setCapture && this.setCapture(); // IE 下防止拖动过快丢失对象
                         hogo.addEvent(document, 'mousemove', drag.move);
                         hogo.addEvent(document, 'mouseup', drag.up);
@@ -101,15 +117,14 @@
                         e                  = hogo.getEvent(e);
                         lastX              = e.clientX - startX;
                         lastY              = e.clientY - startY;
-                        lastX              = Math.max(0, Math.min(width - handler.clientWidth, lastX));
-                        lastY              = Math.max(0, Math.min(height - handler.clientHeight, lastY));
-                        handler.style.top  = lastY + 'px';
-                        handler.style.left = lastX + 'px';
+                        lastX              = Math.max(0, Math.min(width - box.offsetWidth, lastX));
+                        lastY              = Math.max(0, Math.min(height - box.offsetHeight, lastY));
+                        box.style.top  = lastY + 'px';
+                        box.style.left = lastX + 'px';
                         hogo.stopPropagation(e);
                         window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty(); // 取消选择文本
                     },
                     up: function(){
-                        handler.style.cursor = 'auto';
                         hogo.removeEvent(document, 'mousemove', drag.move);
                         hogo.removeEvent(document, 'mouseup', drag.up);
                         handler.releaseCapture && handler.releaseCapture(); // 防止拖动过快丢失对象
@@ -127,8 +142,7 @@
             },
             pos : function(obj, attr){
                 if(obj){
-                    var r = obj.getBoundingClientRect();
-                    return r[attr];    
+                    return obj.getBoundingClientRect()[attr];    
                 } else {
                     alert('对象不存在！');
                 }
@@ -163,7 +177,7 @@
             },
             // 格式化事件
             getEvent: function(event) {
-                return event ? event : window.event;
+                return event || window.event;
             }
         }
         var btn1 = document.getElementById('btn1');
@@ -176,17 +190,20 @@
                         '<a href="" class="ui-dialog-close"></a>' + 
                     '</div>' + 
                     '<div class="ui-dialog-main">{{content}}</div>' + 
-                    '<div class="ui-dialog-footer"></div>' + 
+                    '<div class="ui-dialog-footer">' +
+                        '<a href="javascript:;" class="ui-default">取消</a>' +
+                        '<a href="javascript:;" class="ui-primary">确定</a>' +
+                    '</div>' + 
                 '</div>' + 
                 '<div id="mask" class="ui-dialog-mask"></div>',
             data : {
                 title : '弹出层',
-                content : '内容'
+                content : '<p>自定义弹窗内容，居左对齐显示，告知需要确认的信息等</p><p>自定义弹窗内容，居左对齐显示，告知需要确认的信息等</p>'
             }
         }
         btn1.onclick = function(){
             var d = new Dialog(defaults);
-            d.show();
+            // d.show();
         }
     }());
 </script>
