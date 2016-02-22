@@ -29,15 +29,13 @@
     <form class="form-horizontal user-input" id="form" role="form">        
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button id="btn1" type="button" class="btn btn-primary">正常弹出</button>
-                <button id="btn2" type="button" class="btn btn-primary">弹出并能拖动</button>
+                <button id="btn1" type="button" class="btn btn-primary">弹出confirm</button>
+                <button id="btn2" type="button" class="btn btn-success">弹出alert</button>
+                <button id="btn3" type="button" class="btn btn-info">延时关闭message</button>
             </div>
         </div>
     </form>
 </div>
-<div id="div" style="width:200px;height:200px;background:#f1f1f1;"></div>
-<button id="btn">test</button>
-<div style="height:1000px;"></div>
 <script>
     (function(){
         var wrap = function(html, data){
@@ -70,7 +68,7 @@
                 if(!dialogType){
                     dialogType = 'alert';
                 }
-                this.dialog.classList.add('ui-' + dialogType);
+                this.dialog.className = 'ui-dialog ui-' + dialogType;
             },
             setPos : function(){
                 var el = this.dialog,
@@ -103,6 +101,9 @@
                 hogo.addEvent(this.mask, 'click', function(){
                     that.hide();
                 });
+                if(this.type == 'message'){
+                    this.delay();
+                }
             },
             show : function(){
                 this.box.style.display = 'block';
@@ -110,20 +111,11 @@
             hide : function(){
                 this.box.style.display = 'none';
             },
-            close : function(){
-                
-            },
             delay : function(){
                 var that = this;
                 setTimeout(function(){
                     that.hide(); 
-                }, 500);
-            },
-            lock : function(){
-                
-            },
-            unLock : function(){
-                
+                }, 1500);
             }
         }
         function Drag(handler){
@@ -152,9 +144,9 @@
                         box.style.left = lastX + 'px';
                     },
                     up: function(){
+                        handler.style.cursor = 'auto';
                         hogo.removeEvent(document, 'mousemove', drag.move);
                         hogo.removeEvent(document, 'mouseup', drag.up);
-                        box.classList.remove('unselect');
                     }
                 };
             hogo.addEvent(handler, 'mousedown', drag.down);
@@ -184,9 +176,10 @@
                 el.removeEventListener(type, handler, false);
             }
         }
-        var btn1 = document.getElementById('btn1');
+        var btn1 = hogo.$('btn1');
+        var btn2 = hogo.$('btn2');
+        var btn3 = hogo.$('btn3');
         var defaults = {
-            type : 'confirm',
             id : 'dialog',
             tpl : 
                 '<div id="dialog" class="ui-dialog">' + 
@@ -207,6 +200,15 @@
             }
         }
         btn1.onclick = function(){
+            defaults.type = 'confirm';
+            new Dialog(defaults);
+        }
+        btn2.onclick = function(){
+            defaults.type = 'alert';
+            new Dialog(defaults);
+        }
+        btn3.onclick = function(){
+            defaults.type = 'message';
             new Dialog(defaults);
         }
     }());
