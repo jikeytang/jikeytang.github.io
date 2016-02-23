@@ -103,8 +103,47 @@
         </div>
     </div>
 </div>
+
 <script>
     (function(){
+        function Bar(){
+            var args = arguments[0];
+            for(var i in args){
+                this[i] = args[i];
+            }
+            this.init();
+        }
+        Bar.prototype = {
+            init : function(){
+                
+            },
+            render : function(){
+                
+            },
+            bind : function(){
+                
+            },
+            getParam : function(){
+                
+            }
+        }
+        var defaults = {
+            id : 'dialog',
+            tpl : 
+                '<div class="jkscroll-bar jkscroll-simple">' +
+                    '<div class="jkscroll-bar-top"></div>' +
+                    '<div class="jkscroll-bar-mid"></div>' +
+                    '<div class="jkscroll-bar-bot"></div>' +
+                '</div>'
+            data : {
+                title : '弹出层',
+                content : '<p>自定义弹窗内容，居左对齐显示，告知需要确认的信息等</p><p>自定义弹窗内容，居左对齐显示，告知需要确认的信息等</p>'
+            }
+        }
+        btn1.onclick = function(){
+            defaults.type = 'confirm';
+            new Bar(defaults);
+        }
         var dog = {
             $ : function(id){
                 return document.getElementById(id);
@@ -134,51 +173,6 @@
             off: function(el, type, handler){
                 el.removeEventListener(type, handler, false);
             }
-        }
-        function Bar(){
-            var args = arguments[0];
-            for(var i in args){
-                this[i] = args[i];
-            }
-            this.init();
-        }
-        Bar.prototype = {
-            init : function(){
-                
-            },
-            render : function(){
-                
-            },
-            bind : function(){
-                
-            },
-            getParam : function(){
-                
-            }
-        }
-        var defaults = {
-            id : 'dialog',
-            tpl : 
-                '<div id="dialog" class="ui-dialog">' + 
-                    '<div class="ui-dialog-title">' + 
-                        '<h1>{{title}}</h1>' + 
-                        '<a href="" class="ui-dialog-close"></a>' + 
-                    '</div>' + 
-                    '<div class="ui-dialog-main">{{content}}</div>' + 
-                    '<div class="ui-dialog-footer">' +
-                        '<a href="javascript:;" id="ui-cancel" class="ui-default">取消</a>' +
-                        '<a href="javascript:;" id="ui-ok" class="ui-primary">确定</a>' +
-                    '</div>' + 
-                '</div>' + 
-                '<div id="ui-mask" class="ui-dialog-mask"></div>',
-            data : {
-                title : '弹出层',
-                content : '<p>自定义弹窗内容，居左对齐显示，告知需要确认的信息等</p><p>自定义弹窗内容，居左对齐显示，告知需要确认的信息等</p>'
-            }
-        }
-        btn1.onclick = function(){
-            defaults.type = 'confirm';
-            new Dialog(defaults);
         }
     }());
 </script>
