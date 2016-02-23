@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>选项卡轮播-豪情</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../../css/reset.css" media="all"/>
+    <style type="text/css">
+        *{margin:0;padding:0;}
+        body{ font:14px/1.125 Microsoft YaHei; background:#fff; }
+        ul,li{list-style:none;}
+        a{text-decoration:none;}
+        h2{margin:0;padding:0;}
+        .wrap{width:600px;margin:10px auto;border:1px solid #ccc;}
+        .inner{padding:15px;}
+        .clearfix{overflow:hidden;_zoom:1;}
+        .none{display:none;}
+        .jk-scrolldemo{width:700px;padding:1px;margin:20px auto;border:1px solid #ccc;background:#fff;}
+        .cont{height:800px;}
+        .el_main{width: 500px;margin:50px auto 0;height:550px;border:1px solid #ccc;background:#fff;border-radius:5px;}
+        .el_main_cont{padding:10px;line-height:2;overflow:hidden;}
+        .el_main_cont h2{margin:0 0;}
+        .el_main_cont h3{margin:30px 0 10px;}
+        .ele_text_res{color:#666;}
+        .form-group .btn{margin:0 5px;}
+        /* plus */
+        .jkscroll-wrap{position:relative;padding:0;overflow:hidden;}
+        .jkscroll-cont{position:relative;padding-right:13px;top:0px;z-index:9999;}
+        .jkscroll-cont-hover{background:#FFFBE1;}
+        .jkscroll-bar{position:absolute;top:0px;right:0px;width:15px;height:100%;background:url(images/bar-gray.gif) repeat-y right 0 #edf7fa;z-index:10000;}
+        .jkscroll-bar-top,.jkscroll-bar-bot{position:absolute;height:15px;left:0px;width:100%;cursor:pointer;background:url(images/bar-gray.gif) no-repeat 0 0 #bbdef6;}
+        .jkscroll-bar-top{top:0px;}
+        .jkscroll-bar-bot{bottom:0px;background-position:0 -15px;}
+        .jkscroll-bar-mid{position:absolute;top:15px;width:13px;height:100px;border:1px solid #A3C3D5;background:url(images/bar-gray.gif) repeat-y -45px 0 #e0f1fc;}
+        .jkscroll-wrap .hover{background:url(images/bar-gray.gif) repeat-y -58px 0 #dceffc;}
+        /* simple */
+        .jkscroll-wrap .jkscroll-simple{width:12px;background:#f2f2f2;border-left:1px solid #dadada;}
+        .jkscroll-wrap .jkscroll-simple .jkscroll-bar-top,.jkscroll-wrap .jkscroll-simple .jkscroll-bar-bot{display:none;}
+        .jkscroll-wrap .jkscroll-simple .jkscroll-bar-mid{top:0;right:-2px;background:#c0c0c0;border:none 0;}
+        .jkscroll-wrap .jkscroll-simple .hover{background:#909090;}
+        /* blue */
+        .jkscroll-wrap .jkscroll-gray{background:url(images/bar-blue.gif) repeat-y right 0 #edf7fa;}
+        .jkscroll-wrap .jkscroll-gray .jkscroll-bar-top,.jkscroll-wrap .jkscroll-gray .jkscroll-bar-bot{background:url(images/bar-blue.gif);}
+        .jkscroll-wrap .jkscroll-gray .jkscroll-bar-mid{background:url(images/bar-blue.gif) repeat-y -45px 0;border:1px solid #BCBCBC;}
+    </style>
+</head>
+<body>
+<div class="demo1">
+    <form class="form-horizontal user-input" id="form" role="form">        
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button id="btn2" type="button" class="btn btn-success">加强效果</button>
+                <button id="btn1" type="button" class="btn btn-primary">1</button>
+                <button id="btn3" type="button" class="btn btn-info">2</button>
+            </div>
+        </div>
+    </form>
+</div>    
+<div class="el_main">
+    <div class="el_main_cont">
+        <h2>春江花月夜</h2>
+        <p>春江潮水连海平，海上明月共潮生。</p>
+        <p>滟滟随波千万里，何处春江无月明。</p>
+        <p>江流宛转绕芳甸，月照花林皆似霰。</p>
+        <p>空里流霜不觉飞，汀上白沙看不见。</p>
+        <p>江天一色无纤尘，皎皎空中孤月轮。</p>
+        <p>江畔何人初见月？江月何年初照人？</p>
+        <p>人生代代无穷已，江月年年望相似。</p>
+        <p>不知江月待何人，但见长江送流水。</p>
+        <p>白云一片去悠悠，青枫浦上不胜愁。</p>
+        <p>谁家今夜扁舟子？何处相思明月楼？</p>
+        <p>可怜楼上月徘徊，应照离人妆镜台。</p>
+        <p>玉户帘中卷不去，捣衣砧上拂还来。</p>
+        <p>此时相望不相闻，愿逐月华流照君。</p>
+        <p>鸿雁长飞光不度，鱼龙潜跃水成文。</p>
+        <p>昨夜闲潭梦落花，可怜春半不还家。</p>
+        <p>江水流春去欲尽，江潭落月复西斜。</p>
+        <p>斜月沉沉藏海雾，碣石潇湘无限路。</p>
+        <p>不知乘月几人归，落月摇情满江树。</p>
+        <h3>译文：</h3>
+        <div class="ele_text_res">
+            <p>春天的江潮水势浩荡，与大海连成一片，一轮明月从海上升起，好像与潮水一起涌出来。</p>
+            <p>月光照耀着春江，随着波浪闪耀千万里，所有地方的春江都有明亮的月光。</p>
+            <p>江水曲曲折折地绕着花草丛生的原野流淌，月光照射着开遍鲜花的树林好像细密的雪珠在闪烁。</p>
+            <p>月色如霜，所以霜飞无从觉察。洲上的白沙和月色融合在一起，看不分明。</p>
+            <p>江水、天空成一色，没有一点微小灰尘，明亮的天空中只有一轮孤月高悬空中。</p>
+            <p>江边上什么人最初看见月亮，江上的月亮哪一年最初照耀着人？</p>
+            <p>人生一代代地无穷无尽，只有江上的月亮一年年地总是相像。</p>
+            <p>不知江上的月亮等待着什么人，只见长江不断地一直运输着流水。</p>
+            <p>游子像一片白云缓缓地离去，只剩下思妇站在离别的青枫浦不胜忧愁。</p>
+            <p>哪家的游子今晚坐着小船在漂流？什么地方有人在明月照耀的楼上相思？</p>
+            <p>可怜楼上不停移动的月光，应该照耀着离人的梳妆台。</p>
+            <p>月光照进思妇的门帘，卷不走，照在她的捣衣砧上，拂不掉。</p>
+            <p>这时互相望着月亮可是互相听不到声音，我希望随着月光流去照耀着您。</p>
+            <p>鸿雁不停地飞翔，而不能飞出无边的月光；月照江面，鱼龙在水中跳跃，激起阵阵波纹。</p>
+            <p>（此二句写月光之清澈无边，也暗含鱼雁不能传信之意。）</p>
+            <p>昨天晚上随意谈着梦中落下的花，可惜的是春天过了一半还不能回家。</p>
+            <p>江水带着春光将要流尽，水潭上的月亮又要西落。</p>
+            <p>斜月慢慢下沉，藏在海雾里，碣石与潇湘的离人距离无限遥远。</p>
+            <p>不知有几人能趁着月光回家，唯有那西落的月亮摇荡着离情，洒满了江边的树林。</p>
+        </div>
+    </div>
+</div>
+<script>
+    (function(){
+        var dog = {
+            $ : function(id){
+                return document.getElementById(id);
+            },
+            tpl : function(html, data){
+                return html.replace(/{{(\w+)}}/g, function(item, a){
+                    return data[a];
+                });
+            },
+            pos : function(obj, attr){
+                if(obj){
+                    return obj.getBoundingClientRect()[attr];    
+                } else {
+                    alert('对象不存在！');
+                }
+            },
+            viewSize: function(){
+                var de = document.documentElement;
+                return {
+                    'width': (window.innerWidth || (de && de.clientWidth) || doc.body.clientWidth),
+                    'height': (window.innerHeight || (de && de.clientHeight) || doc.body.clientHeight)
+                };
+            }(),
+            on: function(el, type, handler){
+                el.addEventListener(type, handler, false);
+            },
+            off: function(el, type, handler){
+                el.removeEventListener(type, handler, false);
+            }
+        }
+        function Bar(){
+            var args = arguments[0];
+            for(var i in args){
+                this[i] = args[i];
+            }
+            this.init();
+        }
+        Bar.prototype = {
+            init : function(){
+                
+            },
+            render : function(){
+                
+            },
+            bind : function(){
+                
+            },
+            getParam : function(){
+                
+            }
+        }
+        var defaults = {
+            id : 'dialog',
+            tpl : 
+                '<div id="dialog" class="ui-dialog">' + 
+                    '<div class="ui-dialog-title">' + 
+                        '<h1>{{title}}</h1>' + 
+                        '<a href="" class="ui-dialog-close"></a>' + 
+                    '</div>' + 
+                    '<div class="ui-dialog-main">{{content}}</div>' + 
+                    '<div class="ui-dialog-footer">' +
+                        '<a href="javascript:;" id="ui-cancel" class="ui-default">取消</a>' +
+                        '<a href="javascript:;" id="ui-ok" class="ui-primary">确定</a>' +
+                    '</div>' + 
+                '</div>' + 
+                '<div id="ui-mask" class="ui-dialog-mask"></div>',
+            data : {
+                title : '弹出层',
+                content : '<p>自定义弹窗内容，居左对齐显示，告知需要确认的信息等</p><p>自定义弹窗内容，居左对齐显示，告知需要确认的信息等</p>'
+            }
+        }
+        btn1.onclick = function(){
+            defaults.type = 'confirm';
+            new Dialog(defaults);
+        }
+    }());
+</script>
+</body>
+</html>
