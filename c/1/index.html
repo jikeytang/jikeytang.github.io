@@ -124,6 +124,7 @@
                 startY  = 0,
                 lastX   = 0,
                 lastY   = 0,
+                doc     = document,
                 box     = handler.parentNode,
                 width   = hogo.viewSize.width,
                 height  = hogo.viewSize.height,
@@ -131,8 +132,8 @@
                     down: function(e){
                         startX = e.clientX - box.offsetLeft;
                         startY = e.clientY - box.offsetTop;
-                        hogo.addEvent(document, 'mousemove', drag.move);
-                        hogo.addEvent(document, 'mouseup', drag.up);
+                        hogo.addEvent(doc, 'mousemove', drag.move);
+                        hogo.addEvent(doc, 'mouseup', drag.up);
                         box.classList.add('unselect');
                         return false;
                     },
@@ -146,8 +147,8 @@
                     },
                     up: function(){
                         handler.style.cursor = 'auto';
-                        hogo.removeEvent(document, 'mousemove', drag.move);
-                        hogo.removeEvent(document, 'mouseup', drag.up);
+                        hogo.removeEvent(doc, 'mousemove', drag.move);
+                        hogo.removeEvent(doc, 'mouseup', drag.up);
                     }
                 };
             hogo.addEvent(handler, 'mousedown', drag.down);
