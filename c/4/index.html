@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>跟随对联广告-豪情</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <style type="text/css">
+        *{margin:0;padding:0;}
+        body{ font:12px/1.125 Microsoft YaHei; background:#fff; }
+        ul,li{list-style:none;}
+        a{text-decoration:none;}
+        .wrap{width:600px;height:350px;margin:10px auto;border:1px solid #ccc;}
+        .inner{padding:15px;}
+        .clearfix{overflow:hidden;_zoom:1;}
+        .nav li{float:left;padding:10px 30px;background:#f1f1f1;color:#000;cursor:pointer;transition:all 0.5s linear;}
+        .nav li.on{background:#c40000;color:#fff;}
+        .photo{float:left;width:430px;overflow:hidden;}
+        .photo img{width:430px;}
+        .part{width:10000px;}
+        .side{float:right;width:140px;}
+        .link{float:left;}
+        .bar li{height:40px;line-height:40px;text-indent:2em;background:#f7f7f7;border-bottom:1px solid #ccc;cursor:pointer;transition:all 0.5s linear;}
+        .bar li.on{background:#333;color:#fff;}
+        .none{display:none;}
+    </style>
+</head>
+<body>
+<div style="display:none1;">
+    <div id="div" style="width:100px;height:200px;background:#000;"></div>
+    <button id="btn">test</button>
+</div>
+<script>
+    (function(){
+        function Adv(){
+            var args = arguments[0];
+            for(var i in args){
+                this[i] = args[i];
+            }
+            this.init();
+        }
+        Adv.prototype = {
+            init : function(){
+                
+            },
+            render : function(){
+                var div = dog.create({ className : 'banner'});
+            },
+            bind : function(){
+                
+            },
+            getParam : function(){
+                
+            }
+        }
+        var defaults = {
+            id : 'dialog',
+            tpl : '<div class="banner"><img src="" alt=""></div>'
+        }
+        defaults.type = 'confirm';
+        new Adv(defaults);
+        var dog = {
+            $ : function(id){
+                return document.getElementById(id);
+            },
+            tpl : function(html, data){
+                return html.replace(/{{(\w+)}}/g, function(item, a){
+                    return data[a];
+                });
+            },
+            pos : function(obj, attr){
+                if(obj){
+                    return obj.getBoundingClientRect()[attr];    
+                } else {
+                    alert('对象不存在！');
+                }
+            },
+            viewSize: function(){
+                var de = document.documentElement;
+                return {
+                    'width': (window.innerWidth || (de && de.clientWidth) || doc.body.clientWidth),
+                    'height': (window.innerHeight || (de && de.clientHeight) || doc.body.clientHeight)
+                };
+            }(),
+            on: function(el, type, handler){
+                el.addEventListener(type, handler, false);
+            },
+            off: function(el, type, handler){
+                el.removeEventListener(type, handler, false);
+            },
+            css : function(obj, attr){
+                if(obj.currentStyle){
+                    return obj.currentStyle[attr];
+                } else {
+                    return getComputedStyle(obj, false)[attr];
+                } 
+            },
+            act : function(obj, attr, target){
+                var that = this;
+                clearInterval(obj.timer);
+                obj.timer = setInterval(function(){
+                    var stop = true;
+                    var cur = parseInt(that.css(obj, attr));
+                    var speed = (target - cur) / 8;
+                    speed = speed < 0 ? Math.ceil(speed) : Math.floor(speed);
+                    if(target != speed){
+                        stop = false;
+                    }
+                    obj.style[attr] = speed + cur + 'px';
+                    if(stop){
+                        clearInterval(obj.timer);
+                    }
+                }, 35);
+            },
+            each : function(obj){
+                
+            },
+            create : function(opt){
+                var el = document.createElement(opt.tag || 'div');
+                for(var i in opt){
+                    el[i] = opt[i];
+                }
+                return el;
+            }
+        }
+        var btn = dog.$('btn');
+        btn.onclick = function(){
+            var a = dog.create({
+                tag : 'div',
+                className : 'test',
+                id : 'mySpan'
+            });
+            a.innerHTML = 'aaa';
+            var b = a.cloneNode();
+            b.innerHTML = 'bbb';
+            document.body.appendChild(a);
+            document.body.appendChild(b);
+            console.log(b);
+            // dog.act(dog.$('div'), 'width', 300);
+        }
+    }());
+</script>
+</body>
+</html>
