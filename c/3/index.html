@@ -104,7 +104,7 @@
     </div>
 </div>
 <script>
-    (function(){
+    (function(window){
         var dog = {
             $ : function(id){
                 return document.getElementById(id);
@@ -136,25 +136,28 @@
             },
             wheel : function(fn){
                 if(dog.browser.ie){
-
+                    alert('ie');
                 } else {
-
+                    alert('非ie');
                 }
             }
         }
-        // console.log(dog);
-        (function(ua){
-            console.log(ua);
-            console.log(dog);
-            dog.browser = {
-                ie : function(){
-                    console.log('ie');
-                }(),
-                firefox : function(){
-                    
-                }()
-            }
-        }(navigator.userAgent));
+        var ua = navigator.userAgent.toLowerCase();
+        dog.browser = {
+            ie : function(){
+                var s = ua.match(/rv:([\d.]+)\) like gecko/) || ua.match(/msie ([\d.]+)/);
+                if(s){
+                    return s[1];
+                }
+            }(),
+            chrome : function(){
+                var s = ua.match(/chrome\/([\d.]+)/);
+                if(s){
+                    return s[1];
+                }
+            }()
+        }
+        console.log(dog.browser.chrome);
         function Bar(){
             var args = arguments[0];
             for(var i in args){
@@ -201,7 +204,8 @@
             }
         }
         new Bar(defaults);
-    }());
+        return dog;
+    }(window));
 </script>
 </body>
 </html>
