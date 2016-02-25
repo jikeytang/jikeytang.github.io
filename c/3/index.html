@@ -33,7 +33,7 @@
         .jkscroll-bar-top,.jkscroll-bar-bot{position:absolute;height:15px;left:0px;width:100%;cursor:pointer;background:url(images/bar-gray.gif) no-repeat 0 0 #bbdef6;}
         .jkscroll-bar-top{top:0px;}
         .jkscroll-bar-bot{bottom:0px;background-position:0 -15px;}
-        .jkscroll-bar-mid{position:absolute;top:15px;width:13px;height:100px;border:1px solid #A3C3D5;background:url(images/bar-gray.gif) repeat-y -45px 0 #e0f1fc;}
+        .jkscroll-bar-mid{position:absolute;top:15px;width:15px;height:100px;border:1px solid #A3C3D5;background:url(images/bar-gray.gif) repeat-y -45px 0 #e0f1fc;}
         .jkscroll-wrap .hover{background:url(images/bar-gray.gif) repeat-y -58px 0 #dceffc;}
         /* simple */
         .jkscroll-wrap .jkscroll-simple{width:12px;background:#f2f2f2;border-left:1px solid #dadada;}
@@ -105,50 +105,6 @@
 </div>
 <script>
     (function(){
-        function Bar(){
-            var args = arguments[0];
-            for(var i in args){
-                this[i] = args[i];
-            }
-            this.init();
-        }
-        Bar.prototype = {
-            init : function(){
-                this.render();
-            },
-            getParam : function(){
-                this.main = dog.$(this.id);
-            },
-            render : function(){
-                var div = document.createElement('div');
-                div.className = 'jkscroll-cont';
-                this.main.appendChild(div);
-                this.main.innerHTML = this.tpl[0];
-                this.main.innerHTML = this.tpl[0] + this.main.innerHTML + this.tpl[1];
-            },
-            bind : function(){
-                
-            }
-        }
-        var defaults = {
-            id : 'main',
-            tpl : [
-                '<div class="jkscroll-cont"></div>',
-                '<div class="jkscroll-bar jkscroll-simple">' +
-                    '<div class="jkscroll-bar-top"></div>' +
-                    '<div class="jkscroll-bar-mid"></div>' +
-                    '<div class="jkscroll-bar-bot"></div>' +
-                '</div>'
-            ],
-            data : {
-                title : '弹出层',
-                content : '<p>自定义弹窗内容，居左对齐显示，告知需要确认的信息等</p><p>自定义弹窗内容，居左对齐显示，告知需要确认的信息等</p>'
-            }
-        }
-        btn1.onclick = function(){
-            defaults.type = 'confirm';
-            new Bar(defaults);
-        }
         var dog = {
             $ : function(id){
                 return document.getElementById(id);
@@ -177,8 +133,74 @@
             },
             off: function(el, type, handler){
                 el.removeEventListener(type, handler, false);
+            },
+            wheel : function(fn){
+                if(dog.browser.ie){
+
+                } else {
+
+                }
             }
         }
+        // console.log(dog);
+        (function(ua){
+            console.log(ua);
+            console.log(dog);
+            dog.browser = {
+                ie : function(){
+                    console.log('ie');
+                }(),
+                firefox : function(){
+                    
+                }()
+            }
+        }(navigator.userAgent));
+        function Bar(){
+            var args = arguments[0];
+            for(var i in args){
+                this[i] = args[i];
+            }
+            this.init();
+            dog.browser.ie;
+        }
+        Bar.prototype = {
+            init : function(){
+                this.getParam();
+                this.render();
+            },
+            getParam : function(){
+                this.main = dog.$(this.id);
+            },
+            render : function(){
+                var main = this.main,
+                    div = document.createElement('div'),
+                    bar = div.cloneNode();
+                div.className = 'jkscroll-cont';
+                main.appendChild(div);
+                div.appendChild(main.children[0]);
+                bar.innerHTML = this.tpl[0];
+                bar.className = 'jkscroll-bar';
+                main.appendChild(bar);
+                main.classList.add('jkscroll-wrap');
+                this.bar = bar;
+            },
+            bind : function(){
+                
+            }
+        }
+        var defaults = {
+            id : 'main',
+            tpl : [
+                '<div class="jkscroll-bar-top"></div>' +
+                '<div class="jkscroll-bar-mid"></div>' +
+                '<div class="jkscroll-bar-bot"></div>'
+            ],
+            data : {
+                title : '弹出层',
+                content : '<p>自定义弹窗内容，居左对齐显示，告知需要确认的信息等</p><p>自定义弹窗内容，居左对齐显示，告知需要确认的信息等</p>'
+            }
+        }
+        new Bar(defaults);
     }());
 </script>
 </body>
