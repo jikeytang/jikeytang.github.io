@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>选项卡轮播-豪情</title>
+    <title>模拟滚动条-豪情</title>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
     <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css" media="all"/>
@@ -134,45 +134,58 @@
             off: function(el, type, handler){
                 el.removeEventListener(type, handler, false);
             },
-            wheel : function(fn){
-                if(dog.browser.ie){
-                    alert('ie');
+            wheel : function(el, fn){
+                if(dog.browser.ie || dog.browser.chrome || dog.browser.safari){
+                    el.onmousewheel = function(){
+                        var delta = event.wheelDelta;
+                        event.returnValue = false;
+                        fn(delta);
+                    };
                 } else {
-                    alert('非ie');
+                    this.on(el, 'DOMMouseScroll', function(e){
+                        var delta = e.detail > 0 ? -1 : 1;
+                        e.preventDefault();
+                        fn(delta);    
+                    });
                 }
             }
         }
+        // from : http://keenwon.com/851.html, http://www.cnblogs.com/leadzen/archive/2008/09/06/1285764.html
         var ua = navigator.userAgent.toLowerCase();
         dog.browser = {
             ie : function(){
                 var s = ua.match(/rv:([\d.]+)\) like gecko/) || ua.match(/msie ([\d.]+)/);
-                if(s){
-                    return s[1];
-                }
+                return s && s[1];
             }(),
             chrome : function(){
                 var s = ua.match(/chrome\/([\d.]+)/);
-                if(s){
-                    return s[1];
-                }
+                return s && s[1];
+            }(),
+            safari : function(){
+                var s = ua.match(/version\/([\d.]+).*safari/);
+                return s && s[1];
+            }(),
+            firefox : function(){
+                var s = ua.match(/firefox\/([\d.]+)/);
+                return s && s[1];
             }()
         }
-        console.log(dog.browser.chrome);
         function Bar(){
             var args = arguments[0];
             for(var i in args){
                 this[i] = args[i];
             }
             this.init();
-            dog.browser.ie;
         }
         Bar.prototype = {
             init : function(){
                 this.getParam();
                 this.render();
+                this.bind();
             },
             getParam : function(){
                 this.main = dog.$(this.id);
+                this.up = 0;
             },
             render : function(){
                 var main = this.main,
@@ -188,7 +201,14 @@
                 this.bar = bar;
             },
             bind : function(){
-                
+                dog.wheel(this.main, function(sign){
+                    if(sign){
+                        this.up += 15;
+                    } else {
+                        this.up -= 15;
+                    }
+                    console.log(sign);
+                });
             }
         }
         var defaults = {
@@ -204,7 +224,6 @@
             }
         }
         new Bar(defaults);
-        return dog;
     }(window));
 </script>
 </body>
