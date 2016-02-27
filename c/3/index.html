@@ -19,7 +19,7 @@
         .none{display:none;}
         .jk-scrolldemo{width:700px;padding:1px;margin:20px auto;border:1px solid #ccc;background:#fff;}
         .cont{height:800px;}
-        .el_main{width: 500px;margin:50px auto 0;height:550px;border:1px solid #ccc;background:#fff;border-radius:5px;}
+        .el_main{width: 500px;margin:100px auto 0;height:550px;border:1px solid #ccc;background:#fff;border-radius:5px;}
         .el_main_cont{padding:10px;line-height:2;overflow:hidden;}
         .el_main_cont h2{margin:0 0;}
         .el_main_cont h3{margin:30px 0 10px;}
@@ -31,8 +31,8 @@
         .jkscroll-cont-hover{background:#FFFBE1;}
         .jkscroll-bar{position:absolute;top:0px;right:0px;width:15px;height:100%;background:url(images/bar-gray.gif) repeat-y right 0 #edf7fa;z-index:10000;}
         .jkscroll-bar-top,.jkscroll-bar-bot{position:absolute;height:15px;left:0px;width:100%;cursor:pointer;background:url(images/bar-gray.gif) no-repeat 0 0 #bbdef6;}
-        .jkscroll-bar-top{top:0px;}
-        .jkscroll-bar-bot{bottom:0px;background-position:0 -15px;}
+        .jkscroll-bar-top{top:0px;display:none;}
+        .jkscroll-bar-bot{bottom:0px;background-position:0 -15px;display:none;}
         .jkscroll-bar-mid{position:absolute;top:15px;width:15px;height:100px;border:1px solid #A3C3D5;background:url(images/bar-gray.gif) repeat-y -45px 0 #e0f1fc;}
         .jkscroll-wrap .hover{background:url(images/bar-gray.gif) repeat-y -58px 0 #dceffc;}
         /* simple */
@@ -47,7 +47,7 @@
     </style>
 </head>
 <body>
-<div class="demo1">
+<div class="demo1 none">
     <form class="form-horizontal user-input" id="form" role="form">        
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
@@ -107,7 +107,7 @@
     (function(window){
         var dog = {
             $ : function(id){
-                return document.getElementById(id);
+                return document.querySelector(id);
             },
             tpl : function(html, data){
                 return html.replace(/{{(\w+)}}/g, function(item, a){
@@ -121,13 +121,6 @@
                     alert('对象不存在！');
                 }
             },
-            viewSize: function(){
-                var de = document.documentElement;
-                return {
-                    'width': (window.innerWidth || (de && de.clientWidth) || doc.body.clientWidth),
-                    'height': (window.innerHeight || (de && de.clientHeight) || doc.body.clientHeight)
-                };
-            }(),
             on: function(el, type, handler){
                 el.addEventListener(type, handler, false);
             },
@@ -179,16 +172,19 @@
         }
         Bar.prototype = {
             init : function(){
-                this.getParam();
                 this.render();
+                this.getDom();
                 this.bind();
             },
-            getParam : function(){
-                this.main = dog.$(this.id);
-                this.up = 0;
+            getDom : function(){
+                this.now = 0;
+                this.content = dog.$('.jkscroll-cont');
+                this.up = dog.$('.jkscroll-bar-top');
+                this.dragger = dog.$('.jkscroll-bar-mid');
+                this.down = dog.$('.jkscroll-bar-bot');
             },
             render : function(){
-                var main = this.main,
+                var main = dog.$('#' + this.id),
                     div = document.createElement('div'),
                     bar = div.cloneNode();
                 div.className = 'jkscroll-cont';
@@ -199,16 +195,31 @@
                 main.appendChild(bar);
                 main.classList.add('jkscroll-wrap');
                 this.bar = bar;
+                this.main = main;
             },
             bind : function(){
+                var that = this;
                 dog.wheel(this.main, function(sign){
-                    if(sign){
-                        this.up += 15;
+                    if(sign > 0){
+                        that.now -= 15;
                     } else {
-                        this.up -= 15;
+                        that.now += 15;
                     }
-                    console.log(sign);
+                    console.log('now', that.now);
+                    that.scroll();
                 });
+            },
+            scroll : function(){
+                var n = this.now;
+                if(n < this.up.offsetHeight){
+                    n = this.up.offsetHeight;
+                }
+                if(n > this.main.offsetHeight - this.up.offsetHeight - this.dragger.offsetHeight){
+                    n = this.main.offsetHeight - this.up.offsetHeight - this.dragger.offsetHeight;
+                }
+                this.now = n;
+                this.content.style.top = -(n - 15) + 'px';
+                this.dragger.style.top = n + 'px';
             }
         }
         var defaults = {
@@ -217,11 +228,7 @@
                 '<div class="jkscroll-bar-top"></div>' +
                 '<div class="jkscroll-bar-mid"></div>' +
                 '<div class="jkscroll-bar-bot"></div>'
-            ],
-            data : {
-                title : '弹出层',
-                content : '<p>自定义弹窗内容，居左对齐显示，告知需要确认的信息等</p><p>自定义弹窗内容，居左对齐显示，告知需要确认的信息等</p>'
-            }
+            ]
         }
         new Bar(defaults);
     }(window));
