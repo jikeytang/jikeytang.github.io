@@ -33,7 +33,7 @@
         .jkscroll-bar-top,.jkscroll-bar-bot{position:absolute;height:15px;left:0px;width:100%;cursor:pointer;background:url(images/bar-gray.gif) no-repeat 0 0 #bbdef6;}
         .jkscroll-bar-top{top:0px;display:none;}
         .jkscroll-bar-bot{bottom:0px;background-position:0 -15px;display:none;}
-        .jkscroll-bar-mid{position:absolute;top:15px;width:15px;height:100px;border:1px solid #A3C3D5;background:url(images/bar-gray.gif) repeat-y -45px 0 #e0f1fc;}
+        .jkscroll-bar-mid{position:absolute;top:0px;width:15px;height:100px;border:1px solid #A3C3D5;background:url(images/bar-gray.gif) repeat-y -45px 0 #e0f1fc;}
         .jkscroll-wrap .hover{background:url(images/bar-gray.gif) repeat-y -58px 0 #dceffc;}
         /* simple */
         .jkscroll-wrap .jkscroll-simple{width:12px;background:#f2f2f2;border-left:1px solid #dadada;}
@@ -205,21 +205,42 @@
                     } else {
                         that.now += 15;
                     }
-                    console.log('now', that.now);
                     that.scroll();
                 });
             },
             scroll : function(){
                 var n = this.now;
-                if(n < this.up.offsetHeight){
-                    n = this.up.offsetHeight;
+                if(n < 0){
+                    n = 0;
                 }
-                if(n > this.main.offsetHeight - this.up.offsetHeight - this.dragger.offsetHeight){
-                    n = this.main.offsetHeight - this.up.offsetHeight - this.dragger.offsetHeight;
+                if(n > this.main.offsetHeight - this.dragger.offsetHeight){
+                    n = this.main.offsetHeight - this.dragger.offsetHeight;
                 }
+                console.log(n);
+                n = (n * this.content.offsetHeight) / this.main.offsetHeight;
                 this.now = n;
                 this.content.style.top = -(n - 15) + 'px';
                 this.dragger.style.top = n + 'px';
+            },
+            dragBar : function(handler){
+                var startY = 0,
+                    lastY = 0,
+                    doc = document,
+                    drag = {
+                        down : function(e){
+                            startY = e.clientY - handler.offsetTop;
+                            dog.on(doc, 'mouseup', drag.up);
+                        },
+                        move : function(){
+                            lastY             = e.clientY - startY;
+                            handler.style.top = lastY + 'px';
+                        },
+                        up : function(){
+                            dog.off(doc, 'mousemove', drag.move);
+                            dog.off(doc, 'mouseup', drag.up);
+                        }
+                    }
+                dog.on(handler, 'mousedown', drag.down);
             }
         }
         var defaults = {
