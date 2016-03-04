@@ -209,18 +209,18 @@
                 });
             },
             scroll : function(){
-                var n = this.now;
+                var n = this.now,
+                    contentTop = 0;
                 if(n < 0){
                     n = 0;
                 }
                 if(n > this.main.offsetHeight - this.dragger.offsetHeight){
                     n = this.main.offsetHeight - this.dragger.offsetHeight;
                 }
-                console.log(n);
-                n = (n * this.content.offsetHeight) / this.main.offsetHeight;
                 this.now = n;
-                this.content.style.top = -(n - 15) + 'px';
                 this.dragger.style.top = n + 'px';
+                contentTop = (n * this.content.offsetHeight) / this.main.offsetHeight;
+                this.content.style.top = -contentTop + 'px';
             },
             dragBar : function(handler){
                 var startY = 0,
