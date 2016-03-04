@@ -110,18 +110,6 @@
             $ : function(id){
                 return document.querySelector(id);
             },
-            tpl : function(html, data){
-                return html.replace(/{{(\w+)}}/g, function(item, a){
-                    return data[a];
-                });
-            },
-            pos : function(obj, attr){
-                if(obj){
-                    return obj.getBoundingClientRect()[attr];    
-                } else {
-                    alert('对象不存在！');
-                }
-            },
             on: function(el, type, handler){
                 el.addEventListener(type, handler, false);
             },
