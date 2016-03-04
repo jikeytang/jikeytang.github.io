@@ -25,6 +25,7 @@
         .el_main_cont h3{margin:30px 0 10px;}
         .ele_text_res{color:#666;}
         .form-group .btn{margin:0 5px;}
+        .unselect{-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none;}
         /* plus */
         .jkscroll-wrap{position:relative;padding:0;overflow:hidden;}
         .jkscroll-cont{position:relative;padding-right:13px;top:0px;z-index:9999;}
@@ -175,6 +176,7 @@
                 this.render();
                 this.getDom();
                 this.bind();
+                this.dragBar(this.dragger);
             },
             getDom : function(){
                 this.now = 0;
@@ -219,23 +221,29 @@
                 }
                 this.now = n;
                 this.dragger.style.top = n + 'px';
-                contentTop = (n * this.content.offsetHeight) / this.main.offsetHeight;
+                contentTop = (n * this.content.offsetHeight) / (this.main.offsetHeight + this.dragger.offsetHeight);
                 this.content.style.top = -contentTop + 'px';
             },
             dragBar : function(handler){
-                var startY = 0,
+                var that = this,
+                    startY = 0,
                     lastY = 0,
                     doc = document,
                     drag = {
                         down : function(e){
+                            handler.style.cursor = 'default';
+                            that.main.classList.add('unselect');
                             startY = e.clientY - handler.offsetTop;
+                            dog.on(doc, 'mousemove', drag.move);
                             dog.on(doc, 'mouseup', drag.up);
+                            return false;
                         },
-                        move : function(){
-                            lastY             = e.clientY - startY;
-                            handler.style.top = lastY + 'px';
+                        move : function(e){
+                            that.now = e.clientY - startY;
+                            that.scroll();
                         },
                         up : function(){
+                            that.main.classList.remove('unselect');
                             dog.off(doc, 'mousemove', drag.move);
                             dog.off(doc, 'mouseup', drag.up);
                         }
