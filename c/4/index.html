@@ -12,55 +12,23 @@
         .wrap{width:600px;height:350px;margin:10px auto;border:1px solid #ccc;}
         .inner{padding:15px;}
         .clearfix{overflow:hidden;_zoom:1;}
-        .nav li{float:left;padding:10px 30px;background:#f1f1f1;color:#000;cursor:pointer;transition:all 0.5s linear;}
-        .nav li.on{background:#c40000;color:#fff;}
-        .photo{float:left;width:430px;overflow:hidden;}
-        .photo img{width:430px;}
-        .part{width:10000px;}
-        .side{float:right;width:140px;}
-        .link{float:left;}
-        .bar li{height:40px;line-height:40px;text-indent:2em;background:#f7f7f7;border-bottom:1px solid #ccc;cursor:pointer;transition:all 0.5s linear;}
-        .bar li.on{background:#333;color:#fff;}
         .none{display:none;}
+        .banner{width:100px;height:300px;position:absolute;top:200px;}
+        .banner:nth-child(1){left:100px;}
+        .banner:nth-child(2){right:100px;}
     </style>
 </head>
 <body>
-<div style="display:none1;">
+<div style="height:3000px"></div>
+<div style="display:none;">
     <div id="div" style="width:100px;height:200px;background:#000;"></div>
     <button id="btn">test</button>
 </div>
 <script>
     (function(){
-        function Adv(){
-            var args = arguments[0];
-            for(var i in args){
-                this[i] = args[i];
-            }
-            this.init();
-        }
-        Adv.prototype = {
-            init : function(){
-                
-            },
-            render : function(){
-                var div = dog.create({ className : 'banner'});
-            },
-            bind : function(){
-                
-            },
-            getParam : function(){
-                
-            }
-        }
-        var defaults = {
-            id : 'dialog',
-            tpl : '<div class="banner"><img src="" alt=""></div>'
-        }
-        defaults.type = 'confirm';
-        new Adv(defaults);
         var dog = {
             $ : function(id){
-                return document.getElementById(id);
+                return document.querySelector(id);
             },
             tpl : function(html, data){
                 return html.replace(/{{(\w+)}}/g, function(item, a){
@@ -109,34 +77,76 @@
                     if(stop){
                         clearInterval(obj.timer);
                     }
-                }, 35);
+                }, 55);
             },
-            each : function(obj){
-                
+            each : function(arr, callback){
+                if(Array.isArray(arr)){
+                    for(var i = 0, l = arr.length; i < l; i++){
+                        if(callback.call(arr[i], i, arr[i++]) == false){
+                            break;
+                        }
+                    }
+                } else {
+                    for(var name in arr){
+                        if(callback.call(arr[name], name, arr[name]) == false){
+                            break;
+                        }
+                    }
+                }
             },
             create : function(opt){
                 var el = document.createElement(opt.tag || 'div');
-                for(var i in opt){
-                    el[i] = opt[i];
-                }
+                this.each(opt, function(i, m){
+                    el[i] = this;
+                });
                 return el;
             }
         }
-        var btn = dog.$('btn');
-        btn.onclick = function(){
-            var a = dog.create({
-                tag : 'div',
-                className : 'test',
-                id : 'mySpan'
-            });
-            a.innerHTML = 'aaa';
-            var b = a.cloneNode();
-            b.innerHTML = 'bbb';
-            document.body.appendChild(a);
-            document.body.appendChild(b);
-            console.log(b);
-            // dog.act(dog.$('div'), 'width', 300);
+        function Adv(){
+            var args = arguments[0];
+            for(var i in args){
+                this[i] = args[i];
+            }
+            this.init();
         }
+        Adv.prototype = {
+            init : function(){
+                this.render();
+                this.bind();
+            },
+            render : function(){
+                var div = dog.create({ className : 'out'}),
+                    a = dog.create({ className : 'banner'}),
+                    b = null;
+                a.innerHTML = this.tpl;
+                b = a.cloneNode(true);
+                div.appendChild(a);
+                div.appendChild(b);
+                document.body.appendChild(div);
+                this.a = a;
+                this.b = b;
+            },
+            bind : function(){
+                var that = this,
+                    doc = document,
+                    scrollTop = 0,
+                    t = 0;
+                dog.on(window, 'scroll', function(){
+                    scrollTop = doc.documentElement.scrollTop || doc.body.scrollTop;
+                    t = scrollTop + (doc.documentElement.clientHeight - that.a.offsetHeight) / 2;
+                    dog.act(that.a, 'top', t);
+                    dog.act(that.b, 'top', t);
+                });
+            },
+            getDom : function(){
+                
+            }
+        }
+        var defaults = {
+            id : 'dialog',
+            tpl : '<img src="images/ad.jpg" alt="">'
+        }
+        new Adv(defaults);
     }());
 </script>
 </body>
