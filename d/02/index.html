@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>数码时钟-豪情</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <style type="text/css">
+        *{ margin:0; padding:0; }
+        body{ font:12px/1.125 Microsoft YaHei; background:#fff; }
+        ul, li{ list-style:none; }
+        a{ text-decoration:none; }
+        .wrap{ width:300px; height:350px; text-align:center; margin:150px auto;}
+        body{background:#000;}
+        #wrapper{position:absolute;top:20%;left:50%;margin:-75px 0 0 -200px;}
+        #front{position:absolute;top:0px;}
+        #upperHalf,#upperHalfBack{vertical-align:bottom;}
+        #lowerHalf,#lowerHalfBack{vertical-align:top;}
+        #upperHalf img{position:relative;height:64px;vertical-align:bottom;visibility:visible;}
+        #lowerHalf img{position:relative;height:64px;vertical-align:top;visibility:visible;}
+        #lowerHalfBack img{position:relative;vertical-align:top;}
+        #upperHalfBack img{position:relative;vertical-align:bottom;}
+        #hoursUp,#hoursDown,#hoursUpBack,#hoursDownBack{width:125px;}
+        #minutesUpLeft,#minutesUpRight,#minutesDownLeft,#minutesDownRight,#minutesUpLeftBack,#minutesUpRightBack,#minutesDownLeftBack,#minutesDownRightBack,#secondsUpLeft,#secondsUpRight,#secondsDownLeft,#secondsDownRight,#secondsUpLeftBack,#secondsUpRightBack,#secondsDownLeftBack,#secondsDownRightBack{width:64px;}
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <div id="back">
+        <div id="upperHalfBack">
+            <img src="spacer.png" /><img id="hoursUpBack" src="Single/Up/AM/0.png"/>
+            <img id="minutesUpLeftBack" src="Double/Up/Left/0.png" class="asd" /><img id="minutesUpRightBack" src="Double/Up/Right/0.png"/>
+            <img id="secondsUpLeftBack" src="Double/Up/Left/0.png" /><img id="secondsUpRightBack" src="Double/Up/Right/0.png"/>
+        </div>
+        <div id="lowerHalfBack">
+            <img src="spacer.png" /><img id="hoursDownBack" src="Single/Down/AM/0.png" />
+            <img id="minutesDownLeftBack" src="Double/Down/Left/0.png" /><img id="minutesDownRightBack" src="Double/Down/Right/0.png" />
+            <img id="secondsDownLeftBack" src="Double/Down/Left/0.png" /><img id="secondsDownRightBack" src="Double/Down/Right/0.png" />
+        </div>
+    </div>
+    <div id="front">
+        <div id="upperHalf">
+            <img src="spacer.png" /><img id="hoursUp" src="Single/Up/AM/0.png"/>
+            <img id="minutesUpLeft" src="Double/Up/Left/0.png" /><img id="minutesUpRight" src="Double/Up/Right/0.png"/>
+            <img id="secondsUpLeft" src="Double/Up/Left/0.png" /><img id="secondsUpRight" src="Double/Up/Right/0.png"/>
+        </div>
+        <div id="lowerHalf">
+            <img src="spacer.png" /><img id="hoursDown" src="Single/Down/AM/0.png"/>
+            <img id="minutesDownLeft" src="Double/Down/Left/0.png" /><img id="minutesDownRight" src="Double/Down/Right/0.png" />
+            <img id="secondsDownLeft" src="Double/Down/Left/0.png" /><img id="secondsDownRight" src="Double/Down/Right/0.png" />
+        </div>
+    </div>
+</div>
+<div style="display:none;">
+    <div id="div" style="width:100px;height:200px;background:#000;"></div>
+    <button id="btn">test</button>
+</div>
+<script>
+    (function(){
+        var dog = {
+            $ : function(id){
+                return document.querySelector(id);
+            },
+            on: function(el, type, handler){
+                el.addEventListener(type, handler, false);
+            },
+            off: function(el, type, handler){
+                el.removeEventListener(type, handler, false);
+            }
+        }
+        function Clock(){
+            var args = arguments[0];
+            for(var i in args){
+                this[i] = args[i];
+            }
+            this.init();
+        }
+        Clock.prototype = {
+            init : function(){
+                this.getDom();
+            },
+            getDom : function(){
+                var arr = [''];
+                for(var i in arr){
+                    this[i] = dog.$(arr[i]);
+                }
+            }
+        }
+        var defaults = {
+            id : 'slider'
+        }
+        new Clock(defaults);
+    }());
+</script>
+</body>
+</html>
