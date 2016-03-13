@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>拖动滑块验证-豪情</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <style type="text/css">
+        *{ margin:0; padding:0; }
+        body{ font:12px/1.125 Microsoft YaHei; background:#fff; }
+        ul, li{ list-style:none; }
+        a{ text-decoration:none; }
+        .wrap{ width:300px; height:350px; text-align:center; margin:150px auto;}
+        .inner{ padding:15px; }
+        .clearfix{ overflow:hidden; _zoom:1; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div id="slider">
+        <div class="drag_bg"></div>
+        <div class="drag_text" onselectstart="return false;" unselectable="on">拖动滑块验证</div>
+        <div class="handler handler_bg"></div>
+    </div>
+</div>
+<div style="display:none;">
+    <div id="div" style="width:100px;height:200px;background:#000;"></div>
+    <button id="btn">test</button>
+</div>
+<script>
+    (function(){
+        var dog = {
+            $ : function(id){
+                return document.querySelector(id);
+            },
+            on: function(el, type, handler){
+                el.addEventListener(type, handler, false);
+            },
+            off: function(el, type, handler){
+                el.removeEventListener(type, handler, false);
+            }
+        }
+        function Calendar(){
+            var args = arguments[0];
+            for(var i in args){
+                this[i] = args[i];
+            }
+            this.init();
+        }
+        Calendar.prototype = {
+            init : function(){
+                this.getDom();
+                this.dragBar(this.handler);
+            },
+            getDom : function(){
+                var dom = [''];
+                for(var i in dom){
+                    this[i] = dom[i];
+                }
+            }
+        }
+        var defaults = {
+            id : 'calendar'
+        }
+        new Calendar(defaults);
+    }());
+</script>
+</body>
+</html>
