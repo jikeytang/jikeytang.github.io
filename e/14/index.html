@@ -88,7 +88,7 @@
         function fill(obj, items){
             var opt = '';
             each(items, function(j){
-                opt += '<option value="'+j+'">'+(items[j].replace(/\d+:/, ''))+'</option>';
+                opt += '<option value="'+(j+1)+'">'+(items[j].replace(/\d+:/, ''))+'</option>';
             });
             obj.innerHTML = '<select>'+opt+'</select>';
             return obj;
