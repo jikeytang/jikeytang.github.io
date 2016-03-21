@@ -11,7 +11,7 @@
         a{ text-decoration:none; }
         .wrap{ width:300px; height:350px; text-align:center; margin:150px auto;}
         body{background:#000;}
-        #wrapper{position:absolute;top:20%;left:50%;margin:-75px 0 0 -200px;}
+        #wrapper{position:absolute;top:180px;left:50%;margin:-75px 0 0 -200px;}
         #front{position:absolute;top:0px;}
         #upperHalf,#upperHalfBack{vertical-align:bottom;}
         #lowerHalf,#lowerHalfBack{vertical-align:top;}
@@ -65,6 +65,24 @@
             },
             off: function(el, type, handler){
                 el.removeEventListener(type, handler, false);
+            },
+            act : function(obj, attr, target, callback){
+                var that = this;
+                clearInterval(obj.timer);
+                obj.timer = setInterval(function(){
+                    var stop = true;
+                    var cur = parseInt(that.css(obj, attr));
+                    var speed = (target - cur) / 8;
+                    speed = speed < 0 ? Math.ceil(speed) : Math.floor(speed);
+                    if(target != speed){
+                        stop = false;
+                    }
+                    obj.style[attr] = speed + cur + 'px';
+                    if(stop){
+                        clearInterval(obj.timer);
+                        callback();
+                    }
+                }, 55);
             }
         }
         function Clock(){
@@ -76,13 +94,31 @@
         }
         Clock.prototype = {
             init : function(){
-                this.getDom();
+                this.run();
             },
             getDom : function(){
                 var arr = [''];
                 for(var i in arr){
                     this[i] = dog.$(arr[i]);
                 }
+            },
+            m2Current : -1,
+            run : function(){
+                var that = this;
+                setInterval(function(){
+                    var d = new Date(),
+                        h = d.getHours(),
+                        m1 = d.getMinutes() / 10;
+                        m2 = d.getMinutes() % 10,
+                        s1 = d.getSeconds() / 10,
+                        s2 = d.getSeconds() % 10;
+                    if(m2 != that.m2Current){
+                        that.bind('minutesUpRight', 'minutesDownRight', m2, 'Double/Up/Right/', 'Double/Down/Right/');
+                    }
+                }, 1000);
+            },
+            bind : function(upperId, lowerId, changeNumber, pathUpper, pathLower){
+                
             }
         }
         var defaults = {
