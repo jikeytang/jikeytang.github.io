@@ -86,7 +86,6 @@
         }
         var drag = {
             start : function(e){
-                console.log(e.type);
                 if(!e.changedTouches) { return; }
                 startX = e.clientX ? e.clientX : e.changedTouches[0].clientX;
                 var target = e.target;
@@ -104,12 +103,12 @@
                 if(moveX < startX){ // left
                     if(last < len-1){
                         last++;
-                        return;
+                        // return;
                     }
                 } else { // right
                     if(last > 0){
                         last--;
-                        return;
+                        // return;
                     }
                 }
                 ul.style.transform = 'translate(' + (-width * last + moveX - startX) + 'px, 0)';
