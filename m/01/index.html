@@ -119,6 +119,7 @@
             end : function(e){
                 var moveX = e.clientX ? e.clientX : e.changedTouches[0].clientX;
                 ul.style.transform = 'translate(-' + (width * last) + 'px, 0)';
+                ul.style.transition = '.5s';
                 var target = e.target;
                 if(!target.classList.contains('item')){
                     return;
