@@ -14,67 +14,86 @@
 	(function(){
 	    var canvas = document.getElementById('canvas');
 	    var ctx = canvas.getContext('2d');
+	    var d,h,m,s;
+		function now(){
+	    	d = new Date();
+	        h = d.getHours();
+	        m = d.getMinutes();
+	        s = d.getSeconds();
+		}
 	    // 表盘
-	    ctx.beginPath();
-	    ctx.lineWidth = 10;
-	    ctx.strokeStyle = '#99ccff';
-	    ctx.arc(250, 250, 200, 0, 360, false);
-	    ctx.closePath();
-	    ctx.stroke();
+	    function drawBase(){
+	        ctx.beginPath();
+	        ctx.lineWidth = 10;
+	        ctx.strokeStyle = '#99ccff';
+	        ctx.arc(250, 250, 200, 0, 360, false);
+	        ctx.closePath();
+	        ctx.stroke();
+	    }
 	    // 分针
-	    for(var i = 0; i < 60; i++){
-	    	ctx.save();
-	    	ctx.translate(250, 250);
-	    	ctx.beginPath();
-	    	ctx.rotate(i * 6 * Math.PI / 180);
-	    	ctx.moveTo(0, 190);
-	    	ctx.lineWidth = 5;
-	    	ctx.lineTo(0, 180);
-	    	ctx.strokeStyle = '#999';
-	    	ctx.closePath();
-	    	ctx.stroke();
-	    	ctx.restore();
+	    function drawMin(){
+	        for(var i = 0; i < 60; i++){
+	        	ctx.save();
+	        	ctx.translate(250, 250);
+	        	ctx.beginPath();
+	        	ctx.rotate(i * 6 * Math.PI / 180);
+	        	ctx.moveTo(0, 190);
+	        	ctx.lineWidth = 5;
+	        	ctx.lineTo(0, 180);
+	        	ctx.strokeStyle = '#999';
+	        	ctx.closePath();
+	        	ctx.stroke();
+	        	ctx.restore();
+	        }
 	    }
 	    // 时针
-	    for(var i = 0; i < 12; i++){
-	    	ctx.save();
-	    	ctx.translate(250, 250);
-	    	ctx.beginPath();
-	    	ctx.rotate(i * 30 * Math.PI / 180);
-	    	ctx.moveTo(0, 190);
-	    	ctx.lineWidth = 5;
-	    	ctx.lineTo(0, 170);
-	    	ctx.strokeStyle = '#333';
-	    	ctx.closePath();
-	    	ctx.stroke();
-	    	ctx.restore();
+	    function drawHour(){
+	        for(var i = 0; i < 12; i++){
+	        	ctx.save();
+	        	ctx.translate(250, 250);
+	        	ctx.beginPath();
+	        	ctx.rotate(i * 30 * Math.PI / 180);
+	        	ctx.moveTo(0, 190);
+	        	ctx.lineWidth = 5;
+	        	ctx.lineTo(0, 170);
+	        	ctx.strokeStyle = '#333';
+	        	ctx.closePath();
+	        	ctx.stroke();
+	        	ctx.restore();
+	        }
 	    }
 	    // 中间圆点
-	    ctx.beginPath();
-	    ctx.arc(250, 250, 10, 0, 360, false);
-	    ctx.closePath();
-	    ctx.fill();
-
-	    
-   //  	setInterval(function(){
-   //  		ctx.save();
-		 //    ctx.translate(250, 250);
-		 //    ctx.beginPath();
-		 //    ctx.moveTo(0, 0);
-	  //   	ctx.lineWidth = 5;
-	  //   	ctx.strokeStyle = '#000';
-   //  		var d = new Date();
-	  //       var h = d.getHours();
-	  //       var m = d.getMinutes();
-	  //       var s = d.getSeconds();
-   //  	    ctx.rotate(s * 6 * Math.PI / 180);
-   //  	    console.log(s);
-   //  	    ctx.lineTo(0, 150);
-			// ctx.closePath();
-	  //   	ctx.stroke();
-			// ctx.restore();
-   //  	}, 1000);
-    	
+	    function drawMiddle(){
+	        ctx.beginPath();
+	        ctx.arc(250, 250, 10, 0, 360, false);
+	        ctx.closePath();
+	        ctx.fill();
+	    }
+	    // 分钟
+	    function drawSecond(){
+    	    ctx.save();
+    	    ctx.translate(250, 250);
+    	    ctx.beginPath();
+    	    ctx.moveTo(0, 0);
+        	ctx.lineWidth = 5;
+        	ctx.strokeStyle = '#000';
+		    ctx.rotate(s * 6 * Math.PI / 180);
+		    ctx.lineTo(0, 150);
+			ctx.closePath();
+	    	ctx.stroke();
+			ctx.restore();
+	    }
+		function clock(){
+			ctx.clearRect(0, 0, 500, 500);
+			now();
+		    drawBase();
+		    drawMin();
+		    drawHour();
+		    drawSecond();
+		}
+		setInterval(function(){
+		    clock();
+		}, 1000);
 	}());
 </script>
 </body>
