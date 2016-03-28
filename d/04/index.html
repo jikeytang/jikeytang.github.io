@@ -32,6 +32,21 @@
 	        ctx.closePath();
 	        ctx.stroke();
 	    }
+	    function drawNumbers(){
+	        var angle = 0,
+	        	nWidth = 0;
+	        ctx.save();
+	        ctx.translate(250, 250);
+			ctx.font="19px Arial";
+	        for(var i = 1; i <= 12; i++){
+	        	if(!(i % 3)){
+	        		angle = Math.PI / 6 * (i - 3);
+		        	nWidth = ctx.measureText(i).width;
+		        	ctx.fillText(i, Math.cos(angle) * 150 - nWidth/2,  Math.sin(angle) * 150 + nWidth/2);
+	        	}
+	        }
+	        ctx.restore();
+	    }
 	    // 时针刻度
 	    function drawHourDegree(){
 	        for(var i = 0; i < 12; i++){
@@ -117,6 +132,7 @@
 			ctx.clearRect(0, 0, 500, 500);
 			now();
 		    drawBase();
+		    drawNumbers();
 		    drawMinDegree();
 		    drawHourDegree();
 		    drawHour();
