@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        #result{width:550px;margin:30px auto;font-size:0;font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;}
+        #result span{display:inline-block;zoom:1;width:60px;height:25px;line-height:25px;text-align:center;border:1px solid #ddd;margin:-1px 0 0 -1px;font-size:12px;}
+    </style>
+</head>
+<body>
+<div id="result"></div>
+<script>
+    function create(){
+        var html = [];
+        for(var i=1;i<=9;i++){
+            for(var j=1;j<=i;j++){
+                html.push('<span>'+j+'*'+i+'='+(i*j)+'</span>');
+            }
+            html.push('<br/>');
+        }
+        return html;
+    }
+    function render(){
+        var html = create(),
+                i = 0,
+                tmp = create(),
+                j = html.length,
+                timer = null,
+                result = document.getElementById('result');
+        timer = setInterval(function(){
+            if(i > html.length){
+                html.splice(html.length - 1, 1);
+                result.innerHTML = html.join('');
+            } else {
+                result.innerHTML += html[i++];
+            }
+            if(!html.length){
+                result.innerHTML = tmp.join('');
+                clearInterval(timer);
+            }
+        }, 100);
+    }
+    render();
+</script>
+</body>
+</html>
