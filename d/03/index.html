@@ -3,23 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>全日历-豪情</title>
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css" media="all"/>
+    <link rel="stylesheet" href="../../src/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/datetimepicker.css" media="all"/>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
     <style type="text/css">
         *{ margin:0; padding:0; }
         body{ font:12px/1.125 Microsoft YaHei; background:#fff; }
         ul, li{ list-style:none; }
         a{ text-decoration:none; }
-        .wrap{ width:300px; height:350px; text-align:center; margin:150px auto;}
+        .wrap{ height:350px; text-align:center; margin:150px auto;}
         .inner{ padding:15px; }
+        .cale-wrap{padding:20px;}
         .clearfix{ overflow:hidden; _zoom:1; }
+        .calendar{width:400px;padding:20px;margin:0 auto;border:1px solid #ccc;}
+        .my-date{position:absolute;}
+        .none{display:none;}
     </style>
 </head>
 <body>
+    <i class="icon-caret-down"></i>
 <div class="wrap">
-    <div id="slider">
-        <div class="drag_bg"></div>
-        <div class="drag_text" onselectstart="return false;" unselectable="on">拖动滑块验证</div>
-        <div class="handler handler_bg"></div>
+    <div class="cale-wrap">
+        <div id="calendar" class="calendar">
+            <input size="16" type="text" id="input" value="2012-06-15 14:45" readonly="" class="form-control">
+        </div>
     </div>
 </div>
 <div style="display:none;">
@@ -30,17 +39,43 @@
     (function(){
         var dog = {
             $ : function(id){
-                return document.querySelector(id);
+                return document.querySelector('#' + id);
             },
             on: function(el, type, handler){
                 el.addEventListener(type, handler, false);
             },
             off: function(el, type, handler){
                 el.removeEventListener(type, handler, false);
+            },
+            position : function(obj, attr){
+                if(obj){
+                    var method = obj.getBoundingClientRect();
+                    return attr ? method[attr] : method;
+                } else {
+                    alert('对象不存在！');
+                }
+            },
+            cache : {},
+            tpl : function(str, data){
+                var fn= !/\s/.test(str) ? 
+                    this.cache[str] = cache[str] || tmpl(document.getElementById(str).innerHTML) :
+                        new Function("obj","var p='';p+='"
+                        +str.replace(/[\r\n\t]/g," ")
+                        .split('\\').join("\\\\")
+                        .split("<%").join("\t")
+                        .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+                        .replace(/\t=(.*?)%>/g, "'+$1+'")
+                        .split("\t").join("';")
+                        .split("%>").join("p+='")
+                        .split("\r").join("\\'")
+                        +"';return p;");
+
+                return data? fn.call(data):fn;
             }
         }
         function Calendar(){
-            var args = arguments[0];
+        var args = arguments[0];
+
             for(var i in args){
                 this[i] = args[i];
             }
@@ -49,19 +84,137 @@
         Calendar.prototype = {
             init : function(){
                 this.getDom();
-                this.dragBar(this.handler);
+                this.render();
+                this.hide();
             },
             getDom : function(){
-                var dom = [''];
-                for(var i in dom){
-                    this[i] = dom[i];
+                this.container = dog.$(this.id);
+                this.input = dog.$(this.input);
+            },
+            bind : function(){
+                
+            },
+            render : function(){
+                var that = this,
+                    pos = dog.position(this.input),
+                    data = this.zh,
+                    div = document.createElement('div'),
+                    el = null,
+                    html = dog.tpl(this.tpl[0], data);
+
+                if(el = document.getElementById('my-calendar')){
+                    el.style.display = 'block';
+                    this.calendar = el;
+                } else {
+                    createCalendar();
+                    that.fillWeek();
+                    that.fill();
                 }
+                function createCalendar(){
+                    div.innerHTML = that.tpl[0];
+                    div.className = 'my-date';
+                    div.id = 'my-calendar';
+                    div.style.top = pos.top + 32 + 'px';
+                    div.style.left = pos.left + 'px';
+                    div.children[0].style.display = 'block';
+                    that.container.appendChild(div);
+                    that.calendar = div;   
+                }
+            },
+            fillWeek : function(){
+                var html = '<tr>',
+                    n = 0,
+                    days = this.zh.days;
+
+                while(n < days.length){
+                    html += '<th class="dow">' + days[n++] + '</th>';
+                }
+                html += '</tr>';
+                this.calendar.querySelector('.datetimepicker-days thead').innerHTML += html;
+            },
+            fill : function(){
+                var html = '',
+                    calendar = this.calendar,
+                    tBody = calendar.querySelector('tbody'),
+                    time = new Date(2016,3,1),
+                    year = time.getFullYear(),
+                    day = time.getDay(),
+                    today = time.getDate(),
+                    month = time.getMonth(),
+                    date = this.getDaysInMonth(year, month+1),
+                    n = 1,
+                    tr = null,
+                    td = null;
+
+                for(var i = 0; i < 6; i++){
+                    tr = tBody.insertRow(i);
+                    for(var j = 0; j < 7; j++){
+                        td = tr.insertCell(j);
+                        if(n <= date){
+                            td.innerHTML = day-- > 0 ? '' : (td.className = 'day', n++);
+                        }
+                        if(td.innerHTML == today){
+                            td.className += ' active';
+                        }
+                    }
+                }
+
+                tBody.appendChild(tr);
+            },
+            getDaysInMonth : function(year, month){
+                return new Date(year, parseInt(month), 0).getDate();
+            },
+            hide : function(){
+                var that = this;
+                dog.on(document, 'click', function(e){
+                    that.calendar.style.display = 'none';
+                });
+                dog.on(this.calendar, 'click', function(e){
+                    if(e.target.className.indexOf('day') != -1){
+                        that.calendar.style.display = 'none';     
+                    }
+                    e.stopPropagation(); 
+                });
             }
         }
         var defaults = {
-            id : 'calendar'
+            id : 'calendar',
+            input : 'input',
+            zh : {
+                days :        ['日','一','二','三','四','五','六'],
+                months :      ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'],
+                monthsShort : ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一','十二'],
+                today :       '今天',
+                clear :       '清空'
+            },
+            tpl : 
+                [
+                    '<div class="datetimepicker datetimepicker-dropdown-bottom-right dropdown-menu">' +
+                        '<div class="datetimepicker-days">' +
+                            '<table class="table-condensed">' +
+                                '<thead>' +
+                                    '<tr>' +
+                                        '<th class="prev"><i class="icon-arrow-left"></i></th>' +
+                                        '<th colspan="5" class="switch">12123123</th>' +
+                                        '<th class="next"><i class="icon-arrow-right"></i></th>' +
+                                    '</tr>' +
+                                '</thead>' + 
+                                '<tbody></tbody>' +
+                                '<tfoot class="none">' + 
+                                    '<tr><th colspan="7" class="today"></th></tr>' +
+                                    '<tr><th colspan="7" class="clear"></th></tr>' +
+                                '</tfoot>' +
+                            '</table>' +
+                        '</div>' +
+                    '</div>',
+                    '1'
+                ]
+                
         }
-        new Calendar(defaults);
+        document.getElementById('input').onclick = function(e){
+            new Calendar(defaults);
+            e.stopPropagation();
+        }
     }());
 </script>
 </body>
