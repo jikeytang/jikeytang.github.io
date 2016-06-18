@@ -27,7 +27,7 @@
 <div class="wrap">
     <div class="cale-wrap">
         <div id="calendar" class="calendar">
-            <input size="16" type="text" id="input" value="2012-06-15 14:45" readonly="" class="form-control">
+            <input size="16" type="text" id="input" value="2012-06-15" readonly="" class="form-control">
         </div>
     </div>
 </div>
@@ -90,12 +90,13 @@
             init : function(){
                 this.render();
                 this.setDom();
-                this.setHide();
+                this.hideHandle();
                 // this.bindNext();
             },
             bind : function(){
                 
             },
+            now : new Date(),
             _dom : {
                 prev   : '.prev',
                 next   : '.next',
@@ -154,6 +155,7 @@
                 var calendar = this.calendar,
                     tBody = calendar.querySelector('tbody'),
                     time = now || this.time,
+                    startDay = (new Date(time.year, time.month-1, 1)).getDay(),
                     date = this.getDaysInMonth(time.year, time.month),
                     html = '',
                     n = 1,
@@ -165,7 +167,7 @@
                     for(var j = 0; j < 7; j++){
                         td = tr.insertCell(j);
                         if(n <= date){
-                            td.innerHTML = time.week-- > 0 ? '' : (td.className = 'day', n++);
+                            td.innerHTML = startDay-- > 0 ? '' : (td.className = 'day', n++);
                         }
                         if(td.innerHTML == time.day){
                             td.className += ' active';
@@ -181,16 +183,16 @@
                 el.innerHTML = time.year + '年' + time.month + '月';
             },
             getFullTime : function(){
-                var time = new Date(2016,3,1),
-                    year = time.getFullYear(),
-                    week = time.getDay(),
-                    day = time.getDate(),
+                var time  = new Date(),
+                    year  = time.getFullYear(),
+                    week  = time.getDay(),
+                    day   = time.getDate(),
                     month = time.getMonth();
 
                 return {
-                    year : year,
-                    week : week,
-                    day : day,
+                    year  : year,
+                    week  : week,
+                    day   : day,
                     month : month + 1
                 }
             },
@@ -207,13 +209,13 @@
              * 点击其它地方隐藏
              * @return {[type]} [description]
              */
-            setHide : function(){
+            hideHandle : function(){
                 var that = this,
                     target,
                     nextEvent = that.nextHandle(that);
 
                 dog.on(document, 'click', function(e){
-                    that.hide();
+                    that.hideCalendar();
                     dog.off(that.next, 'click', nextEvent);
                 });
 
@@ -221,7 +223,7 @@
                     target = e.target;
 
                     if(target.className.indexOf('day') != -1){
-                        that.hide();
+                        that.hideCalendar();
                         that.setTime.call(that, target.innerHTML);
                     }
                     e.stopPropagation(); 
@@ -233,7 +235,7 @@
                 var time = this.time;
                 this.input.value = time.year + '-' + time.month + '-' + val;
             },
-            hide : function(){
+            hideCalendar : function(){
                 this.calendar.style.display = 'none';
             },
             bindNext : function(){
@@ -243,7 +245,7 @@
             nextHandle : function(self){
                 var that = this;
                 return function(){
-                    console.log(self);
+                    alert('next');
                 }
             }
         }
