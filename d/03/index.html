@@ -89,9 +89,6 @@
         Calendar.prototype = {
             init : function(){
                 this.render();
-                this.setDom();
-                this.hideHandle();
-                // this.bindNext();
             },
             bind : function(){
                 
@@ -128,6 +125,9 @@
                     that.fillWeek();
                     that.fill();
                     that.fillYear();
+                    that.setDom();
+                    that.hideHandle();
+                    that.addNextMonth();
                 }
                 function createCalendar(){
                     div.innerHTML = that.tpl[0];
@@ -180,6 +180,7 @@
             fillYear : function(){
                 var el = this.calendar.querySelector('.switch'),
                     time = this.time;
+
                 el.innerHTML = time.year + '年' + time.month + '月';
             },
             getFullTime : function(){
@@ -189,7 +190,9 @@
                     day   = time.getDate(),
                     month = time.getMonth();
 
+                this.month = month + 1;
                 return {
+                    date  : time,
                     year  : year,
                     week  : week,
                     day   : day,
@@ -210,26 +213,24 @@
              * @return {[type]} [description]
              */
             hideHandle : function(){
-                var that = this,
-                    target,
-                    nextEvent = that.nextHandle(that);
+                var that = this;
 
                 dog.on(document, 'click', function(e){
-                    that.hideCalendar();
-                    dog.off(that.next, 'click', nextEvent);
+                    if(this.calendar != e.target){
+                        that.hideCalendar();
+                        that.removeNextMonth();
+                    }
                 });
 
                 dog.on(this.calendar, 'click', function(e){
-                    target = e.target;
+                    var target = e.target;
 
                     if(target.className.indexOf('day') != -1){
                         that.hideCalendar();
                         that.setTime.call(that, target.innerHTML);
                     }
-                    e.stopPropagation(); 
+                    e.stopPropagation();
                 });
-
-                dog.on(that.next, 'click', nextEvent);
             },
             setTime : function(val){
                 var time = this.time;
@@ -238,15 +239,24 @@
             hideCalendar : function(){
                 this.calendar.style.display = 'none';
             },
-            bindNext : function(){
-                var that = this;
-                dog.on(this.next, 'click', that.nextHandle(this));
+            addNextMonth : function(){
+                dog.on(this.next, 'click', this.nextMonthHandle.bind(this));
             },
-            nextHandle : function(self){
-                var that = this;
-                return function(){
-                    alert('next');
-                }
+            nextMonthHandle : function(e){
+                var today = this.time,
+                    date = today.date,
+                    year = today.year
+
+                date.setMonth(++this.month)
+                month = date.getMonth()
+                console.log(year);
+                console.log(month);
+
+                // e.stopPropagation();
+                return false;
+            },
+            removeNextMonth: function(){
+                dog.off(this.next, 'click', this.nextMonthHandle.bind(this));
             }
         }
         var defaults = {
