@@ -115,8 +115,6 @@
                     el = null,
                     html = dog.tpl(this.tpl[0], data);
 
-                this.time = this.getFullTime();
-
                 if(el = document.getElementById('my-calendar')){
                     el.style.display = 'block';
                     this.calendar = el;
@@ -154,7 +152,7 @@
             fill : function(now){
                 var calendar = this.calendar,
                     tBody = calendar.querySelector('tbody'),
-                    time = now || this.time,
+                    time = now || this.getFullTime(),
                     startDay = (new Date(time.year, time.month-1, 1)).getDay(),
                     date = this.getDaysInMonth(time.year, time.month),
                     html = '',
@@ -162,6 +160,8 @@
                     tr = null,
                     td = null;
 
+                this.time = time;
+                tBody.innerHTML = '';
                 for(var i = 0; i < 6; i++){
                     tr = tBody.insertRow(i);
                     for(var j = 0; j < 7; j++){
@@ -183,14 +183,14 @@
 
                 el.innerHTML = time.year + '年' + time.month + '月';
             },
-            getFullTime : function(){
-                var time  = new Date(),
+            getFullTime : function(now){
+                var time  = now || new Date(),
                     year  = time.getFullYear(),
                     week  = time.getDay(),
                     day   = time.getDate(),
                     month = time.getMonth();
 
-                this.month = month + 1;
+                this.month = month;
                 return {
                     date  : time,
                     year  : year,
@@ -248,12 +248,10 @@
                     year = today.year
 
                 date.setMonth(++this.month)
-                month = date.getMonth()
-                console.log(year);
-                console.log(month);
-
-                // e.stopPropagation();
-                return false;
+                console.log(date.getMonth());
+                var after = this.getFullTime(date)
+                this.fill(after)
+                this.fillYear()
             },
             removeNextMonth: function(){
                 dog.off(this.next, 'click', this.nextMonthHandle.bind(this));
