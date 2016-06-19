@@ -126,6 +126,7 @@
                     that.setDom();
                     that.hideHandle();
                     that.addNextMonth();
+                    that.addPrevMonth();
                 }
                 function createCalendar(){
                     div.innerHTML = that.tpl[0];
@@ -251,6 +252,16 @@
             },
             removeNextMonth: function(){
                 dog.off(this.next, 'click', this.nextMonthHandle.bind(this));
+            },
+            addPrevMonth : function(){
+                dog.on(this.prev, 'click', this.prevMonthHandle.bind(this));
+            },
+            prevMonthHandle : function(e){
+                var date = this.time.date
+
+                date.setMonth(--this.month)
+                this.fill(this.getFullTime(date))
+                this.fillYear()
             }
         }
         var defaults = {
