@@ -243,14 +243,10 @@
                 dog.on(this.next, 'click', this.nextMonthHandle.bind(this));
             },
             nextMonthHandle : function(e){
-                var today = this.time,
-                    date = today.date,
-                    year = today.year
+                var date = this.time.date
 
                 date.setMonth(++this.month)
-                console.log(date.getMonth());
-                var after = this.getFullTime(date)
-                this.fill(after)
+                this.fill(this.getFullTime(date))
                 this.fillYear()
             },
             removeNextMonth: function(){
