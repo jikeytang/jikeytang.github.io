@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>点击更换主题，刷新后保存-豪情</title>
+    <title>无刷新切换皮肤，刷新后保存-豪情</title>
     <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css" media="all"/>
     <link rel="stylesheet" type="text/css" href="../../css/reset.css" media="all"/>
@@ -42,9 +42,8 @@
         function init(){
             var href = getCookie('css')
             if(href.length){
-                setStyle(href)    
+                setStyle(href)
             }
-            
         }
 
         init()
@@ -79,7 +78,7 @@
                     return one[1];
                 }
             };
-            return '';
+            return ''
         }
 
         function delCookies(key){
