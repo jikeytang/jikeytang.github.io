@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>点击更换主题，刷新后保存-豪情</title>
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../../css/reset.css" media="all"/>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <style type="text/css">
+        *{margin:0;padding:0;}
+        body{font:12px/1.125 Microsoft YaHei;background:#fff;}
+        ul,li{list-style:none;}
+        a{text-decoration:none;}
+        .wrap{width:400px;height:350px;text-align:center;margin:150px auto;}
+        .wrap .btn{margin:0 10px;padding:8px 40px;}
+        .inner{padding:15px;}
+        .clearfix{overflow:hidden;_zoom:1;}
+        .none{display:none;}
+    </style>
+    <link rel="stylesheet" id="style" href="css/blue.css">
+</head>
+<body>
+<div class="wrap">
+    <div class="demo" id="div">
+        <button class="btn btn-primary" id="blue">默认</button>
+        <button class="btn btn-warning" id="yellow">黄色</button>
+        <button class="btn btn-success" id="green">绿色</button>
+    </div>
+</div>
+<div style="display:none;">
+    <div id="div" style="width:100px;height:200px;background:#000;"></div>
+    <button id="btn">test</button>
+</div>
+<script>
+    (function(){
+        var div = document.getElementById('div')
+        var btn = div.getElementsByTagName('button')
+        var style = document.getElementById('style')
+        var css = ['blue.css', 'yellow.css', 'green.css']
+
+        function init(){
+            var href = getCookie('css')
+            if(href.length){
+                setStyle(href)    
+            }
+            
+        }
+
+        init()
+
+        function changeStyle(){
+            for (var i = 0; i < btn.length; i++) {
+                btn[i].index = i
+                btn[i].onclick = function(){
+                    setStyle(css[this.index])
+                }
+            };
+        }
+
+        changeStyle()
+
+        function setStyle(href){
+            style.href = 'css/' + href
+            setCookie('css', href, 1)
+        }
+
+        function setCookie(key, value, day){
+            var d = new Date()
+            d.setDate(d.getDate() + day)
+            document.cookie = key + '=' + value + ';expires=' + d
+        }
+
+        function getCookie(key){
+            var list = document.cookie.split(';')
+            for (var i = 0; i < list.length; i++) {
+                var one = list[i].split('=')
+                if(one[0] == key){
+                    return one[1];
+                }
+            };
+            return '';
+        }
+
+        function delCookies(key){
+            setCookie(key, 1, -1)
+        }
+
+    }());
+</script>
+</body>
+</html>
