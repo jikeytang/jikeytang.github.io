@@ -12,24 +12,40 @@
         body{font:12px/1.125 Microsoft YaHei;background:#fff;}
         ul,li{list-style:none;}
         a{text-decoration:none;}
-        .wrap{width:400px;height:350px;text-align:center;margin:150px auto;}
+        .wrap{width:580px;height:350px;text-align:center;margin:150px auto;}
         .wrap .btn{margin:0 10px;padding:8px 40px;}
         .inner{padding:15px;}
         .clearfix{overflow:hidden;_zoom:1;}
         .none{display:none;}
+        .color-panle{display:none;width:199px;background:#fff;}
+        .color-list{border-top:1px solid #000;border-left:1px solid #000;}
+        .color-list ul{float:left;width:66px;height:66px;margin:0;padding:0;}
+        .color-list li{list-style:none;float:left;width:10px;height:10px;border-bottom:1px solid #000;border-right:1px solid #000;overflow:hidden;cursor:pointer;}
+        .color-read{padding-bottom:5px;height:15px;}
+        .color-read .color-val{float:right;}
+        .color-read .color-show{float:left;width:50px;height:15px;border:1px solid #000;}
     </style>
-    <link rel="stylesheet" id="style" href="css/blue.css">
 </head>
 <body>
 <div class="wrap">
-    <div class="demo" id="div">
+    <div class="demo" id="container">
         <input type="text" name="" size="60" id="input" class="input input-lg">
+
     </div>
 </div>
 <div style="display:none;">
     <div id="div" style="width:100px;height:200px;background:#000;"></div>
     <button id="btn">test</button>
 </div>
+<script type="text/html" id="tpl-list">
+    <% for (var i = 0; i < data.length; i++){%>
+    <ul>
+        <% for ( var j = 0; j < data[i].length; j++ ) { %>
+            <li style="background-color:#<%=data[i][j]%>"></li>
+        <% } %>
+    </ul>
+    <%}%>
+</script>
 <script>
     (function(){
         var div = document.getElementById('div')
@@ -37,31 +53,22 @@
         var style = document.getElementById('style')
         var css = ['blue.css', 'yellow.css', 'green.css']
 
-        function init(){
-            var href = getCookie('css')
-            if(href.length){
-                setStyle(href)
-            }
-        }
-
-        init()
-
         var dog = {
             $ : function(selector){
-                return document.querySelector(selector);
+                return document.querySelector(selector)
             },
             on: function(el, type, handler){
-                el.addEventListener(type, handler, false);
+                el.addEventListener(type, handler, false)
             },
             off: function(el, type, handler){
-                el.removeEventListener(type, handler);
+                el.removeEventListener(type, handler)
             },
             position : function(obj, attr){
                 if(obj){
-                    var method = obj.getBoundingClientRect();
-                    return attr ? method[attr] : method;
+                    var method = obj.getBoundingClientRect()
+                    return attr ? method[attr] : method
                 } else {
-                    console.log('对象不存在！');
+                    console.log('对象不存在！')
                 }
             },
             cache : {},
@@ -77,9 +84,9 @@
                         .split("\t").join("';")
                         .split("%>").join("p+='")
                         .split("\r").join("\\'")
-                        +"';return p;");
+                        +"';return p;")
 
-                return data? fn.call(data):fn;
+                return data ? fn.call(data) : fn
             },
             setCookie : function(key, value, day){
                 var d = new Date()
@@ -91,87 +98,133 @@
                 for (var i = 0; i < list.length; i++) {
                     var one = list[i].split('=')
                     if(one[0] == key){
-                        return one[1];
+                        return one[1]
                     }
                 };
                 return ''
             },
             delCookies : function(key){
                 this.setCookie(key, 1, -1)
+            },
+            show : function(obj){
+                obj.style.display = 'block'
+            },
+            hide : function(obj){
+                obj.style.display = 'none'
             }
         }
 
         function Palette(){
             var args = arguments[0],
-                dom = args.dom;
+                dom = args.dom
 
             for(var key in args){
                 if(key == 'dom'){
                     this.getDom(dom);
                 } else {
-                    this[key] = args[key];
+                    this[key] = args[key]
                 }
             }
-            this.init();
+            this.init()
         }
         Palette.prototype = {
             init : function(){
-                this.render();
+                this.render()
+            },
+            __dom : {
+                __list : '.color-list'
             },
             setDom : function(){
-                this.getDom(this._dom);
+                this.getDom(this.__dom)
             },
             getDom : function(dom){
                 for(var prop in dom){
-                    this[prop] = dog.$(dom[prop]);
+                    this[prop] = dog.$(dom[prop])
                 }
             },
             render : function(){
+                var dom = null
 
+                if(!(dom = dog.$('#panel'))){
+                    this.createPanel()
+                } else {
+                    dog.show(dom)
+                }
+            },
+            createPanel : function(){
+                this.createBody()
+                this.setDom()
+                this.createLump()
+            },
+            createBody : function(){
+                var div = document.createElement('div'),
+                    pos = dog.position(this.input)
+
+                div.id = 'panel'
+                div.innerHTML = this.tpl[0]
+                div.style.top = pos.top + 32 + 'px'
+                div.style.left = pos.left + 'px'
+                div.children[0].style.display = 'block'
+                this.container.appendChild(div)
+                this.calendar = div
+            },
+            createLump : function(){
+                var data = this.getColorsData(),
+                    tplHtml = this.tplList,
+                    __list = this.__list
+
+                console.log(data);
+                __list.innerHTML = dog.tpl(tplHtml.innerHTML, data)
+            },
+            getColorsData : function(){
+                var arr = ['0', '3', '6', '9', 'c', 'f'],
+                    data = []
+
+                for (var i = 0; i < arr.length; i++) {
+                    data.push(this.createColors(arr[i], arr))
+                }
+                return data
+            },
+            createColors : function(one, arr){
+                var colors = []
+
+                for (var i = 0; i < 6; i++) {
+                    for(var j = 0; j < 6; j++) {
+                        colors.push(one + arr[j] + arr[i])
+                    }
+                }
+                return colors
             }
         }
 
         var defaults = {
             dom : {
-                container : '#calendar',
-                input     : '#input'
-            },
-            zh : {
-                days        :  ['日','一','二','三','四','五','六'],
-                months      :  ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'],
-                monthsShort :  ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一','十二'],
-                today       :  '今天',
-                clear       :  '清空'
+                container : '#container',
+                input     : '#input',
+                tplList   : '#tpl-list'
             },
             tpl : 
                 [
-                    '<div class="datetimepicker datetimepicker-dropdown-bottom-right dropdown-menu">' +
-                        '<div class="datetimepicker-days">' +
-                            '<table class="table-condensed">' +
-                                '<thead>' +
-                                    '<tr>' +
-                                        '<th class="prev"><i class="icon-arrow-left"></i></th>' +
-                                        '<th colspan="5" class="switch"></th>' +
-                                        '<th class="next"><i class="icon-arrow-right"></i></th>' +
-                                    '</tr>' +
-                                '</thead>' + 
-                                '<tbody></tbody>' +
-                                '<tfoot class="none">' + 
-                                    '<tr><th colspan="7" class="today"></th></tr>' +
-                                    '<tr><th colspan="7" class="clear"></th></tr>' +
-                                '</tfoot>' +
-                            '</table>' +
-                        '</div>' +
-                    '</div>',
-                    '1'
+                    '<div class="color-panle">' +
+                    '    <div class="color-read">' +
+                    '        <span class="color-val"></span><span class="color-show"></span>' +
+                    '    </div>' +
+                    '    <div class="color-list">' +
+                    '    </div>' +
+                    '</div>'
                 ]
                 
         }
         document.getElementById('input').onclick = function(e){
-            new Calendar(defaults);
-            e.stopPropagation();
+            new Palette(defaults)
         }
     }());
+
+    var data = [
+        ['000','111','022'],
+        ['900','911','922'],
+        ['c00','c11','c22'],
+    ]
 </script>
 </body>
 </html>
