@@ -17,13 +17,13 @@
         .inner{padding:15px;}
         .clearfix{overflow:hidden;_zoom:1;}
         .none{display:none;}
-        .color-panle{display:none;width:199px;background:#fff;}
-        .color-list{border-top:1px solid #000;border-left:1px solid #000;}
-        .color-list ul{float:left;width:66px;height:66px;margin:0;padding:0;}
-        .color-list li{list-style:none;float:left;width:10px;height:10px;border-bottom:1px solid #000;border-right:1px solid #000;overflow:hidden;cursor:pointer;}
-        .color-read{padding-bottom:5px;height:15px;}
+        .color-panle{display:none;width:379px;background:#fff;}
+        .color-list{border-top:1px solid #ccc;border-left:1px solid #ccc;}
+        .color-list ul{float:left; width:126px;margin:0;padding:0;}
+        .color-list li{list-style:none;float:left;width:20px;height:20px;border-bottom:1px solid #000;border-right:1px solid #000;overflow:hidden;cursor:pointer;}
+        .color-read{padding-bottom:5px;height:25px;}
         .color-read .color-val{float:right;}
-        .color-read .color-show{float:left;width:50px;height:15px;border:1px solid #000;}
+        .color-read .color-show{float:left;width:50px;height:20px;border:1px solid #ccc;}
     </style>
 </head>
 <body>
@@ -48,11 +48,6 @@
 </script>
 <script>
     (function(){
-        var div = document.getElementById('div')
-        var btn = div.getElementsByTagName('button')
-        var style = document.getElementById('style')
-        var css = ['blue.css', 'yellow.css', 'green.css']
-
         var dog = {
             $ : function(selector){
                 return document.querySelector(selector)
@@ -70,23 +65,6 @@
                 } else {
                     console.log('对象不存在！')
                 }
-            },
-            cache : {},
-            tpl : function(str, data){
-                var fn= !/\s/.test(str) ? 
-                    this.cache[str] = cache[str] || tmpl(document.getElementById(str).innerHTML) :
-                        new Function("obj","var p='';p+='"
-                        +str.replace(/[\r\n\t]/g," ")
-                        .split('\\').join("\\\\")
-                        .split("<%").join("\t")
-                        .replace(/((^|%>)[^\t]*)'/g, "$1\r")
-                        .replace(/\t=(.*?)%>/g, "'+$1+'")
-                        .split("\t").join("';")
-                        .split("%>").join("p+='")
-                        .split("\r").join("\\'")
-                        +"';return p;")
-
-                return data ? fn.call(data) : fn
             },
             setCookie : function(key, value, day){
                 var d = new Date()
@@ -112,7 +90,7 @@
             hide : function(obj){
                 obj.style.display = 'none'
             }
-        }
+        };
 
         function Palette(){
             var args = arguments[0],
@@ -149,11 +127,13 @@
                     this.createPanel()
                 } else {
                     dog.show(dom)
+                    this.panel = dom
                 }
             },
             createPanel : function(){
                 this.createBody()
                 this.setDom()
+                this.bind()
                 this.createLump()
             },
             createBody : function(){
@@ -166,35 +146,47 @@
                 div.style.left = pos.left + 'px'
                 div.children[0].style.display = 'block'
                 this.container.appendChild(div)
-                this.calendar = div
+                this.panel = div
             },
             createLump : function(){
-                var data = this.getColorsData(),
-                    tplHtml = this.tplList,
-                    __list = this.__list
+                var data = this.getColorsData()
 
-                console.log(data);
-                __list.innerHTML = dog.tpl(tplHtml.innerHTML, data)
+                this.__list.innerHTML = data
             },
             getColorsData : function(){
                 var arr = ['0', '3', '6', '9', 'c', 'f'],
-                    data = []
+                    html = ''
 
                 for (var i = 0; i < arr.length; i++) {
-                    data.push(this.createColors(arr[i], arr))
+                    html += this.createColors(arr[i], arr)
                 }
-                return data
+                return html
             },
             createColors : function(one, arr){
-                var colors = []
+                var colors = '<ul>'
 
                 for (var i = 0; i < 6; i++) {
                     for(var j = 0; j < 6; j++) {
-                        colors.push(one + arr[j] + arr[i])
+                        colors += '<li style="background:#' + one + arr[j] + arr[i] + '"></li>'
                     }
                 }
+                colors += '</ul>'
                 return colors
-            }
+            },
+            bind : function(){
+                var self = this
+
+                dog.on(document, 'click', function(e){
+                    console.log(e.target);
+                    if(e.target != self.panel){
+                        dog.hide(self.panel)
+                    }
+                })
+                
+                dog.on(self.panel, 'click', function(e){
+                    e.stopPropagation()
+                })
+            },
         }
 
         var defaults = {
@@ -217,10 +209,11 @@
         }
         document.getElementById('input').onclick = function(e){
             new Palette(defaults)
+            e.stopPropagation()
         }
     }());
 
-    var data = [
+    var data1 = [
         ['000','111','022'],
         ['900','911','922'],
         ['c00','c11','c22'],

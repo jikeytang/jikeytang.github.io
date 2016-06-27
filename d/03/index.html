@@ -217,7 +217,7 @@
                 var that = this;
 
                 dog.on(document, 'click', function(e){
-                    if(this.calendar != e.target){
+                    if(that.calendar != e.target){
                         that.hideCalendar();
                         that.removeNextMonth();
                     }
