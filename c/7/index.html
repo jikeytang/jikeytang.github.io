@@ -19,11 +19,12 @@
         .none{display:none;}
         .color-panle{display:none;width:379px;background:#fff;}
         .color-list{border-top:1px solid #ccc;border-left:1px solid #ccc;}
-        .color-list ul{float:left; width:126px;margin:0;padding:0;}
+        .color-list ul{float:left; width:120px;margin:0;padding:0;}
         .color-list li{list-style:none;float:left;width:20px;height:20px;border-bottom:1px solid #000;border-right:1px solid #000;overflow:hidden;cursor:pointer;}
         .color-read{padding-bottom:5px;height:25px;}
         .color-read .color-val{float:right;}
         .color-read .color-show{float:left;width:50px;height:20px;border:1px solid #ccc;}
+        #panel{position:absolute;}
     </style>
 </head>
 <body>
@@ -37,25 +38,19 @@
     <div id="div" style="width:100px;height:200px;background:#000;"></div>
     <button id="btn">test</button>
 </div>
-<script type="text/html" id="tpl-list">
-    <% for (var i = 0; i < data.length; i++){%>
-    <ul>
-        <% for ( var j = 0; j < data[i].length; j++ ) { %>
-            <li style="background-color:#<%=data[i][j]%>"></li>
-        <% } %>
-    </ul>
-    <%}%>
-</script>
 <script>
     (function(){
         var dog = {
             $ : function(selector){
                 return document.querySelector(selector)
             },
-            on: function(el, type, handler){
+            all : function(selector){
+                return document.querySelectorAll(selector)
+            },
+            on : function(el, type, handler){
                 el.addEventListener(type, handler, false)
             },
-            off: function(el, type, handler){
+            off : function(el, type, handler){
                 el.removeEventListener(type, handler)
             },
             position : function(obj, attr){
@@ -142,7 +137,7 @@
 
                 div.id = 'panel'
                 div.innerHTML = this.tpl[0]
-                div.style.top = pos.top + 32 + 'px'
+                div.style.top = pos.top + 78 + 'px'
                 div.style.left = pos.left + 'px'
                 div.children[0].style.display = 'block'
                 this.container.appendChild(div)
@@ -174,19 +169,47 @@
                 return colors
             },
             bind : function(){
-                var self = this
+                var self = this,
+                    __li = self.__list.getElementsByTagName('li')
 
                 dog.on(document, 'click', function(e){
-                    console.log(e.target);
                     if(e.target != self.panel){
                         dog.hide(self.panel)
                     }
                 })
                 
                 dog.on(self.panel, 'click', function(e){
+                    alert(111);
                     e.stopPropagation()
                 })
+
+                dog.on(self.panel, 'mouseover', function(e){
+                    var target = e.target
+                    if(target.tagName.toLowerCase() == 'li'){
+                        self.handlerLi(target, 0)
+                    }
+                })
+
+                dog.on(self.panel, 'mouseout', function(e){
+                    var target = e.target
+                    if(target.tagName.toLowerCase() == 'li'){
+                        self.handlerLi(target, 1)
+                    }
+                })
             },
+            handlerLi : function(node, type){
+                var self = this
+
+                if(type == 0){
+                    node.style.position = 'absolute'
+                    node.style.width = '50px'
+                    node.style.height = '50px'
+                } else {
+                    node.style.position = 'static'
+                    node.style.width = '20px'
+                    node.style.height = '20px'
+                }
+            }
         }
 
         var defaults = {
