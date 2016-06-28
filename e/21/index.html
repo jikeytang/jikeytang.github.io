@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8"/>
     <title>表格的添加与删除</title>
-    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" media="all"/>
-    <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css" media="all"/>
-    <link rel="stylesheet" type="text/css" href="../css/reset.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css" media="all"/>
+    <link rel="stylesheet" type="text/css" href="../../css/reset.css" media="all"/>
     <style type="text/css">
         .demo{ width:600px;margin:50px auto; text-align:left; padding:0; }
         .list{ color:#2a6496;}
@@ -72,25 +72,30 @@
         var txt = document.getElementById('txt');
         var add = document.getElementById('add');
         var del = getByCls(div, 'del');
+
         add.onclick = function(){
             var v = txt.value;
-            var tr = document.createElement('tr');
-            var td = document.createElement('td');
+            var tr = tab.insertRow();
+            var td = tr.insertCell();
             td.innerHTML = v;
             tr.appendChild(td);
-            td = document.createElement('td');
+            td = tr.insertCell();
             td.innerHTML = '表格内容i';
             tr.appendChild(td);
-            td = document.createElement('td');
+            td = tr.insertCell();
             td.innerHTML = '<a class="del" href="javascript:;">del</a>';
             tr.appendChild(td);
             tb.appendChild(tr);
+            txt.value = '';
+            txt.focus();
         }
-        for(var i = 0; i < del.length; i++){
-            del[i].onclick = function(){
-                tb.removeChild(this.parentNode.parentNode);
+
+        document.addEventListener('click', function(e){
+            var target = e.target;
+            if(e.target.className.indexOf('del') != -1){
+                tb.removeChild(target.parentNode.parentNode);
             }
-        }
+        }, false);
 
         function getByCls(obj, cls){
             if(obj.getElementsByClassName){
