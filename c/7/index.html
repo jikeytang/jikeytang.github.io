@@ -17,8 +17,8 @@
         .inner{padding:15px;}
         .clearfix{overflow:hidden;_zoom:1;}
         .none{display:none;}
-        .color-panle{display:none;width:379px;background:#fff;}
-        .color-list{border-top:1px solid #ccc;border-left:1px solid #ccc;}
+        .color-panle{display:none;width:379px;}
+        .color-list{border-left:1px solid #ccc;}
         .color-list ul{float:left; width:120px;margin:0;padding:0;}
         .color-list li{list-style:none;float:left;width:20px;height:20px;border-bottom:1px solid #000;border-right:1px solid #000;overflow:hidden;cursor:pointer;}
         .color-read{padding-bottom:5px;height:25px;}
@@ -105,7 +105,8 @@
                 this.render()
             },
             __dom : {
-                __list : '.color-list'
+                __list : '.color-list',
+                __show : '.color-show'
             },
             setDom : function(){
                 this.getDom(this.__dom)
@@ -137,7 +138,7 @@
 
                 div.id = 'panel'
                 div.innerHTML = this.tpl[0]
-                div.style.top = pos.top + 78 + 'px'
+                div.style.top = pos.top + 52 + 'px'
                 div.style.left = pos.left + 'px'
                 div.children[0].style.display = 'block'
                 this.container.appendChild(div)
@@ -158,11 +159,13 @@
                 return html
             },
             createColors : function(one, arr){
-                var colors = '<ul>'
+                var colors = '<ul>',
+                    item
 
                 for (var i = 0; i < 6; i++) {
                     for(var j = 0; j < 6; j++) {
-                        colors += '<li style="background:#' + one + arr[j] + arr[i] + '"></li>'
+                        item = one + arr[j] + arr[i]
+                        colors += '<li data-color="' + item + '" style="background:#' + item + '"></li>'
                     }
                 }
                 colors += '</ul>'
@@ -179,7 +182,15 @@
                 })
                 
                 dog.on(self.panel, 'click', function(e){
-                    alert(111);
+                    var target = e.target,
+                        color = '#' + target.getAttribute('data-color')
+
+                    self.input.value = color
+                    self.__show.style.background = color
+
+                    setTimeout(function(){
+                        document.body.style.background = color
+                    }, 150)
                     e.stopPropagation()
                 })
 
@@ -197,18 +208,12 @@
                     }
                 })
             },
-            handlerLi : function(node, type){
-                var self = this
-
-                if(type == 0){
-                    node.style.position = 'absolute'
-                    node.style.width = '50px'
-                    node.style.height = '50px'
-                } else {
-                    node.style.position = 'static'
-                    node.style.width = '20px'
-                    node.style.height = '20px'
+            handlerLi: function(node, type){
+                var v = 0
+                if(!type){
+                    v = '5px'
                 }
+                node.style.borderRadius = v
             }
         }
 
